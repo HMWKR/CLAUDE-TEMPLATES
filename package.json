@@ -1,0 +1,22 @@
+{
+  "name": "claude-templates",
+  "version": "1.0.0",
+  "description": "Claude 협업 템플릿 - 새 프로젝트에 Claude 협업 환경을 빠르게 설정하기 위한 마스터 템플릿",
+  "type": "module",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "keywords": [
+    "claude",
+    "template",
+    "prompt-engineering",
+    "commit-message"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "husky": "^9.0.0"
+  }
+}
