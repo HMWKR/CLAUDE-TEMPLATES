@@ -1,72 +1,41 @@
-# Claude 협업 템플릿
+# CLAUDE-TEMPLATES
 
-새 프로젝트에 Claude 협업 환경을 빠르게 설정하기 위한 템플릿 모음
+Claude Code CLI 협업을 위한 마스터 템플릿 저장소
 
----
+## 이 저장소는?
 
-## 사용 방법
+새 프로젝트에 Claude Code 협업 환경을 빠르게 구축하기 위한 템플릿 모음입니다.
 
-### 방법 1: 간단한 프롬프트
-
-프로젝트 폴더에서 Claude Code 실행 후:
-
-```
-바탕화면의 claude-templates 폴더를 사용해서 이 프로젝트에 Claude 협업 환경을 설정해줘.
-```
-
-### 방법 2: 상세 프롬프트 (권장)
-
-```
-C:\Users\jusan\Desktop\claude-templates\ 폴더의 템플릿을 사용해서 이 프로젝트에 다음을 설정해줘:
-
-1. CLAUDE_TEMPLATE.md → CLAUDE.md로 복사
-2. 16섹션 커밋 메시지 검증 시스템 설치 (husky, commitlint)
-3. .gitmessage 템플릿 등록
-4. 섹션 1-8은 이 프로젝트에 맞게 작성해줘
-```
-
-### 방법 3: 수동 설정
-
-1. `CLAUDE_TEMPLATE.md`를 프로젝트 루트에 `CLAUDE.md`로 복사
-2. `[TODO]` 표시된 섹션 1-8을 프로젝트에 맞게 작성
-3. `커밋메시지-16섹션-설정가이드.md` 참고하여 커밋 검증 시스템 설정
-
----
-
-## 포함된 파일
+## 포함 파일
 
 | 파일 | 용도 |
 |------|------|
-| `CLAUDE_TEMPLATE.md` | 새 프로젝트용 CLAUDE.md 전체 템플릿 |
-| `CLAUDE_UNIVERSAL_RULES.md` | 공통 규칙 (섹션 9-19만 추출) |
-| `CONVERSATION_PROMPTS.md` | Claude와 효과적으로 대화하는 프롬프트 패턴 |
+| `CLAUDE_TEMPLATE.md` | CLAUDE.md 전체 템플릿 (19개 섹션) |
+| `CLAUDE_UNIVERSAL_RULES.md` | 공통 규칙 (섹션 9-19) |
 | `PROJECT_SETUP_CHECKLIST.md` | 새 프로젝트 설정 체크리스트 |
-| `커밋메시지-16섹션-설정가이드.md` | 커밋 메시지 검증 시스템 상세 가이드 |
+| `CONVERSATION_PROMPTS.md` | Claude 대화 프롬프트 패턴 모음 |
+| `커밋메시지-16섹션-설정가이드.md` | 16개 섹션 커밋 검증 시스템 가이드 |
 
----
+## 핵심 기능
 
-## 자주 쓰는 프롬프트
+1. **16개 섹션 커밋 메시지 검증** - Husky + Commitlint 자동화
+2. **환각 방지 프로토콜** - Read Before Write
+3. **Ultrathink 8단계 워크플로우** - 체계적 문제 해결
+4. **5계층 48점 프롬프트 품질 평가** - 객관적 품질 측정
 
-### 프로젝트 분석 요청
-```
-ultrathink 모드로 현재 프로젝트 구조를 분석해줘.
-```
+## 사용법
 
-### 기능 구현 요청
-```
-[기능명]을 구현해줘. 테스트도 작성해줘.
-```
+```bash
+# 1. 템플릿 복사
+cp CLAUDE_TEMPLATE.md /path/to/new-project/CLAUDE.md
 
-### 버그 수정 요청
-```
-[증상]이 발생해. 원인 분석하고 수정해줘.
-```
-
-### 전체 검수 요청
-```
-지금까지 작업한 내용을 시니어 개발자 관점에서 검수해줘.
+# 2. 커밋 검증 시스템 설치 (선택)
+npm install -D husky @commitlint/cli @commitlint/config-conventional
+npx husky init
 ```
 
----
+상세 가이드: `PROJECT_SETUP_CHECKLIST.md` 참고
 
-*작성일: 2026-01-12*
+## 라이선스
+
+MIT
