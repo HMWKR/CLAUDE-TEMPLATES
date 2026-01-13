@@ -4,10 +4,23 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-01-13T19:17:39.743Z",
-  "totalCommits": 6,
-  "promptCommits": 4,
+  "extractedAt": "2026-01-13T20:10:56.129Z",
+  "totalCommits": 7,
+  "promptCommits": 5,
   "prompts": [
+    {
+      "hash": "263ff80b0f6bcdefc27f65e2e194616a44296ef5",
+      "date": "2026-01-14T05:10:37+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "prompt-library 연동 및 트러블슈팅 문서 보완",
+      "originalPrompt": "",
+      "optimizedPrompt": "",
+      "analysis": "",
+      "qualityScore": null,
+      "grade": "A+",
+      "fullMessage": "docs: prompt-library 연동 및 트러블슈팅 문서 보완\n\n## 산출물\n- README.md: 저장소 역할 상세, projects.json/prompts.json 구조, 새 프로젝트 등록 방법 추가\n- PROJECT_SETUP_CHECKLIST.md: init-project.sh 7단계 상세 테이블, prompt-library 등록 체크리스트, GitHub Actions 트러블슈팅 추가\n- CLAUDE.md: 4.7 prompt-library 연동 섹션 추가\n\n## 변경 영향도\n- 영향 범위: 문서만 변경, 코드 영향 없음\n- 사용자 영향: 분산 Push 아키텍처 이해도 향상\n- 위험도: LOW (문서 보완)\n\n## 테스트 전략\n- [x] 마크다운 렌더링 확인\n- [x] JSON 예시 문법 검증\n\n## 롤백 계획\n- 단순 문서 변경으로 git revert 가능\n\n## 관련 이슈\n- Related to: 분산 Push 아키텍처 문서화\n\n## Breaking Changes\n- 없음\n\n## 성능 벤치마크\n- 해당 없음 (문서 변경)\n\n## 아키텍처 다이어그램\n```\nREADME.md\n├── 저장소별 역할 상세 (신규)\n├── projects.json 구조 (신규)\n├── prompts.json 구조 (신규)\n└── 새 프로젝트 등록 방법 (신규)\n\nPROJECT_SETUP_CHECKLIST.md\n├── init-project.sh 7단계 상세 (신규)\n├── prompt-library 등록 (신규)\n└── GitHub Actions 트러블슈팅 (신규)\n\nCLAUDE.md\n└── 4.7 prompt-library 연동 (신규)\n```\n\n## UI/UX 와이어프레임\n- 해당 없음 (문서 변경)\n\n## 사고 여정\n\n### 1. 문제 인식\n분산 Push 아키텍처 구현 완료 후, 문서에 prompt-library 연동 정보가 누락되어 있음을 발견. 사용자가 전체 시스템을 이해하기 어려운 상태.\n\n### 2. 탐색 경로\nREADME.md, PROJECT_SETUP_CHECKLIST.md, CLAUDE.md, CLAUDE_TEMPLATE.md 4개 파일을 분석하여 문서화 Gap 6개 영역 식별: (1) init-project.sh 7단계 상세, (2) 저장소 관계, (3) prompt-library 연동, (4) prompts.json 구조, (5) GitHub Pages 배포, (6) 트러블슈팅.\n\n### 3. 고려한 대안들\n- 옵션 A: 별도 ARCHITECTURE.md 파일 생성\n- 옵션 B: 기존 문서에 분산 추가 (선택)\n- 옵션 C: Wiki 페이지 활용\n옵션 B 선택 이유: 기존 문서 구조 유지하면서 관련 섹션에 자연스럽게 통합.\n\n### 4. 결정 근거\n각 문서의 역할에 맞게 내용 배치:\n- README.md: 저장소 역할, JSON 구조 (전체 개요)\n- CHECKLIST: 7단계 상세, 등록 방법, 트러블슈팅 (실행 가이드)\n- CLAUDE.md: prompt-library 연동 (Claude 참조용)\n\n### 5. 구현 타임라인\n1. README.md 보완 → 저장소 역할 테이블, JSON 구조 예시 추가\n2. CHECKLIST 보완 → 7단계 테이블, 등록 체크리스트, 트러블슈팅 추가\n3. CLAUDE.md 보완 → 4.7 섹션 추가\n\n### 6. 핵심 통찰\n문서는 단순 기록이 아닌 사용자 여정 가이드. init-project.sh 실행부터 prompt-dashboard 집계까지 전체 흐름을 이해할 수 있어야 새 프로젝트 온보딩이 원활해짐.\n\n### 원본 프롬프트\n추가 해주며 기타 등등 전반적으로 전체적으로 보완 작업을 진행을 해줘 누락 된 부분이 있는지 없는지에 대해서 너가 다시한번 분석을 한다음 진행해줘\n\n### 프롬프트 분석\n- 해석: 문서 전반적 보완 요청, 누락 분석 후 진행\n- 작업유형: 문서 보완\n- 제약: ultrathink 모드, CLAUDE.md 지침 준수\n- 키워드: 보완, 누락, 분석\n\n### 최적화된 프롬프트\n[검증됨] 문서 Gap 분석 결과를 바탕으로 README.md, PROJECT_SETUP_CHECKLIST.md, CLAUDE.md에 누락된 prompt-library 연동 정보, 7단계 상세, 트러블슈팅 내용을 추가\n\n## 프롬프트 품질 검수\n- 계층 1 (구조적 완성도): 18/18 - 명확한 보완 대상과 범위\n- 계층 2 (엔지니어링 기법): 7/8 - CoT, Task Decomposition\n- 계층 3 (맥락 최적화): 6/6 - 프로젝트/도메인 맥락 반영\n- 계층 4 (효과 검증): 4/4 - 예상 효과 명확\n- 계층 5 (할루시네이션 검증): 10/12 - [검증됨] 마커 사용\n- 총점: 45/48 (A+)\n- 등급: A+\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+    },
     {
       "hash": "79e974815648686d2475079235770511c5a23607",
       "date": "2026-01-14T04:17:19+09:00",
