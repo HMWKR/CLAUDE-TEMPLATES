@@ -6,6 +6,28 @@
 
 ---
 
+## 권장: 원클릭 설정
+
+아래 명령어 하나로 **7단계 설정을 자동 완료**합니다:
+
+```bash
+curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-project.sh | bash
+```
+
+**자동으로 생성되는 파일:**
+- `CLAUDE.md` - Claude 작업 지침
+- `commitlint.config.cjs` - 16개 섹션 검증 규칙
+- `.gitmessage` - 커밋 메시지 템플릿
+- `.husky/commit-msg` - 커밋 검증 훅
+- `scripts/extract-local-prompts.js` - 프롬프트 추출 스크립트
+- `.github/workflows/sync-prompts.yml` - 자동 동기화 워크플로우
+
+원클릭 설정 후 **CLAUDE.md 섹션 1-8만 작성**하면 됩니다.
+
+수동 설정이 필요하면 아래 단계를 따르세요.
+
+---
+
 ## 1단계: 기본 설정 (필수)
 
 ### Git 저장소
@@ -114,6 +136,17 @@
 - [ ] `.github/workflows/commit-lint.yml` 생성
   - 바탕화면의 `커밋메시지-16섹션-설정가이드.md` 참고
 
+### GitHub Pages 설정 (프롬프트 수집용)
+
+프롬프트 자동 수집/대시보드 연동을 위해 Pages를 설정합니다:
+
+- [ ] Repository → Settings → Pages 이동
+- [ ] Source: **Deploy from a branch** 선택
+- [ ] Branch: **gh-pages** / (root) 선택
+- [ ] Save 클릭
+
+> `sync-prompts.yml` 워크플로우가 첫 실행되면 gh-pages 브랜치가 자동 생성됩니다.
+
 ---
 
 ## 4단계: 개발 환경 확인
@@ -178,14 +211,17 @@ echo "설정 완료! CLAUDE.md 섹션 1-8을 작성하세요."
 
 ---
 
-## 참고 파일 위치 (바탕화면)
+## 참고 파일 위치 (CLAUDE-TEMPLATES 저장소)
 
 | 파일 | 용도 |
 |------|------|
+| `init-project.sh` | 원클릭 자동 설정 스크립트 |
 | `CLAUDE_TEMPLATE.md` | CLAUDE.md 전체 템플릿 |
 | `CLAUDE_UNIVERSAL_RULES.md` | 공통 규칙 (섹션 9-19) |
 | `CONVERSATION_PROMPTS.md` | Claude 대화 패턴 |
 | `커밋메시지-16섹션-설정가이드.md` | 커밋 검증 시스템 상세 가이드 |
+| `scripts/extract-local-prompts.js` | 프롬프트 추출 스크립트 |
+| `.github/workflows/sync-prompts.yml` | 프롬프트 자동 동기화 워크플로우 |
 | `PROJECT_SETUP_CHECKLIST.md` | 이 체크리스트 |
 
 ---
@@ -222,7 +258,11 @@ echo "설정 완료! CLAUDE.md 섹션 1-8을 작성하세요."
 1. **CLAUDE.md 작성 완료** - 섹션 1-8 프로젝트별 정보 입력
 2. **커밋 검증 작동** - 템플릿 없이 커밋 시 오류 발생
 3. **Claude 인식 확인** - "이 프로젝트 설명해줘" 질문에 CLAUDE.md 기반 응답
+4. **프롬프트 수집 확인** (선택)
+   - GitHub Actions 탭에서 `Sync Prompts` 워크플로우 성공 확인
+   - `https://[username].github.io/[repo]/prompts.json` 접속 가능 확인
 
 ---
 
 *체크리스트 작성일: 2026-01-12*
+*업데이트: 2026-01-14 (분산 Push 아키텍처 반영)*

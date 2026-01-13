@@ -61,6 +61,7 @@ git config commit.template .gitmessage
 
 ```
 claude-templates/
+├── init-project.sh              # 원클릭 자동 설정 스크립트 (7단계)
 ├── CLAUDE_TEMPLATE.md           # CLAUDE.md 전체 템플릿 (19개 섹션)
 ├── CLAUDE_UNIVERSAL_RULES.md    # 공통 규칙 (섹션 9-19 분리본)
 ├── PROJECT_SETUP_CHECKLIST.md   # 새 프로젝트 설정 체크리스트
@@ -71,6 +72,11 @@ claude-templates/
 ├── .gitmessage                  # 커밋 메시지 템플릿
 ├── .husky/                      # Git 훅 설정
 │   └── commit-msg               # 커밋 메시지 검증 훅
+├── scripts/                     # 자동화 스크립트
+│   └── extract-local-prompts.js # 프롬프트 추출 스크립트
+├── .github/                     # GitHub 설정
+│   └── workflows/
+│       └── sync-prompts.yml     # 프롬프트 자동 동기화 워크플로우
 └── node_modules/                # npm 패키지
 ```
 
@@ -81,27 +87,47 @@ claude-templates/
 │                    claude-templates 저장소                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
+│  ┌──────────────────┐                                          │
+│  │ init-project.sh  │ ─────────▶ 새 프로젝트에 7단계 자동 설정  │
+│  └──────────────────┘                                          │
+│           │ 다운로드                                            │
+│           ▼                                                     │
 │  ┌──────────────────┐    복사     ┌──────────────────┐         │
 │  │ CLAUDE_TEMPLATE  │ ─────────▶  │ 새 프로젝트      │         │
 │  │      .md         │             │ CLAUDE.md        │         │
-│  └──────────────────┘             └──────────────────┘         │
-│           │                                                     │
-│           │ 포함                                                │
-│           ▼                                                     │
-│  ┌──────────────────┐                                          │
-│  │ CLAUDE_UNIVERSAL │  섹션 9-19 공통 규칙                      │
-│  │    _RULES.md     │                                          │
-│  └──────────────────┘                                          │
-│                                                                 │
-│  ┌──────────────────┐    참조     ┌──────────────────┐         │
-│  │ PROJECT_SETUP    │ ◀─────────  │ CONVERSATION     │         │
-│  │  _CHECKLIST.md   │             │   _PROMPTS.md    │         │
 │  └──────────────────┘             └──────────────────┘         │
 │                                                                 │
 │  ┌──────────────────┐    설정     ┌──────────────────┐         │
 │  │ 커밋메시지-16섹션│ ─────────▶  │ commitlint       │         │
 │  │ -설정가이드.md   │             │  .config.cjs     │         │
 │  └──────────────────┘             └──────────────────┘         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│               분산 Push 프롬프트 수집 아키텍처                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  새 프로젝트 (init-project.sh로 생성)                          │
+│  ├── sync-prompts.yml      ← 자동 생성                         │
+│  └── extract-local-prompts.js  ← 자동 다운로드                 │
+│           │                                                     │
+│           │ git push                                            │
+│           ▼                                                     │
+│  ┌──────────────────┐                                          │
+│  │ GitHub Actions   │  프롬프트 추출 실행                       │
+│  │ sync-prompts.yml │                                          │
+│  └──────────────────┘                                          │
+│           │                                                     │
+│           ▼                                                     │
+│  ┌──────────────────┐                                          │
+│  │   gh-pages 배포   │  prompts.json                           │
+│  └──────────────────┘                                          │
+│           │                                                     │
+│           ▼                                                     │
+│  ┌──────────────────┐                                          │
+│  │ prompt-dashboard │  브라우저에서 모든 프로젝트 집계          │
+│  └──────────────────┘                                          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -166,6 +192,42 @@ Husky + Commitlint를 사용한 16개 필수 섹션 커밋 메시지 검증 시�
 - `commitlint.config.cjs` 전체 코드
 - `.gitmessage` 템플릿
 - GitHub Actions CI 설정
+
+### 4.5 extract-local-prompts.js
+
+**위치**: `scripts/extract-local-prompts.js`
+
+16개 섹션 커밋 메시지에서 프롬프트 정보를 추출하는 Node.js 스크립트입니다.
+
+**기능**:
+- Git 로그에서 16개 섹션이 포함된 커밋 탐지
+- 원본 프롬프트, 최적화된 프롬프트, 분석, 품질 점수 추출
+- `prompts.json` 파일로 출력
+
+**사용법**:
+```bash
+node scripts/extract-local-prompts.js
+# → prompts.json 생성
+```
+
+### 4.6 sync-prompts.yml
+
+**위치**: `.github/workflows/sync-prompts.yml`
+
+푸시 시 자동으로 프롬프트를 추출하고 gh-pages에 배포하는 GitHub Actions 워크플로우입니다.
+
+**트리거**:
+- `main` 또는 `master` 브랜치 푸시
+- 수동 실행 (`workflow_dispatch`)
+
+**동작 흐름**:
+1. 저장소 체크아웃 (전체 히스토리)
+2. Node.js 설정
+3. `extract-local-prompts.js` 실행
+4. `prompts.json`을 gh-pages 브랜치에 배포
+
+**필수 설정**:
+- Repository Settings → Pages → Source: gh-pages 브랜치
 
 ---
 
