@@ -24,6 +24,18 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
 
 원클릭 설정 후 **CLAUDE.md 섹션 1-8만 작성**하면 됩니다.
 
+### init-project.sh 7단계 상세
+
+| 단계 | 동작 | 생성 파일 |
+|:----:|------|----------|
+| 1/7 | CLAUDE_TEMPLATE.md 다운로드 → CLAUDE.md로 저장 | `CLAUDE.md` |
+| 2/7 | package.json 존재 확인, 없으면 생성 | `package.json` |
+| 3/7 | husky, commitlint 패키지 설치 | `node_modules/` |
+| 4/7 | Husky 초기화 + commit-msg 훅 생성 | `.husky/commit-msg` |
+| 5/7 | commitlint.config.cjs 다운로드 | `commitlint.config.cjs` |
+| 6/7 | .gitmessage 다운로드 + Git 템플릿 등록 | `.gitmessage` |
+| 7/7 | 프롬프트 추출 스크립트 및 워크플로우 생성 | `scripts/`, `.github/workflows/` |
+
 수동 설정이 필요하면 아래 단계를 따르세요.
 
 ---
@@ -147,6 +159,23 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
 
 > `sync-prompts.yml` 워크플로우가 첫 실행되면 gh-pages 브랜치가 자동 생성됩니다.
 
+### prompt-library 등록 (선택)
+
+프롬프트 대시보드에 프로젝트를 표시하려면:
+
+- [ ] [prompt-library](https://github.com/HMWKR/prompt-library) 저장소 Fork
+- [ ] `data/projects.json`에 프로젝트 정보 추가:
+  ```json
+  {
+    "name": "프로젝트명",
+    "repo": "owner/repo",
+    "owner": "owner",
+    "promptsUrl": "https://owner.github.io/repo/prompts.json"
+  }
+  ```
+- [ ] PR 생성: "Add [프로젝트명] to projects"
+- [ ] 또는: prompt-library 이슈에 등록 요청
+
 ---
 
 ## 4단계: 개발 환경 확인
@@ -248,6 +277,31 @@ echo "설정 완료! CLAUDE.md 섹션 1-8을 작성하세요."
 
 **문제**: CLAUDE.md 인식 안 됨
 **해결**: 프로젝트 루트에 `CLAUDE.md` 위치 확인
+
+### GitHub Actions 관련
+
+**문제**: Sync Prompts 워크플로우 실패
+**확인 방법**:
+1. Actions 탭 → 실패한 워크플로우 클릭
+2. 로그에서 `extract-local-prompts.js` 오류 메시지 확인
+
+**일반적 원인**:
+- 16개 섹션 미충족 커밋 (최소 10개 섹션 필요)
+- `scripts/` 폴더 누락 → `init-project.sh` 재실행
+- Node.js 버전 불일치
+
+**문제**: Pages 배포 지연 (1-5분 대기)
+**해결**: 커밋 후 Actions 탭에서 `pages build and deployment` 상태 확인
+
+**문제**: prompts.json 비어있음 (`"prompts": []`)
+**원인**: 16개 섹션 커밋이 없음
+**해결**: `.gitmessage` 템플릿 사용하여 커밋 생성
+
+**문제**: gh-pages 브랜치 없음
+**해결**:
+1. 16개 섹션 커밋 최소 1개 생성
+2. `git push` 실행
+3. `Sync Prompts` 워크플로우가 자동으로 gh-pages 생성
 
 ---
 

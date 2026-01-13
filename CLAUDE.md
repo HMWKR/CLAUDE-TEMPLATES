@@ -229,6 +229,38 @@ node scripts/extract-local-prompts.js
 **필수 설정**:
 - Repository Settings → Pages → Source: gh-pages 브랜치
 
+### 4.7 prompt-library 연동
+
+**위치**: 외부 저장소 `HMWKR/prompt-library`
+
+prompt-dashboard가 프로젝트 목록을 가져오는 중앙 저장소입니다.
+
+**역할**:
+- `data/projects.json`: 모든 등록된 프로젝트 목록 관리
+- 각 프로젝트의 `promptsUrl` 제공 (gh-pages URL)
+- prompt-dashboard가 이 목록을 기반으로 모든 프로젝트의 `prompts.json`을 fetch하여 집계
+
+**projects.json 구조**:
+```json
+{
+  "version": "2.0",
+  "architecture": "distributed-push",
+  "projects": [
+    {
+      "name": "프로젝트명",
+      "repo": "owner/repo",
+      "owner": "owner",
+      "promptsUrl": "https://owner.github.io/repo/prompts.json"
+    }
+  ]
+}
+```
+
+**새 프로젝트 등록 방법**:
+1. prompt-library 저장소에 PR 생성
+2. `data/projects.json`에 프로젝트 정보 추가
+3. 머지 후 자동으로 prompt-dashboard에서 집계됨
+
 ---
 
 ## 5. 타입 시스템

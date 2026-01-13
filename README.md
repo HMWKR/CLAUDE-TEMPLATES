@@ -112,6 +112,80 @@ git config commit.template .gitmessage
 | **prompt-library** | 프로젝트 목록 관리 | [GitHub](https://github.com/HMWKR/prompt-library) |
 | **prompt-dashboard** | 통계 대시보드 | [Live](https://hmwkr.github.io/prompt-dashboard/) |
 
+### 저장소별 역할 상세
+
+| 저장소 | 역할 | 데이터 |
+|--------|------|--------|
+| **claude-templates** | 마스터 템플릿/스크립트 배포 | CLAUDE.md, init-project.sh, extract-local-prompts.js |
+| **prompt-library** | 프로젝트 목록 중앙 관리 | `data/projects.json` |
+| **prompt-dashboard** | 데이터 집계 및 시각화 | 브라우저에서 각 프로젝트 prompts.json fetch |
+| **각 프로젝트** | 자체 프롬프트 추출 및 배포 | gh-pages에 `prompts.json` 배포 |
+
+### projects.json 구조
+
+prompt-library의 `data/projects.json` 파일 구조:
+
+```json
+{
+  "version": "2.0",
+  "architecture": "distributed-push",
+  "projects": [
+    {
+      "name": "프로젝트명",
+      "repo": "owner/repo",
+      "owner": "owner",
+      "promptsUrl": "https://owner.github.io/repo/prompts.json"
+    }
+  ]
+}
+```
+
+### prompts.json 구조
+
+각 프로젝트의 gh-pages에 배포되는 `prompts.json` 파일 구조:
+
+```json
+{
+  "project": {
+    "name": "프로젝트명",
+    "owner": "owner",
+    "url": "https://github.com/owner/repo"
+  },
+  "extractedAt": "2026-01-14T00:00:00.000Z",
+  "totalCommits": 100,
+  "promptCommits": 12,
+  "prompts": [
+    {
+      "hash": "abc1234",
+      "date": "2026-01-14",
+      "type": "feat",
+      "subject": "커밋 제목",
+      "originalPrompt": "사용자 프롬프트",
+      "optimizedPrompt": "최적화된 프롬프트",
+      "qualityScore": 45,
+      "grade": "A+"
+    }
+  ]
+}
+```
+
+### 새 프로젝트 등록 방법
+
+프롬프트 대시보드에 프로젝트를 표시하려면:
+
+1. **init-project.sh 실행** (7단계 자동 완료)
+   ```bash
+   curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-project.sh | bash
+   ```
+
+2. **GitHub Pages 활성화**
+   - Repository Settings → Pages → Source: gh-pages
+
+3. **prompt-library에 프로젝트 추가**
+   - [prompt-library](https://github.com/HMWKR/prompt-library) 저장소 Fork
+   - `data/projects.json`에 프로젝트 정보 추가
+   - PR 생성 또는 이슈로 등록 요청
+
 ### GitHub Pages 설정 (필수)
 
 워크플로우가 gh-pages에 배포하려면 Pages 설정이 필요합니다:
