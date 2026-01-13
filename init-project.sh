@@ -80,7 +80,7 @@ if [[ ! -d ".git" ]]; then
 fi
 
 # Step 1: 템플릿 다운로드
-print_step "1/5" "템플릿 다운로드 중..."
+print_step "1/7" "템플릿 다운로드 중..."
 
 if [[ -f "CLAUDE.md" ]]; then
     print_warning "CLAUDE.md가 이미 존재합니다. 건너뜁니다."
@@ -104,7 +104,7 @@ else
 fi
 
 # Step 2: package.json 확인
-print_step "2/5" "package.json 확인 중..."
+print_step "2/7" "package.json 확인 중..."
 
 if [[ ! -f "package.json" ]]; then
     echo '{"name": "my-project", "version": "1.0.0", "type": "module"}' > package.json
@@ -114,13 +114,13 @@ else
 fi
 
 # Step 3: npm 패키지 설치
-print_step "3/5" "npm 패키지 설치 중..."
+print_step "3/7" "npm 패키지 설치 중..."
 
 npm install -D husky @commitlint/cli @commitlint/config-conventional --silent
 print_success "husky, commitlint 설치 완료"
 
 # Step 4: Husky 초기화
-print_step "4/5" "Husky 설정 중..."
+print_step "4/7" "Husky 설정 중..."
 
 npx husky init 2>/dev/null || true
 
@@ -131,10 +131,78 @@ chmod +x .husky/commit-msg 2>/dev/null || true
 print_success "Husky commit-msg 훅 설정 완료"
 
 # Step 5: Git 템플릿 등록
-print_step "5/5" "Git 템플릿 등록 중..."
+print_step "5/7" "Git 템플릿 등록 중..."
 
 git config commit.template .gitmessage
 print_success "Git 커밋 템플릿 등록 완료"
+
+# Step 6: 프롬프트 추출 스크립트 생성
+print_step "6/7" "프롬프트 추출 스크립트 생성 중..."
+
+mkdir -p scripts
+if [[ -f "scripts/extract-local-prompts.js" ]]; then
+    print_warning "extract-local-prompts.js가 이미 존재합니다. 건너뜁니다."
+else
+    curl -sL "$TEMPLATES_URL/scripts/extract-local-prompts.js" -o "scripts/extract-local-prompts.js"
+    print_success "extract-local-prompts.js 다운로드 완료"
+fi
+
+# Step 7: GitHub Actions 워크플로우 생성
+print_step "7/7" "GitHub Actions 워크플로우 생성 중..."
+
+mkdir -p .github/workflows
+if [[ -f ".github/workflows/sync-prompts.yml" ]]; then
+    print_warning "sync-prompts.yml이 이미 존재합니다. 건너뜁니다."
+else
+    cat > .github/workflows/sync-prompts.yml << 'EOF'
+name: Sync Prompts
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Extract prompts from commits
+        run: |
+          node scripts/extract-local-prompts.js
+
+      - name: Create prompts directory
+        run: mkdir -p prompts-data
+
+      - name: Move prompts.json
+        run: |
+          if [ -f prompts.json ]; then
+            mv prompts.json prompts-data/
+          fi
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./prompts-data
+          publish_branch: gh-pages
+          keep_files: false
+EOF
+    print_success "GitHub Actions 워크플로우 생성 완료"
+fi
 
 # 완료 메시지
 echo ""
@@ -143,18 +211,26 @@ echo -e "  ${GREEN}✓ Claude 협업 환경 설정 완료!${NC}"
 echo "=================================================="
 echo ""
 echo "  생성된 파일:"
-echo "  • CLAUDE.md          - Claude 작업 지침"
-echo "  • commitlint.config.cjs - 16개 섹션 검증 규칙"
-echo "  • .gitmessage        - 커밋 메시지 템플릿"
-echo "  • .husky/commit-msg  - 커밋 검증 훅"
+echo "  • CLAUDE.md                    - Claude 작업 지침"
+echo "  • commitlint.config.cjs        - 16개 섹션 검증 규칙"
+echo "  • .gitmessage                  - 커밋 메시지 템플릿"
+echo "  • .husky/commit-msg            - 커밋 검증 훅"
+echo "  • scripts/extract-local-prompts.js - 프롬프트 추출 스크립트"
+echo "  • .github/workflows/sync-prompts.yml - 자동 동기화 워크플로우"
+echo ""
+echo "  자동화된 기능:"
+echo "  • 커밋 시 16개 섹션 검증 (commitlint)"
+echo "  • 푸시 시 프롬프트 자동 추출 → gh-pages 배포"
+echo "  • prompt-dashboard에서 자동 집계"
 echo ""
 echo "  다음 단계:"
 echo "  1. CLAUDE.md의 [TODO] 부분을 프로젝트에 맞게 수정"
 echo "  2. git commit 실행 → 16개 섹션 템플릿 자동 표시"
+echo "  3. git push → 프롬프트 자동 수집 및 대시보드 반영"
 echo ""
-echo "  prompt-library 연동 (선택):"
-echo "  cd /path/to/prompt-library"
-echo "  ./scripts/setup-project.sh <project-name>"
+echo "  GitHub Pages 설정:"
+echo "  Repository Settings → Pages → Source: Deploy from a branch"
+echo "  Branch: gh-pages / (root)"
 echo ""
 echo "  대시보드: https://hmwkr.github.io/prompt-dashboard/"
 echo ""
