@@ -384,6 +384,45 @@ Claude는 **자동으로** 다음 Git 워크플로우를 수행한다:
 
 ---
 
+## 12-3. 프롬프트 수집 시스템 (선택)
+
+16개 섹션 커밋 메시지에서 프롬프트를 자동 추출하여 대시보드에 집계하는 시스템입니다.
+
+### 분산 Push 아키텍처
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  프로젝트 A   │     │  프로젝트 B   │     │  프로젝트 N   │
+│ prompts.json │     │ prompts.json │     │ prompts.json │
+└──────┬───────┘     └──────┬───────┘     └──────┬───────┘
+       │                    │                    │
+       └────────────────────┼────────────────────┘
+                            │
+                            ▼
+              ┌─────────────────────────┐
+              │    prompt-dashboard     │
+              │  (브라우저에서 집계)     │
+              └─────────────────────────┘
+```
+
+### 연동 방법
+
+1. **init-project.sh 실행** - 자동으로 sync-prompts.yml 워크플로우 생성
+2. **GitHub Pages 활성화** - Settings → Pages → gh-pages 브랜치
+3. **prompt-library 등록** (선택) - 대시보드에 프로젝트 표시
+
+### 관련 저장소
+
+| 저장소 | 역할 |
+|--------|------|
+| [claude-templates](https://github.com/HMWKR/CLAUDE-TEMPLATES) | 마스터 템플릿/스크립트 |
+| [prompt-library](https://github.com/HMWKR/prompt-library) | 프로젝트 목록 관리 |
+| [prompt-dashboard](https://hmwkr.github.io/prompt-dashboard/) | 통계 대시보드 |
+
+> **상세 정보**: 각 프로젝트의 CLAUDE.md 섹션 4.7 또는 claude-templates README.md 참고
+
+---
+
 ## 13. 코드 리뷰 기준
 
 1. 기능적 정확성

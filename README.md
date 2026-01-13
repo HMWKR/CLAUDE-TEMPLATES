@@ -40,6 +40,8 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
 ## 핵심 기능
 
 1. **16개 섹션 커밋 메시지 검증** - Husky + Commitlint 자동화
+   - 커밋 시: 16개 섹션 권장 (commitlint 검증)
+   - 프롬프트 수집: 최소 10개 섹션 이상 (extract-local-prompts.js)
 2. **환각 방지 프로토콜** - Read Before Write
 3. **Ultrathink 8단계 워크플로우** - 체계적 문제 해결
 4. **5계층 48점 프롬프트 품질 평가** - 객관적 품질 측정
