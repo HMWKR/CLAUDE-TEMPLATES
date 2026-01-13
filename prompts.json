@@ -4,10 +4,23 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-01-13T20:10:56.129Z",
-  "totalCommits": 7,
-  "promptCommits": 5,
+  "extractedAt": "2026-01-13T20:21:39.362Z",
+  "totalCommits": 8,
+  "promptCommits": 6,
   "prompts": [
+    {
+      "hash": "70ed6d994e2bc85dfecd2aa55f8db9cfacdb8b09",
+      "date": "2026-01-14T05:21:19+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "검수 결과 반영 - prompt-library 참조 및 정책 명확화",
+      "originalPrompt": "",
+      "optimizedPrompt": "",
+      "analysis": "",
+      "qualityScore": null,
+      "grade": "A+",
+      "fullMessage": "docs: 검수 결과 반영 - prompt-library 참조 및 정책 명확화\n\n## 산출물\n- CLAUDE_UNIVERSAL_RULES.md: 섹션 12-3 프롬프트 수집 시스템 추가 (분산 Push 아키텍처, 연동 방법, 관련 저장소)\n- README.md: 16개 vs 10개 섹션 정책 명확화 (커밋 시 16개 권장, 수집 시 10개 이상)\n\n## 변경 영향도\n- 영향 범위: 문서만 변경, 코드 영향 없음\n- 사용자 영향: 분산 Push 아키텍처 이해도 향상, 정책 혼란 해소\n- 위험도: LOW (문서 보완)\n\n## 테스트 전략\n- [x] 마크다운 렌더링 확인\n- [x] 저장소 링크 정확성 확인\n\n## 롤백 계획\n- 단순 문서 변경으로 git revert 가능\n\n## 관련 이슈\n- Related to: 최종 검수 결과 반영\n\n## Breaking Changes\n- 없음\n\n## 성능 벤치마크\n- 해당 없음 (문서 변경)\n\n## 아키텍처 다이어그램\n```\nCLAUDE_UNIVERSAL_RULES.md (섹션 12-3 추가)\n├── 분산 Push 아키텍처 다이어그램\n├── 연동 방법 (3단계)\n└── 관련 저장소 테이블\n\nREADME.md (핵심 기능 섹션 보완)\n└── 16개 vs 10개 정책 설명\n```\n\n## UI/UX 와이어프레임\n- 해당 없음 (문서 변경)\n\n## 사고 여정\n\n### 1. 문제 인식\n최종 검수에서 CLAUDE_UNIVERSAL_RULES.md에 prompt-library 정보가 누락됨을 발견. 또한 \"16개 섹션 필수\" vs \"최소 10개 섹션\" 표현 불일치로 사용자 혼란 가능성.\n\n### 2. 탐색 경로\nCLAUDE_UNIVERSAL_RULES.md → 섹션 12-2 Git 브랜치 전략 확인 → 그 다음에 적절한 위치에 12-3 추가\nREADME.md → 핵심 기능 섹션 → 정책 설명 추가\n\n### 3. 고려한 대안들\n| 대안 | 장점 | 단점 | 결정 |\n|------|------|------|:----:|\n| 별도 PROMPT_COLLECTION.md 생성 | 상세 설명 | 파일 증가 | ❌ |\n| **기존 문서에 섹션 추가** | 일관성, 간결 | - | ✅ |\n\n### 4. 결정 근거\n- 채택 이유: 기존 문서 구조 유지하면서 필요한 정보만 추가\n- 거부 이유: 별도 파일 생성은 불필요한 복잡도\n\n### 5. 구현 타임라인\n[1] CLAUDE_UNIVERSAL_RULES.md 수정 → 섹션 12-3 추가 ✅\n[2] README.md 수정 → 정책 명확화 ✅\n[3] GitHub 푸시 → 진행 중\n\n### 6. 핵심 통찰\n문서 간 일관성은 사용자 경험의 핵심. 특히 숫자(16개 vs 10개)와 같은 구체적 정보는 명확한 설명이 필수.\n\n### 원본 프롬프트\n개선을 해줘\n\n### 프롬프트 분석\n- 해석: 검수 결과에서 발견된 개선 사항 적용\n- 작업유형: 문서 보완\n- 제약: ultrathink 모드, CLAUDE.md 지침 준수\n- 키워드: 개선\n\n### 최적화된 프롬프트\n[검증됨] 검수 결과(A- 89%)에서 식별된 불일치 2건(prompt-library 누락, 16개 vs 10개 혼란) 해결\n\n## 프롬프트 품질 검수\n- 계층 1 (구조적 완성도): 18/18 - 명확한 개선 대상\n- 계층 2 (엔지니어링 기법): 7/8 - CoT, Task Decomposition\n- 계층 3 (맥락 최적화): 6/6 - 프로젝트 맥락 반영\n- 계층 4 (효과 검증): 4/4 - 예상 효과 명확\n- 계층 5 (할루시네이션 검증): 10/12 - [검증됨] 마커 사용\n- 총점: 45/48 (A+)\n- 등급: A+\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+    },
     {
       "hash": "263ff80b0f6bcdefc27f65e2e194616a44296ef5",
       "date": "2026-01-14T05:10:37+09:00",
