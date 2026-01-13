@@ -1,0 +1,45 @@
+name: Sync Prompts
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Extract prompts from commits
+        run: |
+          node scripts/extract-local-prompts.js
+
+      - name: Create prompts directory
+        run: mkdir -p prompts-data
+
+      - name: Move prompts.json
+        run: |
+          if [ -f prompts.json ]; then
+            mv prompts.json prompts-data/
+          fi
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./prompts-data
+          publish_branch: gh-pages
+          keep_files: false
