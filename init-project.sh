@@ -80,7 +80,7 @@ if [[ ! -d ".git" ]]; then
 fi
 
 # Step 1: 템플릿 다운로드
-print_step "1/8" "템플릿 다운로드 중..."
+print_step "1/10" "템플릿 다운로드 중..."
 
 if [[ -f "CLAUDE.md" ]]; then
     print_warning "CLAUDE.md가 이미 존재합니다. 건너뜁니다."
@@ -104,7 +104,7 @@ else
 fi
 
 # Step 2: package.json 확인
-print_step "2/8" "package.json 확인 중..."
+print_step "2/10" "package.json 확인 중..."
 
 if [[ ! -f "package.json" ]]; then
     echo '{"name": "my-project", "version": "1.0.0", "type": "module"}' > package.json
@@ -114,13 +114,13 @@ else
 fi
 
 # Step 3: npm 패키지 설치
-print_step "3/8" "npm 패키지 설치 중..."
+print_step "3/10" "npm 패키지 설치 중..."
 
 npm install -D husky @commitlint/cli @commitlint/config-conventional --silent
 print_success "husky, commitlint 설치 완료"
 
 # Step 4: Husky 초기화
-print_step "4/8" "Husky 설정 중..."
+print_step "4/10" "Husky 설정 중..."
 
 npx husky init 2>/dev/null || true
 
@@ -131,13 +131,13 @@ chmod +x .husky/commit-msg 2>/dev/null || true
 print_success "Husky commit-msg 훅 설정 완료"
 
 # Step 5: Git 템플릿 등록
-print_step "5/8" "Git 템플릿 등록 중..."
+print_step "5/10" "Git 템플릿 등록 중..."
 
 git config commit.template .gitmessage
 print_success "Git 커밋 템플릿 등록 완료"
 
 # Step 6: 프롬프트 추출 스크립트 생성
-print_step "6/8" "프롬프트 추출 스크립트 생성 중..."
+print_step "6/10" "프롬프트 추출 스크립트 생성 중..."
 
 mkdir -p scripts
 if [[ -f "scripts/extract-local-prompts.js" ]]; then
@@ -148,7 +148,7 @@ else
 fi
 
 # Step 7: GitHub Actions 워크플로우 생성
-print_step "7/8" "GitHub Actions 워크플로우 생성 중..."
+print_step "7/10" "GitHub Actions 워크플로우 생성 중..."
 
 mkdir -p .github/workflows
 if [[ -f ".github/workflows/sync-prompts.yml" ]]; then
@@ -205,7 +205,7 @@ EOF
 fi
 
 # Step 8: 프롬프트 저널 설정
-print_step "8/8" "프롬프트 저널 설정 중..."
+print_step "8/10" "프롬프트 저널 설정 중..."
 
 mkdir -p .prompts
 if [[ -f "PROMPT_JOURNAL_TEMPLATE.md" ]]; then
@@ -215,6 +215,42 @@ else
     print_success "PROMPT_JOURNAL_TEMPLATE.md 다운로드 완료"
 fi
 print_success ".prompts/ 폴더 생성 완료"
+
+# Step 9: 저널 자동 생성 스크립트 (v3.1)
+print_step "9/10" "저널 자동 생성 스크립트 설정 중..."
+
+if [[ -f "scripts/create-journal-from-commit.js" ]]; then
+    print_warning "create-journal-from-commit.js가 이미 존재합니다. 건너뜁니다."
+else
+    curl -sL "$TEMPLATES_URL/scripts/create-journal-from-commit.js" -o "scripts/create-journal-from-commit.js"
+    print_success "create-journal-from-commit.js 다운로드 완료"
+fi
+
+# post-commit 훅 설정 (저널 자동 생성)
+if [[ -f ".husky/post-commit" ]]; then
+    print_warning "post-commit 훅이 이미 존재합니다. 건너뜁니다."
+else
+    cat > .husky/post-commit << 'POSTCOMMIT'
+#!/bin/sh
+# post-commit hook: 16섹션 커밋 후 프롬프트 저널 자동 생성
+
+if [ -f "scripts/create-journal-from-commit.js" ]; then
+  node scripts/create-journal-from-commit.js
+fi
+POSTCOMMIT
+    chmod +x .husky/post-commit 2>/dev/null || true
+    print_success "post-commit 훅 설정 완료 (저널 자동 생성)"
+fi
+
+# Step 10: 저널 검증 스크립트 (v3.1)
+print_step "10/10" "저널 검증 스크립트 설정 중..."
+
+if [[ -f "scripts/validate-journals.js" ]]; then
+    print_warning "validate-journals.js가 이미 존재합니다. 건너뜁니다."
+else
+    curl -sL "$TEMPLATES_URL/scripts/validate-journals.js" -o "scripts/validate-journals.js"
+    print_success "validate-journals.js 다운로드 완료"
+fi
 
 # 완료 메시지
 echo ""
@@ -227,15 +263,20 @@ echo "  • CLAUDE.md                    - Claude 작업 지침"
 echo "  • commitlint.config.cjs        - 16개 섹션 검증 규칙"
 echo "  • .gitmessage                  - 커밋 메시지 템플릿"
 echo "  • .husky/commit-msg            - 커밋 검증 훅"
+echo "  • .husky/post-commit           - 저널 자동 생성 훅 (v3.1)"
 echo "  • scripts/extract-local-prompts.js - 프롬프트 추출 스크립트"
+echo "  • scripts/create-journal-from-commit.js - 저널 자동 생성 (v3.1)"
+echo "  • scripts/validate-journals.js - 저널 검증 (v3.1)"
 echo "  • .github/workflows/sync-prompts.yml - 자동 동기화 워크플로우"
 echo "  • .prompts/                    - 프롬프트 저널 폴더"
 echo "  • PROMPT_JOURNAL_TEMPLATE.md   - 프롬프트 저널 템플릿"
 echo ""
 echo "  자동화된 기능:"
 echo "  • 커밋 시 16개 섹션 검증 (commitlint)"
+echo "  • 16섹션 커밋 후 저널 자동 생성 (post-commit)"
 echo "  • 푸시 시 프롬프트 자동 추출 → gh-pages 배포"
 echo "  • 16섹션 커밋 + 프롬프트 저널 병행 수집 (v3.0)"
+echo "  • 저널 형식 자동 검증 (v3.1)"
 echo "  • prompt-dashboard에서 자동 집계"
 echo ""
 echo "  다음 단계:"

@@ -280,6 +280,70 @@ function extractAllCommitPrompts() {
 }
 
 /**
+ * 저널 통계 계산 (v3.1)
+ */
+function calculateJournalStats(journals) {
+  if (journals.length === 0) {
+    return {
+      totalJournals: 0,
+      byMonth: {},
+      byDomain: {},
+      byComplexity: {},
+      avgQualityScore: null,
+      gradeDistribution: {}
+    };
+  }
+
+  // 월별 통계
+  const byMonth = {};
+  for (const j of journals) {
+    if (j.date) {
+      const month = j.date.substring(0, 7);
+      byMonth[month] = (byMonth[month] || 0) + 1;
+    }
+  }
+
+  // 도메인별 통계
+  const byDomain = {};
+  for (const j of journals) {
+    const domain = j.type || 'unknown';
+    byDomain[domain] = (byDomain[domain] || 0) + 1;
+  }
+
+  // 복잡도별 통계
+  const byComplexity = {};
+  for (const j of journals) {
+    const complexity = j.complexity || 'unknown';
+    byComplexity[complexity] = (byComplexity[complexity] || 0) + 1;
+  }
+
+  // 평균 품질 점수
+  const scores = journals
+    .filter(j => typeof j.qualityScore === 'number')
+    .map(j => j.qualityScore);
+  const avgQualityScore = scores.length > 0
+    ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10
+    : null;
+
+  // 등급 분포
+  const gradeDistribution = {};
+  for (const j of journals) {
+    if (j.grade) {
+      gradeDistribution[j.grade] = (gradeDistribution[j.grade] || 0) + 1;
+    }
+  }
+
+  return {
+    totalJournals: journals.length,
+    byMonth,
+    byDomain,
+    byComplexity,
+    avgQualityScore,
+    gradeDistribution
+  };
+}
+
+/**
  * 메인 함수: 모든 소스에서 프롬프트 추출
  */
 function extractAllPrompts() {
@@ -320,9 +384,12 @@ function extractAllPrompts() {
       return dateB - dateA;
     });
 
-    // 결과 JSON 생성 (v3.0 스키마)
+    // 저널 통계 계산 (v3.1)
+    const journalStats = calculateJournalStats(journalPrompts);
+
+    // 결과 JSON 생성 (v3.1 스키마)
     const result = {
-      version: '3.0',
+      version: '3.1',
       project: {
         name: repoName || 'unknown',
         owner: owner || 'unknown',
@@ -333,7 +400,8 @@ function extractAllPrompts() {
         totalCommits: commitPrompts.length + filteredCommitPrompts.length,
         fromCommits: filteredCommitPrompts.length,
         fromJournals: journalPrompts.length,
-        total: allPrompts.length
+        total: allPrompts.length,
+        journalStats: journalStats
       },
       prompts: allPrompts
     };
