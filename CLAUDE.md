@@ -61,19 +61,25 @@ git config commit.template .gitmessage
 
 ```
 claude-templates/
-├── init-project.sh              # 원클릭 자동 설정 스크립트 (7단계)
+├── init-project.sh              # 원클릭 자동 설정 스크립트 (10단계, v3.1)
 ├── CLAUDE_TEMPLATE.md           # CLAUDE.md 전체 템플릿 (19개 섹션)
 ├── CLAUDE_UNIVERSAL_RULES.md    # 공통 규칙 (섹션 9-19 분리본)
 ├── PROJECT_SETUP_CHECKLIST.md   # 새 프로젝트 설정 체크리스트
 ├── CONVERSATION_PROMPTS.md      # Claude 대화 프롬프트 패턴 모음
+├── PROMPT_JOURNAL_TEMPLATE.md   # 프롬프트 저널 템플릿 (v3.0)
 ├── 커밋메시지-16섹션-설정가이드.md  # 커밋 검증 시스템 상세 가이드
 ├── package.json                 # Husky + Commitlint 의존성
 ├── commitlint.config.cjs        # 16개 섹션 검증 규칙
 ├── .gitmessage                  # 커밋 메시지 템플릿
+├── .prompts/                    # 프롬프트 저널 폴더 (v3.0)
 ├── .husky/                      # Git 훅 설정
-│   └── commit-msg               # 커밋 메시지 검증 훅
+│   ├── commit-msg               # 커밋 메시지 검증 훅
+│   └── post-commit              # 저널 자동 생성 훅 (v3.1)
 ├── scripts/                     # 자동화 스크립트
-│   └── extract-local-prompts.js # 프롬프트 추출 스크립트
+│   ├── extract-local-prompts.js # 프롬프트 추출 (v3.1)
+│   ├── create-journal-from-commit.js # 저널 자동 생성 (v3.1)
+│   ├── validate-journals.js     # 저널 형식 검증 (v3.1)
+│   └── journal-stats.js         # 저널 통계 분석 (v3.1)
 ├── .github/                     # GitHub 설정
 │   └── workflows/
 │       └── sync-prompts.yml     # 프롬프트 자동 동기화 워크플로우
@@ -88,7 +94,7 @@ claude-templates/
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌──────────────────┐                                          │
-│  │ init-project.sh  │ ─────────▶ 새 프로젝트에 7단계 자동 설정  │
+│  │ init-project.sh  │ ─────────▶ 새 프로젝트에 10단계 자동 설정 │
 │  └──────────────────┘                                          │
 │           │ 다운로드                                            │
 │           ▼                                                     │
