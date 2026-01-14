@@ -46,6 +46,33 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
 3. **Ultrathink 8단계 워크플로우** - 체계적 문제 해결
 4. **5계층 48점 프롬프트 품질 평가** - 객관적 품질 측정
 
+## Claude와 첫 대화
+
+새 프로젝트 설정 후, 다음 프롬프트로 시작하세요:
+
+### 1. 프로젝트 분석
+```
+ultrathink 모드로 이 프로젝트를 분석해줘.
+```
+
+### 2. 기능 구현
+```
+ultrathink 모드로 [기능명]을 구현해줘.
+
+## 요구사항
+- [요구사항]
+
+## 제약 조건
+- 기존 코드 스타일 유지
+```
+
+### 3. 커밋 작성
+```
+현재 변경사항을 16개 섹션 템플릿으로 커밋해줘.
+```
+
+> 더 많은 프롬프트 패턴: [CONVERSATION_PROMPTS.md](./CONVERSATION_PROMPTS.md) | 상세 가이드: [PROJECT_SETUP_CHECKLIST.md](./PROJECT_SETUP_CHECKLIST.md)
+
 ## 수동 설정
 
 원클릭 설정 대신 수동으로 설정하려면:
