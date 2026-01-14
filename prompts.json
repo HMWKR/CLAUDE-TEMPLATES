@@ -5,21 +5,23 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-01-14T09:17:07.000Z",
+  "extractedAt": "2026-01-14T14:49:56.600Z",
   "stats": {
-    "totalCommits": 18,
-    "fromCommits": 9,
-    "fromJournals": 1,
-    "total": 10,
+    "totalCommits": 20,
+    "fromCommits": 10,
+    "fromJournals": 2,
+    "total": 12,
     "journalStats": {
-      "totalJournals": 1,
+      "totalJournals": 2,
       "byMonth": {
-        "2026-01": 1
+        "2026-01": 2
       },
       "byDomain": {
+        "backend": 1,
         "docs": 1
       },
       "byComplexity": {
+        "medium": 1,
         "high": 1
       },
       "avgQualityScore": 44,
@@ -29,6 +31,20 @@
     }
   },
   "prompts": [
+    {
+      "source": "commit",
+      "hash": "3c648472eff2e55587c8b0ee10a3f3a89c204c80",
+      "date": "2026-01-14T23:49:33+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "CLAUDE.md 아키텍처 섹션 v3.1 동기화",
+      "originalPrompt": "이러한 것들 또한 전체적으로 바뀐 부분에 대해서 파일들을 업데이트를 해줘",
+      "optimizedPrompt": "CLAUDE.md 아키텍처 섹션을 v3.1 실제 파일 구조와 동기화해줘.\n\n요구사항:\n- scripts/ 폴더: 4개 스크립트 반영\n- .husky/ 폴더: post-commit 추가\n- init-project.sh: 10단계로 업데이트\n\n제약조건:\n- 최소 변경 원칙 (필요한 부분만)\n- 실제 파일과 100% 일치",
+      "analysis": "문서 동기화 요청. v3.1 구현 후 문서가 실제 파일 구조와 불일치하는 상태 해결 필요.",
+      "qualityScore": null,
+      "grade": "A+",
+      "fullMessage": "docs: CLAUDE.md 아키텍처 섹션 v3.1 동기화\n\n## 산출물\n- CLAUDE.md: 폴더 구조에 v3.1 스크립트 추가\n- .prompts/2026-01-14-feat-automation.md: 자동 생성 저널\n\n## 변경 영향도\n- 영향 범위: 문서만\n- 사용자 영향: 없음\n- 위험도: [낮음]\n\n## 테스트 전략\n- [x] 실제 파일 구조와 일치 확인\n- [x] scripts/ 폴더 4개 파일 확인\n- [x] .husky/ 폴더 post-commit 확인\n\n## 롤백 계획\n- git revert로 복구 가능\n\n## 관련 이슈\n- 없음\n\n## Breaking Changes\n- 없음\n\n## 성능 벤치마크\n- 해당 없음 (문서 변경)\n\n## 아키텍처 다이어그램\n```\nscripts/\n├── extract-local-prompts.js     (v3.1)\n├── create-journal-from-commit.js (v3.1)\n├── validate-journals.js         (v3.1)\n└── journal-stats.js             (v3.1)\n\n.husky/\n├── commit-msg\n└── post-commit                  (v3.1)\n```\n\n## UI/UX 와이어프레임\n- 해당 없음\n\n## 사고 여정\n\n### 1. 문제 인식\nv3.1 자동화 스크립트 구현 후 CLAUDE.md 아키텍처 섹션이 구버전(7단계, 1개 스크립트) 상태임을 발견\n\n### 2. 탐색 경로\n- Explore 에이전트로 6개 문서 파일 분석\n- 95% 완성도 확인, CLAUDE.md만 업데이트 필요\n\n### 3. 고려한 대안들\n- 전체 문서 재작성 vs 필요 부분만 수정\n- 필요 부분만 수정 선택 (최소 변경 원칙)\n\n### 4. 결정 근거\n- 실제 파일 구조와 문서 일치 필요\n- 새 개발자가 아키텍처 파악 시 정확한 정보 필요\n\n### 5. 구현 타임라인\n- 폴더 구조 섹션 업데이트 (scripts/, .husky/, .prompts/)\n- 파일 관계도 업데이트 (7단계 → 10단계)\n\n### 6. 핵심 통찰\n문서와 실제 코드의 동기화는 지속적 유지보수가 필요. 자동화 스크립트 추가 시 문서 업데이트를 함께 진행해야 함.\n\n### 원본 프롬프트\n```\n이러한 것들 또한 전체적으로 바뀐 부분에 대해서 파일들을 업데이트를 해줘\n```\n\n### 프롬프트 분석\n> 문서 동기화 요청. v3.1 구현 후 문서가 실제 파일 구조와 불일치하는 상태 해결 필요.\n\n### 최적화된 프롬프트\n```\nCLAUDE.md 아키텍처 섹션을 v3.1 실제 파일 구조와 동기화해줘.\n\n요구사항:\n- scripts/ 폴더: 4개 스크립트 반영\n- .husky/ 폴더: post-commit 추가\n- init-project.sh: 10단계로 업데이트\n\n제약조건:\n- 최소 변경 원칙 (필요한 부분만)\n- 실제 파일과 100% 일치\n```\n\n## 프롬프트 품질 검수\n\n### 계층 1: 구조적 완성도 (18점)\n| 항목 | 점수 | 메모 |\n|------|:----:|------|\n| 명확성 | 3/3 | 단일 목적 (문서 동기화) |\n| 구체성 | 2/3 | 파일명 명시 |\n| 맥락 | 3/3 | v3.1 배경 설명 |\n| 구조화 | 3/3 | 요구사항/제약조건 분리 |\n| 제약 | 2/3 | 최소 변경 원칙 명시 |\n| 검증 | 3/3 | 일치 확인 기준 |\n| **소계** | **16/18** | |\n\n### 계층 2: 엔지니어링 기법 (8점)\n| 항목 | 점수 | 메모 |\n|------|:----:|------|\n| CoT | 1/1 | 단계별 접근 |\n| Few-shot | 0/1 | 미사용 |\n| Role | 1/1 | 문서 작성자 |\n| Negative | 1/1 | 최소 변경 강조 |\n| Format | 1/1 | 요구사항/제약조건 |\n| Self-verify | 1/1 | 일치 확인 |\n| Task Decomp | 1/1 | 섹션별 분리 |\n| Context | 1/1 | v3.1 맥락 |\n| **소계** | **7/8** | |\n\n### 계층 3: 맥락 최적화 (6점)\n| 항목 | 점수 | 메모 |\n|------|:----:|------|\n| 프로젝트 맥락 | 2/2 | claude-templates 구조 |\n| 사용자 맥락 | 2/2 | 문서 동기화 필요성 |\n| 도메인 맥락 | 1/2 | 기술 문서 작성 |\n| **소계** | **5/6** | |\n\n### 계층 4: 효과 검증 (4점)\n| 항목 | 점수 | 메모 |\n|------|:----:|------|\n| 예상 개선 | 1/1 | 문서 정확도 향상 |\n| 측정 가능성 | 1/1 | 파일 구조 비교 |\n| 부작용 분석 | 1/1 | 없음 |\n| 대안 비교 | 1/1 | 전체 vs 부분 수정 |\n| **소계** | **4/4** | |\n\n### 계층 5: 할루시네이션 검증 (12점)\n| 항목 | 점수 | 메모 |\n|------|:----:|------|\n| 코드/파일 정확성 | 4/4 | ls로 실제 확인 |\n| 기술 정보 정확성 | 4/4 | 실제 파일명 사용 |\n| 논리/추론 정확성 | 2/2 | 명확한 근거 |\n| 검증 프로세스 | 2/2 | Bash로 검증 |\n| **소계** | **12/12** | |\n\n### 총점: 44/48 (등급: A+)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+    },
     {
       "source": "commit",
       "hash": "131b177a266e6bfc337a9ff539438142f190d5ed",
@@ -70,6 +86,27 @@
       "qualityScore": null,
       "grade": null,
       "fullMessage": "docs: Claude 프롬프트 사용 가이드 추가\n\n## 산출물\n- PROJECT_SETUP_CHECKLIST.md - Claude와 첫 대화 섹션 확장\n- README.md - 빠른 시작 프롬프트 예시 추가\n\n## 변경 영향도\n- **영향 범위**: 문서\n- **사용자 영향**: 새 프로젝트 사용자가 즉시 참고 가능\n- **위험도**: 낮음\n\n## 테스트 전략\n- [x] 마크다운 렌더링 확인\n- [x] 링크 유효성 확인\n\n## 롤백 계획\n- **롤백 방법**: git revert\n- **의존성**: 없음\n\n## 관련 이슈\n- Related to init-project.sh 테스트 결과\n\n## Breaking Changes\n- 없음\n\n## 성능 벤치마크\n| 항목 | Before | After |\n|------|--------|-------|\n| 문서 | 기본 | 가이드 포함 |\n\n## 아키텍처 다이어그램\n```\n새 프로젝트 → init-project.sh → CLAUDE.md 확인 → 프롬프트 가이드 참고\n```\n\n## UI/UX 와이어프레임\n```\nN/A (문서)\n```\n\n## 사고 여정 (Thinking Journey)\n\n### 1. 문제 인식\n> **처음 이해**: 새 프로젝트에서 Claude에게 프롬프트하는 방법 필요\n> **조사 후 발견**: 기존 문서에 입문자용 가이드 부재\n\n### 2. 탐색 경로\n```\nCONVERSATION_PROMPTS.md → 고급 패턴 (overwhelming)\nPROJECT_SETUP_CHECKLIST.md → 작업 시작 섹션 단순\n```\n\n### 3. 고려한 대안들\n| 대안 | 장점 | 단점 | 결정 |\n|------|------|------|:----:|\n| 새 파일 생성 | 독립적 | 파일 증가 | ❌ |\n| **기존 파일 확장** | 통합적 | - | ✅ |\n\n### 4. 결정 근거\n- **채택**: 기존 체크리스트와 README에 자연스럽게 통합\n- **거부**: 별도 파일은 관리 복잡도 증가\n\n### 5. 구현 타임라인\n```\n[1] 문서 분석 → 적절한 위치 파악\n[2] PROJECT_SETUP_CHECKLIST.md 확장 → 완료\n[3] README.md 섹션 추가 → 완료\n```\n\n### 6. 핵심 통찰\n> 프롬프트 가이드는 설정 체크리스트의 자연스러운 다음 단계\n\n### 원본 프롬프트\n```\n새로운 폴더를 만든 이후 여기 폴더에서 너한테 어떠한 형식으로 프롬프트를 해야할지 까지 업데이트를 해줘\n```\n\n### 프롬프트 분석\n> **해석**: 새 프로젝트에서 Claude 사용법 가이드 요청\n> **작업 유형**: 수렴적\n> **제약 수준**: 낮음\n> **핵심 키워드**: 프롬프트, 형식, 가이드\n\n### 최적화된 프롬프트\n```\n## 역할\n문서 작성자\n\n## 목표\n새 프로젝트에서 Claude에게 효과적으로 프롬프트하는 방법 가이드 추가\n```\n\n## 프롬프트 품질 검수\n\n### 계층 1: 구조적 완성도 (18점)\n- 명확성: 3/3\n- 구체성: 3/3\n- 맥락: 3/3\n- 구조화: 3/3\n- 제약: 3/3\n- 검증: 3/3\n\n### 계층 2: 엔지니어링 기법 (8점)\n- CoT: 2/2\n- Role: 1/1\n- 총점: 6/8\n\n### 계층 3: 맥락 최적화 (6점)\n- 프로젝트: 2/2\n- 사용자: 2/2\n- 도메인: 1/2\n- 총점: 5/6\n\n### 계층 4: 효과 검증 (4점)\n- 예상 개선: 1/1\n- 측정: 1/1\n- 부작용: 1/1\n- 대안: 1/1\n\n### 계층 5: 할루시네이션 검증 (12점)\n- 코드 정확성: 4/4\n- 기술 정확성: 4/4\n- 논리 정확성: 2/2\n- 검증 프로세스: 2/2\n\n### 최종 평가\n**총점: 45/48 (A+)**\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+    },
+    {
+      "source": "journal",
+      "hash": "131b177",
+      "date": "2026-01-14",
+      "type": "backend",
+      "scope": "automation",
+      "subject": "v3.1 프롬프트 저널 자동화 시스템 구현",
+      "originalPrompt": "사용자 작업 또한 자동화 할 수는 없는거야?",
+      "optimizedPrompt": "v3.1 프롬프트 저널 자동화를 구현해줘.\n\n요구사항:\n- Phase 1: 저널 자동 생성 (create-journal-from-commit.js + post-commit)\n- Phase 2: 형식 검증 (validate-journals.js + CI)\n- Phase 3: 통계 분석 (journal-stats.js + prompts.json v3.1)\n\n제약조건:\n- 기존 v3.0 기능 유지 (하위 호환)\n- 사용자 편집 항목: 사고 여정, 핵심 학습만",
+      "analysis": "",
+      "qualityScore": null,
+      "grade": null,
+      "journalFile": "2026-01-14-feat-automation.md",
+      "tags": [
+        ""
+      ],
+      "complexity": "medium",
+      "thinking": "",
+      "learning": "<!-- TODO: 이번 작업에서 배운 점을 정리하세요 -->\n\n1. **학습 포인트 1**\n   - (자동 생성됨 - 편집 필요)\n\n2. **학습 포인트 2**\n   - (자동 생성됨 - 편집 필요)",
+      "result": "- **성공 여부**: [ ] 성공 / [ ] 실패 / [ ] 부분 성공\n- **반복 횟수**:\n- **변경 파일**:\n- **테스트**: [ ] 통과 / [ ] 실패 / [ ] 해당없음"
     },
     {
       "source": "journal",
