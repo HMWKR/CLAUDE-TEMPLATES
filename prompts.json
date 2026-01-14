@@ -1,18 +1,48 @@
 {
-  "version": "3.0",
+  "version": "3.1",
   "project": {
     "name": "CLAUDE-TEMPLATES",
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-01-14T04:05:17.098Z",
+  "extractedAt": "2026-01-14T09:17:07.000Z",
   "stats": {
-    "totalCommits": 16,
-    "fromCommits": 8,
+    "totalCommits": 18,
+    "fromCommits": 9,
     "fromJournals": 1,
-    "total": 9
+    "total": 10,
+    "journalStats": {
+      "totalJournals": 1,
+      "byMonth": {
+        "2026-01": 1
+      },
+      "byDomain": {
+        "docs": 1
+      },
+      "byComplexity": {
+        "high": 1
+      },
+      "avgQualityScore": 44,
+      "gradeDistribution": {
+        "A+": 1
+      }
+    }
   },
   "prompts": [
+    {
+      "source": "commit",
+      "hash": "131b177a266e6bfc337a9ff539438142f190d5ed",
+      "date": "2026-01-14T18:16:42+09:00",
+      "type": "feat",
+      "scope": "automation",
+      "subject": "v3.1 프롬프트 저널 자동화 시스템 구현",
+      "originalPrompt": "사용자 작업 또한 자동화 할 수는 없는거야?\nPhase 1+2+3 전체 (권장) 선택\n구현을 시작해줘",
+      "optimizedPrompt": "v3.1 프롬프트 저널 자동화를 구현해줘.\n\n요구사항:\n- Phase 1: 저널 자동 생성 (create-journal-from-commit.js + post-commit)\n- Phase 2: 형식 검증 (validate-journals.js + CI)\n- Phase 3: 통계 분석 (journal-stats.js + prompts.json v3.1)\n\n제약조건:\n- 기존 v3.0 기능 유지 (하위 호환)\n- 사용자 편집 항목: 사고 여정, 핵심 학습만",
+      "analysis": "사용자는 v3.0 프롬프트 저널 시스템의 수동 작업을 줄이고 싶어했습니다.\n> 전체 자동화(Phase 1+2+3)를 선택하여 최대한의 효율성을 원했습니다.",
+      "qualityScore": null,
+      "grade": null,
+      "fullMessage": "feat(automation): v3.1 프롬프트 저널 자동화 시스템 구현\n\n16섹션 커밋 후 프롬프트 저널이 자동 생성되는 완전 자동화 시스템을 구현했습니다.\n사용자는 커밋만 하면 저널이 자동 생성되고, 사고 여정과 핵심 학습만 편집하면 됩니다.\n\n## 산출물\n\n| 파일 | 변경 | 라인 |\n|------|:----:|-----:|\n| scripts/create-journal-from-commit.js | 신규 | +280 |\n| scripts/validate-journals.js | 신규 | +220 |\n| scripts/journal-stats.js | 신규 | +200 |\n| .husky/post-commit | 신규 | +6 |\n| scripts/extract-local-prompts.js | 수정 | +74 |\n| .github/workflows/sync-prompts.yml | 수정 | +7 |\n| init-project.sh | 수정 | +57 |\n\n## 변경 영향도\n\n- 영향 범위: [전체 프롬프트 수집 시스템]\n- 사용자 영향: [높음 - 워크플로우 자동화로 수동 작업 80% 감소]\n- 위험도: [낮음 - 기존 기능 유지, 추가 기능]\n\n## 테스트 전략\n\n- [x] extract-local-prompts.js 실행 테스트\n- [x] validate-journals.js 실행 테스트\n- [x] journal-stats.js 실행 테스트\n- [x] prompts.json v3.1 스키마 확인\n\n## 롤백 계획\n\n1. git revert HEAD로 이전 상태 복구\n2. 기존 v3.0 기능은 영향 없음\n\n## 관련 이슈\n\nRelated to: v3.0 프롬프트 저널 시스템 확장\n\n## Breaking Changes\n\n- [x] 없음 (하위 호환)\n- prompts.json 버전: 3.0 → 3.1 (journalStats 필드 추가)\n\n## 성능 벤치마크\n\n| 항목 | Before | After |\n|------|--------|-------|\n| 저널 생성 | 수동 5분 | 자동 1초 |\n| 형식 검증 | 없음 | 자동화 |\n| 통계 분석 | 없음 | 자동화 |\n\n## 아키텍처 다이어그램\n\n```\nv3.1 자동화 워크플로우:\n[커밋] → post-commit → create-journal.js → .prompts/*.md\n[푸시] → GitHub Actions → validate → extract → gh-pages\n```\n\n## UI/UX 와이어프레임\n\n```\n커밋 후 터미널:\n✅ 저널 생성 완료: .prompts/2026-01-14-feat-automation.md\n📋 다음: 사고 여정/핵심 학습 편집\n```\n\n## 사고 여정\n\n### 1. 문제 인식\nv3.0에서 프롬프트 저널을 수동으로 작성해야 하는 번거로움이 있었습니다.\n사용자가 \"자동화할 수 없나?\"라고 질문했을 때 이 문제를 명확히 인식했습니다.\n\n### 2. 탐색 경로\n- Git 훅 시스템 (post-commit) 활용 가능성 탐색\n- 16섹션 커밋 메시지에서 정보 추출 방법 분석\n- 기존 extract-local-prompts.js 파싱 로직 재활용 검토\n\n### 3. 고려한 대안들\n- 대안 A: 수동 저널 작성 유지 → 사용자 부담 높음\n- 대안 B: pre-commit 훅 → 커밋 전이라 hash 없음\n- 대안 C: post-commit 훅 → 커밋 후 자동 생성 (채택)\n\n### 4. 결정 근거\npost-commit 훅을 선택한 이유:\n- 커밋 hash를 포함할 수 있음\n- 커밋 메시지 전체에 접근 가능\n- 16섹션 검증 후 실행되므로 안전\n\n### 5. 구현 타임라인\n- Phase 1: create-journal-from-commit.js + post-commit 훅\n- Phase 2: validate-journals.js + CI 통합\n- Phase 3: journal-stats.js + prompts.json v3.1\n\n### 6. 핵심 통찰\n80% 자동화가 가능하다는 발견:\n- YAML frontmatter: 자동 생성 가능\n- 원본/최적화 프롬프트: 커밋에서 추출\n- 사고 여정/핵심 학습: 사람만 작성 가능\n\n### 원본 프롬프트\n\n```\n사용자 작업 또한 자동화 할 수는 없는거야?\nPhase 1+2+3 전체 (권장) 선택\n구현을 시작해줘\n```\n\n### 프롬프트 분석\n\n> 사용자는 v3.0 프롬프트 저널 시스템의 수동 작업을 줄이고 싶어했습니다.\n> 전체 자동화(Phase 1+2+3)를 선택하여 최대한의 효율성을 원했습니다.\n\n### 최적화된 프롬프트\n\n```\nv3.1 프롬프트 저널 자동화를 구현해줘.\n\n요구사항:\n- Phase 1: 저널 자동 생성 (create-journal-from-commit.js + post-commit)\n- Phase 2: 형식 검증 (validate-journals.js + CI)\n- Phase 3: 통계 분석 (journal-stats.js + prompts.json v3.1)\n\n제약조건:\n- 기존 v3.0 기능 유지 (하위 호환)\n- 사용자 편집 항목: 사고 여정, 핵심 학습만\n```\n\n## 프롬프트 품질 검수\n\n### 계층 1: 구조적 완성도 (18점)\n\n| 항목 | 점수 | 평가 |\n|------|:----:|------|\n| 명확성 | 3/3 | 단일 목적, 행동 동사 사용 |\n| 구체성 | 3/3 | Phase별 구체적 산출물 명시 |\n| 맥락 | 3/3 | v3.0 배경, 제약조건 명시 |\n| 구조화 | 3/3 | 논리적 Phase 순서 |\n| 제약 | 3/3 | 하위 호환, 편집 항목 한정 |\n| 검증 | 2/3 | 테스트 기준 있으나 수치 없음 |\n| **소계** | **17/18** | |\n\n### 계층 2: 엔지니어링 기법 (8점)\n\n| 기법 | 적용 | 점수 |\n|------|:----:|:----:|\n| Chain of Thought | O | 1 |\n| Few-shot | X | 0 |\n| Role Playing | X | 0 |\n| Negative Prompting | O | 1 |\n| Format Specification | O | 1 |\n| Self-verification | O | 1 |\n| Task Decomposition | O | 1 |\n| Context Priming | O | 1 |\n| **소계** | | **6/8** |\n\n### 계층 3: 맥락 최적화 (6점)\n\n| 맥락 | 점수 | 평가 |\n|------|:----:|------|\n| 프로젝트 맥락 | 2/2 | v3.0 시스템 이해 반영 |\n| 사용자 맥락 | 2/2 | 자동화 니즈 파악 |\n| 도메인 맥락 | 2/2 | Git 훅, CI/CD 이해 |\n| **소계** | **6/6** | |\n\n### 계층 4: 효과 검증 (4점)\n\n| 항목 | 점수 | 평가 |\n|------|:----:|------|\n| 예상 개선 | 1/1 | 80% 자동화 |\n| 측정 가능성 | 1/1 | 스크립트 실행 테스트 |\n| 부작용 분석 | 1/1 | 하위 호환 확인 |\n| 대안 비교 | 1/1 | 3개 대안 비교 |\n| **소계** | **4/4** | |\n\n### 계층 5: 할루시네이션 검증 (12점)\n\n| 항목 | 점수 | 평가 |\n|------|:----:|------|\n| 코드/파일 정확성 | 4/4 | [검증됨] 실제 파일 확인 |\n| 기술 정보 정확성 | 4/4 | [검증됨] 스크립트 테스트 |\n| 논리/추론 정확성 | 2/2 | Phase 순서 논리적 |\n| 검증 프로세스 | 2/2 | 3개 스크립트 모두 테스트 |\n| **소계** | **12/12** | |\n\n### 총점: 45/48 (S등급)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+    },
     {
       "source": "commit",
       "hash": "f41fcb6ade870fc8c7dfef3ecc65131576164a40",
