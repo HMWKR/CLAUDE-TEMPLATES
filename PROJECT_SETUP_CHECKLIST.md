@@ -19,22 +19,25 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
 - `commitlint.config.cjs` - 16개 섹션 검증 규칙
 - `.gitmessage` - 커밋 메시지 템플릿
 - `.husky/commit-msg` - 커밋 검증 훅
-- `scripts/extract-local-prompts.js` - 프롬프트 추출 스크립트
+- `scripts/extract-local-prompts.js` - 프롬프트 추출 스크립트 (v3.0)
 - `.github/workflows/sync-prompts.yml` - 자동 동기화 워크플로우
+- `.prompts/` - 프롬프트 저널 폴더
+- `PROMPT_JOURNAL_TEMPLATE.md` - 프롬프트 저널 템플릿
 
 원클릭 설정 후 **CLAUDE.md 섹션 1-8만 작성**하면 됩니다.
 
-### init-project.sh 7단계 상세
+### init-project.sh 8단계 상세
 
 | 단계 | 동작 | 생성 파일 |
 |:----:|------|----------|
-| 1/7 | CLAUDE_TEMPLATE.md 다운로드 → CLAUDE.md로 저장 | `CLAUDE.md` |
-| 2/7 | package.json 존재 확인, 없으면 생성 | `package.json` |
-| 3/7 | husky, commitlint 패키지 설치 | `node_modules/` |
-| 4/7 | Husky 초기화 + commit-msg 훅 생성 | `.husky/commit-msg` |
-| 5/7 | commitlint.config.cjs 다운로드 | `commitlint.config.cjs` |
-| 6/7 | .gitmessage 다운로드 + Git 템플릿 등록 | `.gitmessage` |
-| 7/7 | 프롬프트 추출 스크립트 및 워크플로우 생성 | `scripts/`, `.github/workflows/` |
+| 1/8 | CLAUDE_TEMPLATE.md 다운로드 → CLAUDE.md로 저장 | `CLAUDE.md` |
+| 2/8 | package.json 존재 확인, 없으면 생성 | `package.json` |
+| 3/8 | husky, commitlint 패키지 설치 | `node_modules/` |
+| 4/8 | Husky 초기화 + commit-msg 훅 생성 | `.husky/commit-msg` |
+| 5/8 | commitlint.config.cjs 다운로드 | `commitlint.config.cjs` |
+| 6/8 | .gitmessage 다운로드 + Git 템플릿 등록 | `.gitmessage` |
+| 7/8 | 프롬프트 추출 스크립트 및 워크플로우 생성 | `scripts/`, `.github/workflows/` |
+| 8/8 | 프롬프트 저널 설정 (폴더 + 템플릿) | `.prompts/`, `PROMPT_JOURNAL_TEMPLATE.md` |
 
 수동 설정이 필요하면 아래 단계를 따르세요.
 
@@ -175,6 +178,45 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
   ```
 - [ ] PR 생성: "Add [프로젝트명] to projects"
 - [ ] 또는: prompt-library 이슈에 등록 요청
+
+---
+
+## 3-1단계: 프롬프트 저널 설정 (선택)
+
+16섹션 커밋과 병행하여 프롬프트 저널을 사용할 수 있습니다.
+
+### 언제 사용하나요?
+
+| 상황 | 저널 작성 | 이유 |
+|------|:--------:|------|
+| 중요한 기능 구현 | O | 사고 과정 기록 |
+| 복잡한 문제 해결 | O | 전환점 기록 |
+| 새로운 패턴 발견 | O | 학습 포인트 보존 |
+| 단순 버그 수정 | △ | 선택적 |
+
+### 저널 작성 체크리스트
+
+- [ ] `.prompts/` 폴더 확인 (init-project.sh가 자동 생성)
+- [ ] `PROMPT_JOURNAL_TEMPLATE.md` 확인
+- [ ] 저널 파일 생성: `.prompts/YYYY-MM-DD-{topic}.md`
+- [ ] YAML frontmatter 작성 (date, domain, quality_score, grade)
+- [ ] 원본 프롬프트 → 사고 여정 → 최적화된 프롬프트 → 핵심 학습
+
+### 저널 파일명 예시
+
+```
+.prompts/
+├── 2026-01-14-jwt-auth.md
+├── 2026-01-14-dark-mode.md
+└── 2026-01-15-api-refactor.md
+```
+
+### Claude에게 저널 작성 요청
+
+```
+오늘 작업에 대한 프롬프트 저널을 작성해줘.
+PROMPT_JOURNAL_TEMPLATE.md 형식을 따라서.
+```
 
 ---
 
@@ -324,8 +366,10 @@ echo "설정 완료! CLAUDE.md 섹션 1-8을 작성하세요."
 | `CLAUDE_UNIVERSAL_RULES.md` | 공통 규칙 (섹션 9-19) |
 | `CONVERSATION_PROMPTS.md` | Claude 대화 패턴 |
 | `커밋메시지-16섹션-설정가이드.md` | 커밋 검증 시스템 상세 가이드 |
-| `scripts/extract-local-prompts.js` | 프롬프트 추출 스크립트 |
+| `scripts/extract-local-prompts.js` | 프롬프트 추출 스크립트 (v3.0) |
 | `.github/workflows/sync-prompts.yml` | 프롬프트 자동 동기화 워크플로우 |
+| `PROMPT_JOURNAL_TEMPLATE.md` | 프롬프트 저널 템플릿 |
+| `.prompts/` | 프롬프트 저널 저장 폴더 |
 | `PROJECT_SETUP_CHECKLIST.md` | 이 체크리스트 |
 
 ---
@@ -394,4 +438,4 @@ echo "설정 완료! CLAUDE.md 섹션 1-8을 작성하세요."
 ---
 
 *체크리스트 작성일: 2026-01-12*
-*업데이트: 2026-01-14 (분산 Push 아키텍처 반영)*
+*업데이트: 2026-01-14 (분산 Push 아키텍처 + 프롬프트 저널 v3.0 반영)*

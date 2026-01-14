@@ -18,3 +18,6 @@ Thumbs.db
 # Temporary files
 tmpclaude-*
 *.tmp
+
+# Generated files
+prompts.json

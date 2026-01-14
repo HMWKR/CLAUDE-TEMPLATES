@@ -34,17 +34,23 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
 | `커밋메시지-16섹션-설정가이드.md` | 16개 섹션 커밋 검증 시스템 가이드 |
 | `commitlint.config.cjs` | 16개 섹션 검증 규칙 |
 | `.gitmessage` | 커밋 메시지 템플릿 |
-| `scripts/extract-local-prompts.js` | 16개 섹션 커밋에서 프롬프트 추출 |
+| `scripts/extract-local-prompts.js` | 프롬프트 추출 (커밋 + 저널) v3.0 |
 | `.github/workflows/sync-prompts.yml` | 푸시 시 자동 프롬프트 추출 및 gh-pages 배포 |
+| `PROMPT_JOURNAL_TEMPLATE.md` | 프롬프트 저널 작성 가이드 및 템플릿 |
+| `.prompts/` | 프롬프트 저널 저장 폴더 |
 
 ## 핵심 기능
 
 1. **16개 섹션 커밋 메시지 검증** - Husky + Commitlint 자동화
    - 커밋 시: 16개 섹션 권장 (commitlint 검증)
    - 프롬프트 수집: 최소 10개 섹션 이상 (extract-local-prompts.js)
-2. **환각 방지 프로토콜** - Read Before Write
-3. **Ultrathink 8단계 워크플로우** - 체계적 문제 해결
-4. **5계층 48점 프롬프트 품질 평가** - 객관적 품질 측정
+2. **프롬프트 저널 시스템** (v3.0 신규)
+   - 마크다운 형식으로 프롬프트와 사고 과정 기록
+   - 읽고 배우기 좋은 형태
+   - YAML frontmatter로 ML 파싱 가능
+3. **환각 방지 프로토콜** - Read Before Write
+4. **Ultrathink 8단계 워크플로우** - 체계적 문제 해결
+5. **5계층 48점 프롬프트 품질 평가** - 객관적 품질 측정
 
 ## Claude와 첫 대화
 
@@ -169,22 +175,28 @@ prompt-library의 `data/projects.json` 파일 구조:
 }
 ```
 
-### prompts.json 구조
+### prompts.json 구조 (v3.0)
 
 각 프로젝트의 gh-pages에 배포되는 `prompts.json` 파일 구조:
 
 ```json
 {
+  "version": "3.0",
   "project": {
     "name": "프로젝트명",
     "owner": "owner",
     "url": "https://github.com/owner/repo"
   },
   "extractedAt": "2026-01-14T00:00:00.000Z",
-  "totalCommits": 100,
-  "promptCommits": 12,
+  "stats": {
+    "totalCommits": 100,
+    "fromCommits": 7,
+    "fromJournals": 5,
+    "total": 12
+  },
   "prompts": [
     {
+      "source": "commit",
       "hash": "abc1234",
       "date": "2026-01-14",
       "type": "feat",
@@ -193,6 +205,20 @@ prompt-library의 `data/projects.json` 파일 구조:
       "optimizedPrompt": "최적화된 프롬프트",
       "qualityScore": 45,
       "grade": "A+"
+    },
+    {
+      "source": "journal",
+      "journalFile": "2026-01-14-feature.md",
+      "date": "2026-01-14",
+      "type": "backend",
+      "subject": "기능 구현",
+      "originalPrompt": "사용자 프롬프트",
+      "optimizedPrompt": "최적화된 프롬프트",
+      "qualityScore": 42,
+      "grade": "A+",
+      "tags": ["auth", "security"],
+      "thinking": "사고 여정...",
+      "learning": "핵심 학습..."
     }
   ]
 }
@@ -223,6 +249,64 @@ prompt-library의 `data/projects.json` 파일 구조:
 2. Source: **Deploy from a branch**
 3. Branch: **gh-pages** / (root)
 4. Save
+
+## 프롬프트 저널 사용법 (v3.0)
+
+프롬프트 저널은 16개 섹션 커밋과 **병행**하여 사용합니다.
+
+### 언제 사용하나요?
+
+| 상황 | 저널 작성 | 이유 |
+|------|:--------:|------|
+| 중요한 기능 구현 | O | 사고 과정 기록 가치 |
+| 복잡한 문제 해결 | O | 전환점 기록 필요 |
+| 새로운 패턴 발견 | O | 학습 포인트 보존 |
+| 단순 버그 수정 | △ | 선택적 |
+| 오타 수정 | X | 불필요 |
+
+### 작성 방법
+
+1. `.prompts/` 폴더에 새 파일 생성
+2. 파일명: `YYYY-MM-DD-{topic}.md`
+3. [PROMPT_JOURNAL_TEMPLATE.md](./PROMPT_JOURNAL_TEMPLATE.md) 템플릿 사용
+
+### 예시
+
+```markdown
+---
+date: 2026-01-14
+domain: backend
+complexity: medium
+quality_score: 42
+grade: A+
+tags: [auth, JWT]
+---
+
+# JWT 인증 구현
+
+## 원본 프롬프트
+> JWT 인증 시스템을 구현해줘.
+
+## 사고 여정
+처음에는... 그런데... 결국...
+
+## 최적화된 프롬프트
+```ultrathink 모드로 JWT 인증 시스템을 구현해줘...```
+
+## 핵심 학습
+1. 토큰 저장 위치가 보안의 핵심
+2. ...
+```
+
+### 데이터 흐름
+
+```
+16섹션 커밋 ─────┐
+                 ├──▶ prompts.json ──▶ dashboard
+프롬프트 저널 ───┘
+
+두 소스에서 모두 데이터 수집 → 더 풍부한 데이터셋
+```
 
 ## 라이선스
 

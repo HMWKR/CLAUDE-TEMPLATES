@@ -542,6 +542,47 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 
 ---
 
+## 12-3. 프롬프트 저널 시스템 (v3.0)
+
+16섹션 커밋과 **병행**하여 프롬프트 저널을 작성할 수 있습니다.
+
+### 언제 사용하나요?
+
+| 상황 | 저널 작성 | 이유 |
+|------|:--------:|------|
+| 중요한 기능 구현 | O | 사고 과정 기록 가치 |
+| 복잡한 문제 해결 | O | 전환점 기록 필요 |
+| 새로운 패턴 발견 | O | 학습 포인트 보존 |
+| 단순 버그 수정 | △ | 선택적 |
+| 오타 수정 | X | 불필요 |
+
+### 작성 방법
+
+1. `.prompts/` 폴더에 새 파일 생성
+2. 파일명: `YYYY-MM-DD-{topic}.md`
+3. `PROMPT_JOURNAL_TEMPLATE.md` 참고
+
+### 데이터 흐름
+
+```
+16섹션 커밋 ─────┐
+                 ├──▶ prompts.json ──▶ dashboard
+프롬프트 저널 ───┘
+
+두 소스에서 모두 데이터 수집 → 더 풍부한 데이터셋
+```
+
+### YAML frontmatter 필수 필드
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `date` | string | 작성 날짜 (YYYY-MM-DD) |
+| `domain` | string | 도메인 (backend/frontend/docs 등) |
+| `quality_score` | number | 품질 점수 (0-48) |
+| `grade` | string | 등급 (S/A+/A/B+/B/F) |
+
+---
+
 ## 13. 코드 리뷰 기준
 
 1. 기능적 정확성
