@@ -73,6 +73,11 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
   # macOS/Linux
   cp ~/Desktop/CLAUDE_TEMPLATE.md ./CLAUDE.md
   ```
+
+- [ ] **섹션 1-8 작성 전 가이드 읽기** (중요!)
+  - **필독**: [SECTION_1_TO_8_WRITING_GUIDE.md](./SECTION_1_TO_8_WRITING_GUIDE.md)
+  - **좋은 예시**: [calclab/CLAUDE.md](https://github.com/HMWKR/calclab/blob/main/CLAUDE.md)
+
 - [ ] 섹션 1-8 작성 (프로젝트별 정보)
   - [ ] 섹션 1: 프로젝트 개요
   - [ ] 섹션 2: Quick Start
@@ -82,6 +87,43 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
   - [ ] 섹션 6: 테스트
   - [ ] 섹션 7: 환경 설정
   - [ ] 섹션 8: 알려진 이슈
+
+### 섹션 1-8 품질 검증 체크리스트
+
+**섹션 1-8이 부실하면 Claude 협업 품질이 저하됩니다!**
+
+**섹션 1: 프로젝트 개요**
+- [ ] 프로젝트 한 문장 정의
+- [ ] 핵심 기능 3개 이상 (구체적 예시 포함)
+- [ ] 기술 스택 + 버전 (React 19, TypeScript 5.8 등)
+
+**섹션 2: Quick Start**
+- [ ] 복사-붙여넣기 가능한 명령어
+- [ ] 실행 결과 (포트/URL) 명시
+- [ ] 명령어 테이블 4개+
+
+**섹션 3: 아키텍처**
+- [ ] 폴더 구조 트리 (역할 주석 포함)
+- [ ] 데이터 흐름 ASCII 다이어그램
+
+**섹션 4: 핵심 모듈**
+- [ ] 2개+ 모듈 상세 설명
+- [ ] `**위치**: path/to/file` 형식
+- [ ] 주요 함수/클래스 목록
+
+**섹션 6-8: 테스트/환경/이슈**
+- [ ] 테스트 실행 명령어 (또는 "없음" 명시)
+- [ ] 환경 변수 테이블 (또는 "없음" 명시)
+- [ ] 현재 제한사항 + 향후 계획 (체크박스 형식)
+
+**품질 등급 기준**
+
+| 등급 | 충족 항목 | 의미 |
+|:----:|:---------:|------|
+| **A** | 15개 | 우수 - calclab 수준 |
+| **B** | 12-14개 | 양호 - 일부 보완 권장 |
+| **C** | 9-11개 | 보통 - 보완 필요 |
+| **F** | 8개 이하 | 부족 - 재작성 필요 |
 
 ---
 

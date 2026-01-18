@@ -2,9 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **섹션 1-8 작성 전 필독**: [SECTION_1_TO_8_WRITING_GUIDE.md](./SECTION_1_TO_8_WRITING_GUIDE.md)
+> **좋은 예시 참조**: [calclab/CLAUDE.md](https://github.com/HMWKR/calclab/blob/main/CLAUDE.md) (섹션 1-8: ~660줄)
+
 ---
 
 ## 1. 프로젝트 개요
+
+<!--
+📋 작성 가이드: SECTION_1_TO_8_WRITING_GUIDE.md#섹션-1-프로젝트-개요
+✅ 최소 요구사항:
+   - 프로젝트 한 문장 정의
+   - 핵심 기능 3개 이상 (번호 목록)
+   - 기술 스택 (프레임워크 + 버전)
+-->
 
 [TODO: 프로젝트 설명을 작성하세요]
 
@@ -26,6 +37,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ---
 
 ## 2. Quick Start
+
+<!--
+📋 작성 가이드: SECTION_1_TO_8_WRITING_GUIDE.md#섹션-2-quick-start
+✅ 최소 요구사항:
+   - 복사-붙여넣기 가능한 명령어
+   - 환경 변수 설정 (필요 시)
+   - 실행 결과 (포트/URL) 명시
+   - 명령어 테이블 4개+
+-->
 
 [TODO: 시작 명령어를 작성하세요]
 
@@ -53,6 +73,14 @@ npm run dev
 ---
 
 ## 3. 아키텍처
+
+<!--
+📋 작성 가이드: SECTION_1_TO_8_WRITING_GUIDE.md#섹션-3-아키텍처
+✅ 최소 요구사항:
+   - 폴더 구조 트리 (주요 폴더, 최대 3단계)
+   - 각 폴더/파일에 역할 주석 (#)
+   - 데이터 흐름 ASCII 다이어그램
+-->
 
 [TODO: 폴더 구조를 작성하세요]
 
@@ -84,6 +112,15 @@ project-name/
 
 ## 4. 핵심 모듈
 
+<!--
+📋 작성 가이드: SECTION_1_TO_8_WRITING_GUIDE.md#섹션-4-핵심-모듈
+✅ 최소 요구사항:
+   - 2개+ 모듈 상세 설명
+   - **위치**: path/to/file 형식
+   - 주요 함수/클래스 목록
+   - 사용 예시 (권장)
+-->
+
 [TODO: 주요 파일/모듈 설명을 작성하세요]
 
 ### 4.1 [모듈명 1]
@@ -105,6 +142,13 @@ project-name/
 ---
 
 ## 5. 타입 시스템
+
+<!--
+📋 작성 가이드: SECTION_1_TO_8_WRITING_GUIDE.md#섹션-5-타입-시스템
+✅ 최소 요구사항:
+   - TypeScript: 핵심 인터페이스 코드 블록
+   - JavaScript: "별도의 타입 시스템이 없습니다" 명시
+-->
 
 [TODO: 선택적 - 주요 타입 정의 문서화]
 
@@ -128,6 +172,14 @@ interface ApiResponse<T> {
 
 ## 6. 테스트
 
+<!--
+📋 작성 가이드: SECTION_1_TO_8_WRITING_GUIDE.md#섹션-6-테스트
+✅ 최소 요구사항:
+   - 테스트 프레임워크 명시
+   - 테스트 실행 명령어
+   - 테스트 현황 테이블 (없으면 "없음" 명시)
+-->
+
 [TODO: 테스트 전략을 작성하세요]
 
 ### 테스트 현황
@@ -148,6 +200,13 @@ npm run test:coverage  # 커버리지 리포트
 
 ## 7. 환경 설정
 
+<!--
+📋 작성 가이드: SECTION_1_TO_8_WRITING_GUIDE.md#섹션-7-환경-설정
+✅ 최소 요구사항:
+   - 환경 변수 테이블 (변수명, 설명, 필수 여부)
+   - 없으면 "없음 - 모든 설정은 config.js에서 관리" 명시
+-->
+
 [TODO: 환경 변수를 문서화하세요]
 
 ### 환경 변수
@@ -165,6 +224,14 @@ npm run test:coverage  # 커버리지 리포트
 ---
 
 ## 8. 알려진 이슈 & TODO
+
+<!--
+📋 작성 가이드: SECTION_1_TO_8_WRITING_GUIDE.md#섹션-8-알려진-이슈--todo
+✅ 최소 요구사항:
+   - 현재 제한사항 2개+ (체크박스 형식)
+   - 향후 계획 2개+ (체크박스 형식)
+   - 완료된 항목은 [x] 또는 취소선 표시
+-->
 
 [TODO: 현재 제한사항과 향후 계획을 작성하세요]
 
