@@ -5,12 +5,12 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-01-18T08:35:46.416Z",
+  "extractedAt": "2026-01-18T12:10:09.877Z",
   "stats": {
-    "totalCommits": 20,
-    "fromCommits": 10,
+    "totalCommits": 22,
+    "fromCommits": 11,
     "fromJournals": 3,
-    "total": 13,
+    "total": 14,
     "journalStats": {
       "totalJournals": 3,
       "byMonth": {
@@ -31,6 +31,20 @@
     }
   },
   "prompts": [
+    {
+      "source": "commit",
+      "hash": "726615a0968518b5c2c0c1452d19ac5965362b01",
+      "date": "2026-01-18T21:04:49+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "ultrathink 키워드 제거 및 논문 기반 코드 검수 가이드 추가",
+      "originalPrompt": "",
+      "optimizedPrompt": "1. 모든 문서에서 ultrathink 키워드를 제거하고 \"깊이 분석해줘\"로 대체해줘.\n2. arXiv 논문(CodeX-Verify, CodeAgent, Agentic Testing)을 기반으로\n   CODE_REVIEW_GUIDE.md를 작성해줘.",
+      "analysis": "",
+      "qualityScore": null,
+      "grade": "A+",
+      "fullMessage": "docs: ultrathink 키워드 제거 및 논문 기반 코드 검수 가이드 추가\n\n## 산출물\n- [수정] CLAUDE.md - ultrathink 참조 5개 제거, 섹션 9-2 추가\n- [수정] CLAUDE_TEMPLATE.md - ultrathink 참조 3개 제거, 섹션 9-2 추가\n- [수정] CLAUDE_UNIVERSAL_RULES.md - ultrathink 참조 3개 제거, 섹션 9-2 추가\n- [수정] CONVERSATION_PROMPTS.md - \"깊은 분석 모드\"로 변경\n- [수정] PROJECT_SETUP_CHECKLIST.md - 프롬프트 7개 업데이트\n- [수정] README.md - 워크플로우 참조 업데이트\n- [신규] CODE_REVIEW_GUIDE.md - 논문 기반 코드 검수 가이드\n- [신규] PLUGIN_GUIDE.md - Claude Code 24개 플러그인 가이드\n- [신규] .claude/ - Claude 설정 폴더\n\n## 변경 영향도\n- 영향 범위: 템플릿 사용 프로젝트 전체\n- 사용자 영향: ultrathink 키워드 대신 \"깊이 분석해줘\" 사용 권장\n- 위험도: 낮음 (문서 변경만)\n\n## 테스트 전략\n- [x] 모든 마크다운 파일 구문 확인\n- [x] 내부 링크 유효성 검증\n- [x] 섹션 번호 일관성 확인\n\n## 롤백 계획\n- 방법: git revert HEAD\n- 의존성: 없음\n\n## 관련 이슈\n- Related to: 2026-01-16 Claude thinking budget 기본 최대 설정\n\n## Breaking Changes\n- ultrathink 키워드 더 이상 작동하지 않음 (Claude 정책 변경)\n- 마이그레이션: \"ultrathink 모드로\" → \"깊이 분석해서\"로 변경\n\n## 성능 벤치마크\n| 지표 | Before | After |\n|------|--------|-------|\n| 문서 수 | 6개 | 9개 |\n| 코드 검수 방법론 | 없음 | 7개 섹션 |\n| 플러그인 가이드 | 없음 | 24개 |\n\n## 아키텍처 다이어그램\n```\n[기존 문서] ──▶ [ultrathink 제거] ──▶ [섹션 9-2 추가]\n     │\n     ▼\n[신규 문서] CODE_REVIEW_GUIDE.md, PLUGIN_GUIDE.md\n```\n\n## UI/UX 와이어프레임\n```\n해당 없음 (문서 변경)\n```\n\n## 사고 여정\n\n### 1. 문제 인식\n사용자가 2026-01-16 이후 ultrathink 키워드가 작동하지 않는다고 언급.\n프로젝트의 모든 문서에 ultrathink 참조가 남아 있어 현행화 필요.\n\n### 2. 탐색 경로\n1. 웹 검색으로 Claude thinking budget 변경 사항 확인\n2. Grep으로 프로젝트 내 ultrathink 참조 전수 조사\n3. 연구 논문 검색 (CodeX-Verify, CodeAgent, Agentic Testing)\n\n### 3. 고려한 대안들\n| 대안 | 장점 | 단점 | 선택 |\n|------|------|------|:----:|\n| ultrathink 유지 | 호환성 | 더 이상 작동 안함 | X |\n| 깊이 분석해줘로 대체 | Anthropic 권장 | 기존 문서 수정 필요 | O |\n| 완전 삭제 | 간결 | 사고 유도 가이드 손실 | X |\n\n### 4. 결정 근거\n- Anthropic 공식 권장: \"high-level instructions to think deeply\"\n- arXiv 2505.01482 연구: Self-Consistency 52.99% 정확도\n- 기존 워크플로우 유지하면서 키워드만 대체\n\n### 5. 구현 타임라인\n1. ultrathink 참조 제거 (6개 파일)\n2. 섹션 9-2 \"깊은 사고 기법\" 추가\n3. CODE_REVIEW_GUIDE.md 신규 작성 (논문 기반)\n4. PLUGIN_GUIDE.md 신규 작성 (24개 플러그인)\n\n### 6. 핵심 통찰\n- Multi-Agent 코드 리뷰가 단일 대비 39.7%p 정확도 향상\n- Claude Sonnet이 human expert와 가장 높은 상관관계\n- \"단계별로 해라\"보다 \"깊이 분석해라\"가 더 효과적\n\n### 원본 프롬프트\n> ultrathink 모드가 사라진걸로 알고 있어. 문서 업데이트해줘.\n> 코드에 대한 전반적인 검수 방법 논문 기반으로 알려줘.\n> 논문에 있는걸 기반으로 새로운 md 파일을 만들어줘.\n\n### 프롬프트 분석\n- 해석: 문서 현행화 + 연구 기반 코드 검수 가이드 요청\n- 작업 유형: 문서 업데이트 + 신규 문서 작성\n- 제약: 개인 의견 배제, 논문 기반 작성\n- 키워드: ultrathink, 코드 검수, 논문\n\n### 최적화된 프롬프트\n```\n1. 모든 문서에서 ultrathink 키워드를 제거하고 \"깊이 분석해줘\"로 대체해줘.\n2. arXiv 논문(CodeX-Verify, CodeAgent, Agentic Testing)을 기반으로\n   CODE_REVIEW_GUIDE.md를 작성해줘.\n```\n\n## 프롬프트 품질 검수\n\n### 5계층 48점 평가\n\n| 계층 | 항목 | 점수 | 비고 |\n|:----:|------|:----:|------|\n| 계층 1 | 구조적 완성도 (18점) | 17/18 | 구체적 논문 인용 포함 |\n| 계층 2 | 엔지니어링 기법 (8점) | 7/8 | CoT, Task Decomposition 적용 |\n| 계층 3 | 맥락 최적화 (6점) | 5/6 | 프로젝트 맥락 반영 |\n| 계층 4 | 효과 검증 (4점) | 4/4 | 측정 가능한 결과 |\n| 계층 5 | 할루시네이션 검증 (12점) | 11/12 | 논문 출처 명시 [검증됨] |\n\n### 최종 평가\n- 총점: 44/48 (91.7%)\n- 등급: A+\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+    },
     {
       "source": "commit",
       "hash": "3c648472eff2e55587c8b0ee10a3f3a89c204c80",
