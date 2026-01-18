@@ -8,7 +8,7 @@
 
 ## 권장: 원클릭 설정
 
-아래 명령어 하나로 **7단계 설정을 자동 완료**합니다:
+아래 명령어 하나로 **10단계 설정을 자동 완료**합니다:
 
 ```bash
 curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-project.sh | bash
@@ -19,25 +19,30 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
 - `commitlint.config.cjs` - 16개 섹션 검증 규칙
 - `.gitmessage` - 커밋 메시지 템플릿
 - `.husky/commit-msg` - 커밋 검증 훅
+- `.husky/post-commit` - 저널 자동 생성 훅 (v3.1)
 - `scripts/extract-local-prompts.js` - 프롬프트 추출 스크립트 (v3.0)
+- `scripts/create-journal-from-commit.js` - 저널 자동 생성 (v3.1)
+- `scripts/validate-journals.js` - 저널 형식 검증 (v3.1)
 - `.github/workflows/sync-prompts.yml` - 자동 동기화 워크플로우
 - `.prompts/` - 프롬프트 저널 폴더
 - `PROMPT_JOURNAL_TEMPLATE.md` - 프롬프트 저널 템플릿
 
 원클릭 설정 후 **CLAUDE.md 섹션 1-8만 작성**하면 됩니다.
 
-### init-project.sh 8단계 상세
+### init-project.sh 10단계 상세
 
 | 단계 | 동작 | 생성 파일 |
 |:----:|------|----------|
-| 1/8 | CLAUDE_TEMPLATE.md 다운로드 → CLAUDE.md로 저장 | `CLAUDE.md` |
-| 2/8 | package.json 존재 확인, 없으면 생성 | `package.json` |
-| 3/8 | husky, commitlint 패키지 설치 | `node_modules/` |
-| 4/8 | Husky 초기화 + commit-msg 훅 생성 | `.husky/commit-msg` |
-| 5/8 | commitlint.config.cjs 다운로드 | `commitlint.config.cjs` |
-| 6/8 | .gitmessage 다운로드 + Git 템플릿 등록 | `.gitmessage` |
-| 7/8 | 프롬프트 추출 스크립트 및 워크플로우 생성 | `scripts/`, `.github/workflows/` |
-| 8/8 | 프롬프트 저널 설정 (폴더 + 템플릿) | `.prompts/`, `PROMPT_JOURNAL_TEMPLATE.md` |
+| 1/10 | CLAUDE_TEMPLATE.md 다운로드 → CLAUDE.md로 저장 | `CLAUDE.md` |
+| 2/10 | package.json 존재 확인, 없으면 생성 | `package.json` |
+| 3/10 | husky, commitlint 패키지 설치 | `node_modules/` |
+| 4/10 | Husky 초기화 + commit-msg 훅 생성 | `.husky/commit-msg` |
+| 5/10 | commitlint.config.cjs 다운로드 | `commitlint.config.cjs` |
+| 6/10 | .gitmessage 다운로드 + Git 템플릿 등록 | `.gitmessage` |
+| 7/10 | 프롬프트 추출 스크립트 및 워크플로우 생성 | `scripts/extract-local-prompts.js`, `.github/workflows/` |
+| 8/10 | 프롬프트 저널 폴더 + 템플릿 생성 | `.prompts/`, `PROMPT_JOURNAL_TEMPLATE.md` |
+| 9/10 | 저널 자동 생성/검증 스크립트 다운로드 | `scripts/create-journal-from-commit.js`, `scripts/validate-journals.js` |
+| 10/10 | post-commit 훅 설정 (저널 자동 생성) | `.husky/post-commit` |
 
 수동 설정이 필요하면 아래 단계를 따르세요.
 
@@ -167,16 +172,25 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
 프롬프트 대시보드에 프로젝트를 표시하려면:
 
 - [ ] [prompt-library](https://github.com/HMWKR/prompt-library) 저장소 Fork
-- [ ] `data/projects.json`에 프로젝트 정보 추가:
+- [ ] `data/projects.json`에 프로젝트 정보 추가 (v3.0 스키마):
   ```json
   {
     "name": "프로젝트명",
     "repo": "owner/repo",
     "owner": "owner",
-    "promptsUrl": "https://owner.github.io/repo/prompts.json"
+    "promptsUrl": "https://owner.github.io/repo/prompts.json",
+    "metadata": {
+      "category": "application",
+      "status": "active",
+      "description": "프로젝트 설명"
+    },
+    "cache": {
+      "promptCount": null,
+      "lastFetched": null
+    }
   }
   ```
-- [ ] PR 생성: "Add [프로젝트명] to projects"
+- [ ] PR 생성: "Add [프로젝트명] to registry"
 - [ ] 또는: prompt-library 이슈에 등록 요청
 
 ---

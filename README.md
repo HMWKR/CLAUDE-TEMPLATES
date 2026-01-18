@@ -14,19 +14,23 @@ Claude Code CLI 협업을 위한 마스터 템플릿 저장소
 curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-project.sh | bash
 ```
 
-**자동으로 수행되는 작업 (7단계):**
+**자동으로 수행되는 작업 (10단계):**
 - CLAUDE.md 템플릿 다운로드
 - 16개 섹션 커밋 검증 시스템 설치 (commitlint + husky)
 - 커밋 메시지 템플릿 설정
 - 프롬프트 추출 스크립트 다운로드 (`extract-local-prompts.js`)
 - GitHub Actions 워크플로우 생성 (`sync-prompts.yml`)
 - gh-pages 자동 배포 설정
+- 프롬프트 저널 폴더 생성 (`.prompts/`)
+- 저널 자동 생성 스크립트 다운로드 (`create-journal-from-commit.js`)
+- 저널 검증 스크립트 다운로드 (`validate-journals.js`)
+- post-commit 훅 설정 (저널 자동 생성)
 
 ## 포함 파일
 
 | 파일 | 용도 |
 |------|------|
-| `init-project.sh` | 원클릭 자동 설정 스크립트 (7단계) |
+| `init-project.sh` | 원클릭 자동 설정 스크립트 (10단계) |
 | `CLAUDE_TEMPLATE.md` | CLAUDE.md 전체 템플릿 (19개 섹션) |
 | `CLAUDE_UNIVERSAL_RULES.md` | 공통 규칙 (섹션 9-19) |
 | `PROJECT_SETUP_CHECKLIST.md` | 새 프로젝트 설정 체크리스트 |
@@ -35,6 +39,8 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
 | `commitlint.config.cjs` | 16개 섹션 검증 규칙 |
 | `.gitmessage` | 커밋 메시지 템플릿 |
 | `scripts/extract-local-prompts.js` | 프롬프트 추출 (커밋 + 저널) v3.0 |
+| `scripts/create-journal-from-commit.js` | 커밋 후 저널 자동 생성 (v3.1) |
+| `scripts/validate-journals.js` | 저널 형식 검증 (v3.1) |
 | `.github/workflows/sync-prompts.yml` | 푸시 시 자동 프롬프트 추출 및 gh-pages 배포 |
 | `PROMPT_JOURNAL_TEMPLATE.md` | 프롬프트 저널 작성 가이드 및 템플릿 |
 | `.prompts/` | 프롬프트 저널 저장 폴더 |
@@ -144,7 +150,7 @@ git config commit.template .gitmessage
 
 | 저장소 | 용도 | 링크 |
 |--------|------|------|
-| **prompt-library** | 프로젝트 목록 관리 | [GitHub](https://github.com/HMWKR/prompt-library) |
+| **prompt-library** | 프로젝트 레지스트리 (v3.0) | [GitHub](https://github.com/HMWKR/prompt-library) |
 | **prompt-dashboard** | 통계 대시보드 | [Live](https://hmwkr.github.io/prompt-dashboard/) |
 
 ### 저장소별 역할 상세
@@ -152,26 +158,39 @@ git config commit.template .gitmessage
 | 저장소 | 역할 | 데이터 |
 |--------|------|--------|
 | **claude-templates** | 마스터 템플릿/스크립트 배포 | CLAUDE.md, init-project.sh, extract-local-prompts.js |
-| **prompt-library** | 프로젝트 목록 중앙 관리 | `data/projects.json` |
+| **prompt-library** | 프로젝트 레지스트리 (v3.0) | `data/projects.json` |
 | **prompt-dashboard** | 데이터 집계 및 시각화 | 브라우저에서 각 프로젝트 prompts.json fetch |
 | **각 프로젝트** | 자체 프롬프트 추출 및 배포 | gh-pages에 `prompts.json` 배포 |
 
-### projects.json 구조
+### projects.json 구조 (v3.0)
 
 prompt-library의 `data/projects.json` 파일 구조:
 
 ```json
 {
-  "version": "2.0",
+  "version": "3.0",
   "architecture": "distributed-push",
   "projects": [
     {
       "name": "프로젝트명",
       "repo": "owner/repo",
       "owner": "owner",
-      "promptsUrl": "https://owner.github.io/repo/prompts.json"
+      "promptsUrl": "https://owner.github.io/repo/prompts.json",
+      "metadata": {
+        "category": "application",
+        "status": "active",
+        "description": "프로젝트 설명"
+      },
+      "cache": {
+        "promptCount": null,
+        "lastFetched": null
+      }
     }
-  ]
+  ],
+  "summary": {
+    "totalProjects": 4,
+    "totalPromptsCached": null
+  }
 }
 ```
 
@@ -228,7 +247,7 @@ prompt-library의 `data/projects.json` 파일 구조:
 
 프롬프트 대시보드에 프로젝트를 표시하려면:
 
-1. **init-project.sh 실행** (7단계 자동 완료)
+1. **init-project.sh 실행** (10단계 자동 완료)
    ```bash
    curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-project.sh | bash
    ```
