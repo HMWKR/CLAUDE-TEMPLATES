@@ -5,28 +5,28 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-01-14T14:49:56.600Z",
+  "extractedAt": "2026-01-18T08:20:42.071Z",
   "stats": {
     "totalCommits": 20,
     "fromCommits": 10,
-    "fromJournals": 2,
-    "total": 12,
+    "fromJournals": 3,
+    "total": 13,
     "journalStats": {
-      "totalJournals": 2,
+      "totalJournals": 3,
       "byMonth": {
-        "2026-01": 2
+        "2026-01": 3
       },
       "byDomain": {
-        "backend": 1,
-        "docs": 1
+        "docs": 2,
+        "backend": 1
       },
       "byComplexity": {
-        "medium": 1,
+        "medium": 2,
         "high": 1
       },
       "avgQualityScore": 44,
       "gradeDistribution": {
-        "A+": 1
+        "A+": 2
       }
     }
   },
@@ -86,6 +86,27 @@
       "qualityScore": null,
       "grade": null,
       "fullMessage": "docs: Claude 프롬프트 사용 가이드 추가\n\n## 산출물\n- PROJECT_SETUP_CHECKLIST.md - Claude와 첫 대화 섹션 확장\n- README.md - 빠른 시작 프롬프트 예시 추가\n\n## 변경 영향도\n- **영향 범위**: 문서\n- **사용자 영향**: 새 프로젝트 사용자가 즉시 참고 가능\n- **위험도**: 낮음\n\n## 테스트 전략\n- [x] 마크다운 렌더링 확인\n- [x] 링크 유효성 확인\n\n## 롤백 계획\n- **롤백 방법**: git revert\n- **의존성**: 없음\n\n## 관련 이슈\n- Related to init-project.sh 테스트 결과\n\n## Breaking Changes\n- 없음\n\n## 성능 벤치마크\n| 항목 | Before | After |\n|------|--------|-------|\n| 문서 | 기본 | 가이드 포함 |\n\n## 아키텍처 다이어그램\n```\n새 프로젝트 → init-project.sh → CLAUDE.md 확인 → 프롬프트 가이드 참고\n```\n\n## UI/UX 와이어프레임\n```\nN/A (문서)\n```\n\n## 사고 여정 (Thinking Journey)\n\n### 1. 문제 인식\n> **처음 이해**: 새 프로젝트에서 Claude에게 프롬프트하는 방법 필요\n> **조사 후 발견**: 기존 문서에 입문자용 가이드 부재\n\n### 2. 탐색 경로\n```\nCONVERSATION_PROMPTS.md → 고급 패턴 (overwhelming)\nPROJECT_SETUP_CHECKLIST.md → 작업 시작 섹션 단순\n```\n\n### 3. 고려한 대안들\n| 대안 | 장점 | 단점 | 결정 |\n|------|------|------|:----:|\n| 새 파일 생성 | 독립적 | 파일 증가 | ❌ |\n| **기존 파일 확장** | 통합적 | - | ✅ |\n\n### 4. 결정 근거\n- **채택**: 기존 체크리스트와 README에 자연스럽게 통합\n- **거부**: 별도 파일은 관리 복잡도 증가\n\n### 5. 구현 타임라인\n```\n[1] 문서 분석 → 적절한 위치 파악\n[2] PROJECT_SETUP_CHECKLIST.md 확장 → 완료\n[3] README.md 섹션 추가 → 완료\n```\n\n### 6. 핵심 통찰\n> 프롬프트 가이드는 설정 체크리스트의 자연스러운 다음 단계\n\n### 원본 프롬프트\n```\n새로운 폴더를 만든 이후 여기 폴더에서 너한테 어떠한 형식으로 프롬프트를 해야할지 까지 업데이트를 해줘\n```\n\n### 프롬프트 분석\n> **해석**: 새 프로젝트에서 Claude 사용법 가이드 요청\n> **작업 유형**: 수렴적\n> **제약 수준**: 낮음\n> **핵심 키워드**: 프롬프트, 형식, 가이드\n\n### 최적화된 프롬프트\n```\n## 역할\n문서 작성자\n\n## 목표\n새 프로젝트에서 Claude에게 효과적으로 프롬프트하는 방법 가이드 추가\n```\n\n## 프롬프트 품질 검수\n\n### 계층 1: 구조적 완성도 (18점)\n- 명확성: 3/3\n- 구체성: 3/3\n- 맥락: 3/3\n- 구조화: 3/3\n- 제약: 3/3\n- 검증: 3/3\n\n### 계층 2: 엔지니어링 기법 (8점)\n- CoT: 2/2\n- Role: 1/1\n- 총점: 6/8\n\n### 계층 3: 맥락 최적화 (6점)\n- 프로젝트: 2/2\n- 사용자: 2/2\n- 도메인: 1/2\n- 총점: 5/6\n\n### 계층 4: 효과 검증 (4점)\n- 예상 개선: 1/1\n- 측정: 1/1\n- 부작용: 1/1\n- 대안: 1/1\n\n### 계층 5: 할루시네이션 검증 (12점)\n- 코드 정확성: 4/4\n- 기술 정확성: 4/4\n- 논리 정확성: 2/2\n- 검증 프로세스: 2/2\n\n### 최종 평가\n**총점: 45/48 (A+)**\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+    },
+    {
+      "source": "journal",
+      "hash": "3c64847",
+      "date": "2026-01-14",
+      "type": "docs",
+      "scope": "",
+      "subject": "CLAUDE.md 아키텍처 섹션 v3.1 동기화",
+      "originalPrompt": "이러한 것들 또한 전체적으로 바뀐 부분에 대해서 파일들을 업데이트를 해줘",
+      "optimizedPrompt": "CLAUDE.md 아키텍처 섹션을 v3.1 실제 파일 구조와 동기화해줘.\n\n요구사항:\n- scripts/ 폴더: 4개 스크립트 반영\n- .husky/ 폴더: post-commit 추가\n- init-project.sh: 10단계로 업데이트\n\n제약조건:\n- 최소 변경 원칙 (필요한 부분만)\n- 실제 파일과 100% 일치",
+      "analysis": "",
+      "qualityScore": null,
+      "grade": "A+",
+      "journalFile": "2026-01-14-docs-claudemd-아키텍처-섹션-v31-동기화.md",
+      "tags": [
+        ""
+      ],
+      "complexity": "medium",
+      "thinking": "",
+      "learning": "<!-- TODO: 이번 작업에서 배운 점을 정리하세요 -->\n\n1. **학습 포인트 1**\n   - (자동 생성됨 - 편집 필요)\n\n2. **학습 포인트 2**\n   - (자동 생성됨 - 편집 필요)",
+      "result": "- **성공 여부**: [ ] 성공 / [ ] 실패 / [ ] 부분 성공\n- **반복 횟수**:\n- **변경 파일**:\n- **테스트**: [ ] 통과 / [ ] 실패 / [ ] 해당없음"
     },
     {
       "source": "journal",
