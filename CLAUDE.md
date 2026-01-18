@@ -170,7 +170,7 @@ cp CLAUDE_TEMPLATE.md /path/to/new-project/CLAUDE.md
 **포함 내용**:
 - 언어 및 스타일 규칙
 - 환각 방지 프로토콜
-- Ultrathink 8단계 워크플로우
+- 체계적 8단계 워크플로우
 - 코드 작성/리뷰/테스트 규칙
 - 커밋 메시지 16개 섹션 구조
 
@@ -181,7 +181,7 @@ cp CLAUDE_TEMPLATE.md /path/to/new-project/CLAUDE.md
 Claude와 효과적으로 대화하기 위한 검증된 프롬프트 패턴 모음입니다.
 
 **카테고리**:
-- 기본 작업 모드 (Ultrathink, 계획, 검수)
+- 기본 작업 모드 (깊은 사고, 계획, 검수)
 - 기능 구현 / 버그 수정 프롬프트
 - 코드 리뷰 / 리팩토링 프롬프트
 - 성능 최적화 / 테스트 작성 프롬프트
@@ -384,9 +384,42 @@ git commit  # 템플릿 표시 → 16개 섹션 작성 → 저장
 
 ---
 
-## 10. 문제 해결 프로토콜 (Ultrathink 필수)
+## 9-2. 깊은 사고 기법 (Deep Reasoning Techniques)
 
-> **모든 작업은 ultrathink 모드로 진행한다. 예외 없음.**
+> **2026-01-16 변경**: Thinking budget이 기본 최대(31,999 토큰)로 설정됨.
+> `ultrathink`, `think hard` 등 키워드는 더 이상 작동하지 않음.
+
+### 효과적인 사고 유도 방법
+
+| 방법 | 프롬프트 예시 | 효과 |
+|------|--------------|------|
+| **High-level Instruction** | "깊이 분석해줘" | Anthropic 공식 권장 |
+| **Step-by-step** | "단계별로 분석해줘" | Chain of Thought |
+| **Structured Output** | "`<thinking>`과 `<answer>` 태그로 구분해줘" | 사고/결론 분리 |
+| **Problem Decomposition** | "하위 문제로 분해해서 해결해줘" | 복잡한 문제 분해 |
+| **Self-Verification** | "결론 전에 스스로 검증해줘" | 정확도 향상 |
+
+### 연구 기반 고급 기법 (arXiv 2505.01482)
+
+| 기법 | 정확도 | 설명 |
+|------|--------|------|
+| **Self-Consistency** | 52.99% | 여러 응답 생성 후 일관된 답 선택 |
+| **Zero-shot CoT** | 50.00% | "Let's think step by step" 한 문장 추가 |
+| **Decomposition** | 47.77% | 복잡한 문제 → 하위 문제로 분해 |
+
+### 핵심 원칙
+
+> **"Claude often performs better with high-level instructions to just think deeply about a task rather than step-by-step prescriptive guidance."**
+> — [Claude Docs](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/extended-thinking-tips)
+
+**즉, "단계별로 해라"보다 "깊이 분석해라"가 더 효과적.**
+
+---
+
+## 10. 체계적 문제 해결 프로토콜
+
+> **2026-01-16 업데이트**: Thinking budget이 기본 최대로 설정됨. `ultrathink` 키워드는 더 이상 작동하지 않음.
+> 대신 **고수준 지시** ("깊이 분석해라")가 단계별 지시보다 효과적.
 
 ### 8단계 워크플로우
 
@@ -648,7 +681,7 @@ git commit  # 템플릿 표시 → 16개 섹션 작성 → 저장
 - 파일/함수/라인 번호는 **실제 확인 후 기재**
 
 [필수 준수]
-1) 모든 작업은 **ultrathink 모드**로 진행 (예외 없음)
+1) 모든 작업은 **체계적 8단계 워크플로우**로 진행
 2) 작업 시작 전 **CLAUDE.md 지침 확인** (0단계)
 3) 코드 작성 전 **관련 코드 읽기** (1-2단계)
 4) 프로젝트 claude.md 지침 100% 준수

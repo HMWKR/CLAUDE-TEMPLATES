@@ -55,7 +55,7 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
    - 읽고 배우기 좋은 형태
    - YAML frontmatter로 ML 파싱 가능
 3. **환각 방지 프로토콜** - Read Before Write
-4. **Ultrathink 8단계 워크플로우** - 체계적 문제 해결
+4. **체계적 8단계 워크플로우** - 문제 해결 프로토콜
 5. **5계층 48점 프롬프트 품질 평가** - 객관적 품질 측정
 
 ## Claude와 첫 대화
@@ -64,12 +64,12 @@ curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-proj
 
 ### 1. 프로젝트 분석
 ```
-ultrathink 모드로 이 프로젝트를 분석해줘.
+이 프로젝트를 깊이 분석해줘.
 ```
 
 ### 2. 기능 구현
 ```
-ultrathink 모드로 [기능명]을 구현해줘.
+[기능명]을 깊이 분석해서 구현해줘.
 
 ## 요구사항
 - [요구사항]
@@ -310,7 +310,7 @@ tags: [auth, JWT]
 처음에는... 그런데... 결국...
 
 ## 최적화된 프롬프트
-```ultrathink 모드로 JWT 인증 시스템을 구현해줘...```
+```JWT 인증 시스템을 깊이 분석해서 구현해줘...```
 
 ## 핵심 학습
 1. 토큰 저장 위치가 보안의 핵심

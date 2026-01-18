@@ -218,9 +218,34 @@ npm run test:coverage  # 커버리지 리포트
 
 ---
 
-## 10. 문제 해결 프로토콜 (Ultrathink 필수)
+## 9-2. 깊은 사고 기법 (Deep Reasoning Techniques)
 
-> ⚠️ **모든 작업은 ultrathink 모드로 진행한다. 예외 없음.**
+> **2026-01-16 변경**: Thinking budget이 기본 최대(31,999 토큰)로 설정됨.
+> `ultrathink`, `think hard` 등 키워드는 더 이상 작동하지 않음.
+
+### 효과적인 사고 유도 방법
+
+| 방법 | 프롬프트 예시 | 효과 |
+|------|--------------|------|
+| **High-level Instruction** | "깊이 분석해줘" | Anthropic 공식 권장 |
+| **Step-by-step** | "단계별로 분석해줘" | Chain of Thought |
+| **Structured Output** | "`<thinking>`과 `<answer>` 태그로 구분해줘" | 사고/결론 분리 |
+| **Problem Decomposition** | "하위 문제로 분해해서 해결해줘" | 복잡한 문제 분해 |
+| **Self-Verification** | "결론 전에 스스로 검증해줘" | 정확도 향상 |
+
+### 핵심 원칙
+
+> **"Claude often performs better with high-level instructions to just think deeply about a task rather than step-by-step prescriptive guidance."**
+> — Anthropic Claude Docs
+
+**즉, "단계별로 해라"보다 "깊이 분석해라"가 더 효과적.**
+
+---
+
+## 10. 체계적 문제 해결 프로토콜
+
+> **2026-01-16 업데이트**: Thinking budget이 기본 최대로 설정됨.
+> 고수준 지시 ("깊이 분석해라")가 단계별 지시보다 효과적.
 
 ### 8단계 워크플로우
 
@@ -700,7 +725,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 - 파일/함수/라인 번호는 **실제 확인 후 기재**
 
 [필수 준수]
-1) 모든 작업은 **ultrathink 모드**로 진행 (예외 없음)
+1) 모든 작업은 **체계적 8단계 워크플로우**로 진행
 2) 작업 시작 전 **CLAUDE.md 지침 확인** (0단계)
 3) 코드 작성 전 **관련 코드 읽기** (1-2단계)
 4) 프로젝트 claude.md 지침 100% 준수
