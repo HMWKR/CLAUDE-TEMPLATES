@@ -180,6 +180,14 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Validate journal files (v3.1)
+        if: hashFiles('.prompts/*.md') != ''
+        run: |
+          if [ -f "scripts/validate-journals.js" ]; then
+            node scripts/validate-journals.js
+          fi
+        continue-on-error: true
+
       - name: Extract prompts from commits
         run: |
           node scripts/extract-local-prompts.js
