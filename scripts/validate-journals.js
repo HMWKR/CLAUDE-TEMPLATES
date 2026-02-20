@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * validate-journals.js v1.0
+ * validate-journals.js v2.0
  *
- * .prompts/*.md 저널 파일의 형식을 검증합니다.
+ * .prompts/*.md 저널 + .thoughts/*.md CE 사고 여정 파일을 검증합니다.
  * GitHub Actions에서 CI 검증용으로 사용됩니다.
  *
  * 사용법: node scripts/validate-journals.js
@@ -220,34 +220,92 @@ function validateJournal(filePath) {
 }
 
 /**
- * 모든 저널 파일 검증
+ * CE 사고 여정 파일 검증 (.thoughts/)
+ */
+const THINKING_REQUIRED_YAML = ['date', 'commit', 'type'];
+const THINKING_REQUIRED_SECTIONS = [
+  '컨텍스트 수집',
+  '정보 선택',
+  '실패 모드',
+  '대안 비교',
+];
+
+function validateThinkingLog(filePath) {
+  const filename = basename(filePath);
+  const errors = [];
+  const warnings = [];
+
+  try {
+    const content = readFileSync(filePath, 'utf8');
+
+    // YAML frontmatter 검증
+    const { found, data } = parseYamlFrontmatter(content);
+    if (!found) {
+      errors.push('YAML frontmatter가 없습니다');
+    } else {
+      for (const field of THINKING_REQUIRED_YAML) {
+        if (data[field] === undefined || data[field] === null) {
+          errors.push(`필수 YAML 필드 누락: ${field}`);
+        }
+      }
+    }
+
+    // 필수 섹션 검증
+    for (const section of THINKING_REQUIRED_SECTIONS) {
+      if (!hasSection(content, section)) {
+        warnings.push(`CE 섹션 누락: ${section}`);
+      }
+    }
+
+    // CE 전략 섹션 확인
+    if (!hasSection(content, 'CE 전략')) {
+      warnings.push('CE 전략 섹션 누락');
+    }
+
+    return { filename, errors, warnings, valid: errors.length === 0, type: 'thinking' };
+  } catch (error) {
+    return { filename, errors: [`파일 읽기 오류: ${error.message}`], warnings: [], valid: false, type: 'thinking' };
+  }
+}
+
+/**
+ * 모든 저널 + 사고 여정 파일 검증
  */
 function validateAllJournals() {
-  const promptsDir = '.prompts';
   const results = [];
 
-  // .prompts 폴더 존재 확인
-  if (!existsSync(promptsDir)) {
-    console.log('📁 .prompts/ 폴더가 없습니다. 검증 건너뜀.\n');
-    return { success: true, results: [] };
+  // .prompts/ 검증 (레거시)
+  const promptsDir = '.prompts';
+  if (existsSync(promptsDir)) {
+    const files = readdirSync(promptsDir)
+      .filter(f => f.endsWith('.md') && f !== '.gitkeep')
+      .map(f => join(promptsDir, f));
+
+    if (files.length > 0) {
+      console.log(`저널 ${files.length}개 검증 중...\n`);
+      for (const filePath of files) {
+        results.push(validateJournal(filePath));
+      }
+    }
   }
 
-  // .md 파일 목록 가져오기
-  const files = readdirSync(promptsDir)
-    .filter(f => f.endsWith('.md') && f !== '.gitkeep')
-    .map(f => join(promptsDir, f));
+  // .thoughts/ 검증 (v2.0)
+  const thoughtsDir = '.thoughts';
+  if (existsSync(thoughtsDir)) {
+    const files = readdirSync(thoughtsDir)
+      .filter(f => f.endsWith('.md') && f !== '.gitkeep')
+      .map(f => join(thoughtsDir, f));
 
-  if (files.length === 0) {
-    console.log('📁 .prompts/ 폴더에 저널 파일이 없습니다.\n');
-    return { success: true, results: [] };
+    if (files.length > 0) {
+      console.log(`CE 사고 여정 ${files.length}개 검증 중...\n`);
+      for (const filePath of files) {
+        results.push(validateThinkingLog(filePath));
+      }
+    }
   }
 
-  console.log(`📋 ${files.length}개의 저널 파일 검증 중...\n`);
-
-  // 각 파일 검증
-  for (const filePath of files) {
-    const result = validateJournal(filePath);
-    results.push(result);
+  if (results.length === 0) {
+    console.log('.prompts/ 와 .thoughts/ 에 검증할 파일이 없습니다.\n');
   }
 
   return {
@@ -291,7 +349,7 @@ function printResults(results) {
 function main() {
   console.log('');
   console.log('================================================');
-  console.log('  프롬프트 저널 검증기 v1.0');
+  console.log('  저널 + CE 사고 여정 검증기 v2.0');
   console.log('================================================');
   console.log('');
 

@@ -23,14 +23,14 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Validate journal files (v3.1)
+      - name: Validate journals + thinking logs (v2.0)
         run: |
           if [ -f scripts/validate-journals.js ]; then
-            node scripts/validate-journals.js || echo "⚠️ Journal validation had warnings"
+            node scripts/validate-journals.js || echo "Journal validation had warnings"
           fi
         continue-on-error: true
 
-      - name: Extract prompts from commits
+      - name: Extract prompts + thinking logs (v4.0)
         run: |
           node scripts/extract-local-prompts.js
 

@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 /**
- * journal-stats.js v1.0
+ * journal-stats.js v2.0
  *
- * .prompts/*.md 저널 파일들을 분석하여 통계를 생성합니다.
- * extract-local-prompts.js에서 호출되어 prompts.json에 통계를 추가합니다.
+ * .prompts/*.md 저널 + .thoughts/*.md CE 사고 여정 통계를 생성합니다.
  *
  * 사용법:
  *   node scripts/journal-stats.js           # 콘솔 출력
@@ -288,6 +287,66 @@ function printStats(stats) {
 }
 
 /**
+ * .thoughts/ CE 사고 여정 파싱
+ */
+function parseAllThinkingLogs() {
+  const thoughtsDir = '.thoughts';
+  const logs = [];
+
+  if (!existsSync(thoughtsDir)) return logs;
+
+  const files = readdirSync(thoughtsDir)
+    .filter(f => f.endsWith('.md') && f !== '.gitkeep')
+    .map(f => join(thoughtsDir, f));
+
+  for (const filePath of files) {
+    try {
+      const content = readFileSync(filePath, 'utf8');
+      const fm = parseYamlFrontmatter(content);
+
+      // CE 전략 추출
+      const strategies = [];
+      if (/\[x\] Write/i.test(content)) strategies.push('write');
+      if (/\[x\] Select/i.test(content)) strategies.push('select');
+      if (/\[x\] Compress/i.test(content)) strategies.push('compress');
+      if (/\[x\] Isolate/i.test(content)) strategies.push('isolate');
+
+      logs.push({ filename: basename(filePath), ...fm, ceStrategies: strategies });
+    } catch (e) {
+      console.error(`Error parsing ${filePath}: ${e.message}`);
+    }
+  }
+
+  return logs;
+}
+
+/**
+ * CE 사고 여정 통계
+ */
+function calculateThinkingStats(logs) {
+  if (logs.length === 0) return { total: 0 };
+
+  const strategyCounts = { write: 0, select: 0, compress: 0, isolate: 0 };
+  for (const log of logs) {
+    for (const s of (log.ceStrategies || [])) {
+      if (strategyCounts[s] !== undefined) strategyCounts[s]++;
+    }
+  }
+
+  const byType = {};
+  for (const log of logs) {
+    const type = log.type || 'unknown';
+    byType[type] = (byType[type] || 0) + 1;
+  }
+
+  return {
+    total: logs.length,
+    ceStrategyCounts: strategyCounts,
+    byType,
+  };
+}
+
+/**
  * 메인 함수
  */
 function main() {
@@ -296,10 +355,15 @@ function main() {
   const outputFile = args.find(a => a.startsWith('--output='))?.split('=')[1];
 
   const journals = parseAllJournals();
-  const stats = calculateStats(journals);
+  const journalStats = calculateStats(journals);
+
+  const thinkingLogs = parseAllThinkingLogs();
+  const thinkingStats = calculateThinkingStats(thinkingLogs);
+
+  const combined = { journals: journalStats, thinking: thinkingStats };
 
   if (jsonMode) {
-    const output = JSON.stringify(stats, null, 2);
+    const output = JSON.stringify(combined, null, 2);
     if (outputFile) {
       writeFileSync(outputFile, output);
       console.log(`Stats written to ${outputFile}`);
@@ -307,14 +371,16 @@ function main() {
       console.log(output);
     }
   } else {
-    printStats(stats);
+    printStats(journalStats);
+    if (thinkingStats.total > 0) {
+      console.log(`\nCE 사고 여정: ${thinkingStats.total}개`);
+      console.log(`  CE 전략: Write(${thinkingStats.ceStrategyCounts.write}) Select(${thinkingStats.ceStrategyCounts.select}) Compress(${thinkingStats.ceStrategyCounts.compress}) Isolate(${thinkingStats.ceStrategyCounts.isolate})`);
+    }
   }
 
-  return stats;
+  return combined;
 }
 
-// 모듈로 사용할 때를 위한 export
-export { parseAllJournals, calculateStats };
+export { parseAllJournals, calculateStats, parseAllThinkingLogs, calculateThinkingStats };
 
-// 직접 실행 시
 main();

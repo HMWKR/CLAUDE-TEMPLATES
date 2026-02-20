@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 /**
- * extract-local-prompts.js v3.0
+ * extract-local-prompts.js v4.0
  *
- * 프롬프트를 두 소스에서 추출합니다:
- * 1. 16개 섹션 커밋 메시지 (기존)
- * 2. .prompts/*.md 프롬프트 저널 (신규)
+ * 프롬프트/사고여정을 3개 소스에서 추출합니다:
+ * 1. 4섹션 커밋 메시지 (v4.0 신규)
+ * 2. .prompts/*.md 프롬프트 저널 (레거시 호환)
+ * 3. .thoughts/*.md CE 사고 여정 (v4.0 신규)
+ *
+ * 레거시: 16섹션 커밋도 여전히 파싱 가능
  *
  * 사용법: node scripts/extract-local-prompts.js
  */
@@ -13,92 +16,80 @@ import { execSync } from 'child_process';
 import { writeFileSync, readFileSync, readdirSync, existsSync } from 'fs';
 import { join, basename } from 'path';
 
-// 16개 필수 섹션 패턴
-const REQUIRED_SECTIONS = [
-  '## 산출물',
-  '## 변경 영향도',
-  '## 테스트 전략',
-  '## 롤백 계획',
-  '## 관련 이슈',
-  '## Breaking Changes',
-  '## 성능 벤치마크',
-  '## 아키텍처 다이어그램',
-  '## UI/UX 와이어프레임',
-  '## 사고 여정',
-  '### 원본 프롬프트',
-  '### 프롬프트 분석',
-  '### 최적화된 프롬프트',
-  '## 프롬프트 품질 검수',
-  'Co-Authored-By:'
+// v4.0 필수 섹션
+const REQUIRED_SECTIONS_V4 = ['## What', '## Why', '## Impact', 'Co-Authored-By:'];
+
+// 레거시 16섹션 (하위 호환)
+const REQUIRED_SECTIONS_LEGACY = [
+  '## 산출물', '## 변경 영향도', '## 테스트 전략', '## 롤백 계획',
+  '## 관련 이슈', '## Breaking Changes', '## 성능 벤치마크',
+  '## 아키텍처 다이어그램', '## UI/UX 와이어프레임', '## 사고 여정',
+  '### 원본 프롬프트', '### 프롬프트 분석', '### 최적화된 프롬프트',
+  '## 프롬프트 품질 검수', 'Co-Authored-By:'
 ];
 
 /**
- * Git 커밋 메시지가 16개 섹션을 포함하는지 확인
+ * 커밋이 유효한 구조인지 확인 (4섹션 또는 레거시 16섹션)
  */
-function has16Sections(message) {
-  let count = 0;
-  for (const section of REQUIRED_SECTIONS) {
-    if (message.includes(section)) {
-      count++;
-    }
-  }
-  // 최소 10개 이상의 섹션이 있으면 유효한 프롬프트로 간주
-  return count >= 10;
+function isValidCommit(message) {
+  // v4.0: 4섹션 확인
+  const v4Count = REQUIRED_SECTIONS_V4.filter(s => message.includes(s)).length;
+  if (v4Count >= 3) return 'v4';
+
+  // 레거시: 16섹션 확인
+  const legacyCount = REQUIRED_SECTIONS_LEGACY.filter(s => message.includes(s)).length;
+  if (legacyCount >= 10) return 'legacy';
+
+  return null;
 }
 
 /**
- * 커밋 메시지에서 프롬프트 정보 추출
+ * v4 커밋에서 정보 추출
  */
-function extractPromptFromCommit(commit) {
+function extractFromV4Commit(commit) {
   const { hash, date, message } = commit;
-
-  // 타입과 제목 추출 (첫 줄)
   const firstLine = message.split('\n')[0];
   const typeMatch = firstLine.match(/^(\w+)(?:\((.+)\))?:\s*(.+)$/);
 
-  const type = typeMatch ? typeMatch[1] : 'unknown';
-  const scope = typeMatch ? typeMatch[2] || '' : '';
-  const subject = typeMatch ? typeMatch[3] : firstLine;
-
-  // 원본 프롬프트 추출
-  const originalPromptMatch = message.match(/### 원본 프롬프트\s*```([\s\S]*?)```/);
-  const originalPrompt = originalPromptMatch
-    ? originalPromptMatch[1].trim()
-    : '';
-
-  // 최적화된 프롬프트 추출
-  const optimizedPromptMatch = message.match(/### 최적화된 프롬프트\s*```([\s\S]*?)```/);
-  const optimizedPrompt = optimizedPromptMatch
-    ? optimizedPromptMatch[1].trim()
-    : '';
-
-  // 프롬프트 분석 추출
-  const analysisMatch = message.match(/### 프롬프트 분석\s*>([\s\S]*?)(?=###|## |$)/);
-  const analysis = analysisMatch
-    ? analysisMatch[1].trim()
-    : '';
-
-  // 품질 점수 추출
-  const scoreMatch = message.match(/\*\*총점\*\*.*?(\d+)\/48/);
-  const qualityScore = scoreMatch ? parseInt(scoreMatch[1]) : null;
-
-  // 등급 추출
-  const gradeMatch = message.match(/등급:\s*\[?\s*([A-F][+-]?|[가-힣]+)\s*\]?/);
-  const grade = gradeMatch ? gradeMatch[1] : null;
+  const whatMatch = message.match(/^## What\n([\s\S]*?)(?=\n## |$)/m);
+  const whyMatch = message.match(/^## Why\n([\s\S]*?)(?=\n## |$)/m);
+  const impactMatch = message.match(/^## Impact\n([\s\S]*?)(?=\n## |Co-Authored|$)/m);
 
   return {
-    source: 'commit',  // 소스 구분 (v3.0 추가)
+    source: 'commit-v4',
     hash,
     date,
-    type,
-    scope,
-    subject,
-    originalPrompt,
-    optimizedPrompt,
-    analysis,
-    qualityScore,
-    grade,
-    fullMessage: message
+    type: typeMatch ? typeMatch[1] : 'unknown',
+    scope: typeMatch ? typeMatch[2] || '' : '',
+    subject: typeMatch ? typeMatch[3] : firstLine,
+    what: whatMatch ? whatMatch[1].trim() : '',
+    why: whyMatch ? whyMatch[1].trim() : '',
+    impact: impactMatch ? impactMatch[1].trim() : '',
+  };
+}
+
+/**
+ * 레거시 16섹션 커밋에서 정보 추출
+ */
+function extractFromLegacyCommit(commit) {
+  const { hash, date, message } = commit;
+  const firstLine = message.split('\n')[0];
+  const typeMatch = firstLine.match(/^(\w+)(?:\((.+)\))?:\s*(.+)$/);
+
+  const originalPromptMatch = message.match(/### 원본 프롬프트\s*```([\s\S]*?)```/);
+  const optimizedPromptMatch = message.match(/### 최적화된 프롬프트\s*```([\s\S]*?)```/);
+  const scoreMatch = message.match(/\*\*총점\*\*.*?(\d+)\/48/);
+
+  return {
+    source: 'commit-legacy',
+    hash,
+    date,
+    type: typeMatch ? typeMatch[1] : 'unknown',
+    scope: typeMatch ? typeMatch[2] || '' : '',
+    subject: typeMatch ? typeMatch[3] : firstLine,
+    originalPrompt: originalPromptMatch ? originalPromptMatch[1].trim() : '',
+    optimizedPrompt: optimizedPromptMatch ? optimizedPromptMatch[1].trim() : '',
+    qualityScore: scoreMatch ? parseInt(scoreMatch[1]) : null,
   };
 }
 
@@ -106,139 +97,106 @@ function extractPromptFromCommit(commit) {
  * YAML frontmatter 파싱
  */
 function parseYamlFrontmatter(content) {
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-  if (!frontmatterMatch) {
-    return {};
-  }
+  const match = content.match(/^---\n([\s\S]*?)\n---/);
+  if (!match) return {};
 
-  const yaml = frontmatterMatch[1];
   const result = {};
-
-  // 간단한 YAML 파서 (key: value 형식)
-  const lines = yaml.split('\n');
-  for (const line of lines) {
-    // 주석 무시
+  for (const line of match[1].split('\n')) {
     if (line.trim().startsWith('#')) continue;
-
-    const match = line.match(/^(\w+):\s*(.*)$/);
-    if (match) {
-      const key = match[1];
-      let value = match[2].trim();
-
-      // 배열 처리 [item1, item2]
+    const m = line.match(/^(\w+):\s*(.*)$/);
+    if (m) {
+      let value = m[2].trim();
       if (value.startsWith('[') && value.endsWith(']')) {
-        value = value.slice(1, -1).split(',').map(s => s.trim());
-      }
-      // 숫자 처리
-      else if (!isNaN(value) && value !== '') {
-        value = Number(value);
-      }
-      // null 처리
-      else if (value === 'null' || value === '') {
+        value = value.slice(1, -1).split(',').map(s => s.trim()).filter(Boolean);
+      } else if (value === 'null' || value === '') {
         value = null;
-      }
-      // 문자열 따옴표 제거
-      else if ((value.startsWith('"') && value.endsWith('"')) ||
-               (value.startsWith("'") && value.endsWith("'"))) {
+      } else if ((value.startsWith('"') && value.endsWith('"'))) {
         value = value.slice(1, -1);
       }
-
-      result[key] = value;
+      result[m[1]] = value;
     }
   }
-
   return result;
 }
 
 /**
- * 마크다운 섹션 추출
- */
-function extractMarkdownSection(content, sectionName) {
-  // ## 섹션명 또는 # 섹션명 형식 지원
-  const escapedName = sectionName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(`#+\\s*(?:[^\\n]*)?${escapedName}[^\\n]*\\n([\\s\\S]*?)(?=\\n#|$)`, 'i');
-  const match = content.match(regex);
-  return match ? match[1].trim() : '';
-}
-
-/**
- * 프롬프트 저널 파일에서 정보 추출
- */
-function extractPromptFromJournal(filePath) {
-  try {
-    const content = readFileSync(filePath, 'utf8');
-    const frontmatter = parseYamlFrontmatter(content);
-
-    // 마크다운 본문에서 섹션 추출
-    const originalPromptSection = extractMarkdownSection(content, '원본 프롬프트');
-    const optimizedPromptSection = extractMarkdownSection(content, '최적화된 프롬프트');
-    const thinkingSection = extractMarkdownSection(content, '사고 여정');
-    const learningSection = extractMarkdownSection(content, '핵심 학습');
-    const resultSection = extractMarkdownSection(content, '결과');
-
-    // 원본 프롬프트에서 인용문(>) 추출
-    const quoteMatch = originalPromptSection.match(/^>\s*(.+)$/m);
-    const originalPrompt = quoteMatch ? quoteMatch[1].trim() : originalPromptSection;
-
-    // 최적화된 프롬프트에서 코드 블록 추출
-    const codeBlockMatch = optimizedPromptSection.match(/```[\s\S]*?\n([\s\S]*?)```/);
-    const optimizedPrompt = codeBlockMatch ? codeBlockMatch[1].trim() : optimizedPromptSection;
-
-    // 제목 추출 (첫 번째 # 헤더)
-    const titleMatch = content.match(/^#\s+(.+)$/m);
-    const subject = titleMatch ? titleMatch[1].trim() : basename(filePath, '.md');
-
-    return {
-      source: 'journal',  // 소스 구분
-      hash: frontmatter.commit || null,
-      date: frontmatter.date || null,
-      type: frontmatter.domain || 'general',
-      scope: frontmatter.subdomain || '',
-      subject: subject,
-      originalPrompt: originalPrompt,
-      optimizedPrompt: optimizedPrompt,
-      analysis: thinkingSection,
-      qualityScore: frontmatter.quality_score || null,
-      grade: frontmatter.grade || null,
-      // 저널 전용 필드
-      journalFile: basename(filePath),
-      tags: frontmatter.tags || [],
-      complexity: frontmatter.complexity || null,
-      thinking: thinkingSection,
-      learning: learningSection,
-      result: resultSection
-    };
-
-  } catch (error) {
-    console.error(`Error parsing journal file ${filePath}:`, error.message);
-    return null;
-  }
-}
-
-/**
- * .prompts/ 폴더에서 모든 저널 추출
+ * .prompts/ 저널 추출 (레거시 호환)
  */
 function extractAllJournals() {
-  const promptsDir = '.prompts';
+  const dir = '.prompts';
+  if (!existsSync(dir)) return [];
 
-  if (!existsSync(promptsDir)) {
-    console.log('.prompts/ folder not found, skipping journal extraction');
-    return [];
-  }
-
-  const files = readdirSync(promptsDir)
-    .filter(f => f.endsWith('.md'))
-    .map(f => join(promptsDir, f));
-
+  const files = readdirSync(dir).filter(f => f.endsWith('.md')).map(f => join(dir, f));
   console.log(`Found ${files.length} journal files in .prompts/`);
 
-  const journals = files
-    .map(extractPromptFromJournal)
-    .filter(j => j !== null);
+  return files.map(filePath => {
+    try {
+      const content = readFileSync(filePath, 'utf8');
+      const fm = parseYamlFrontmatter(content);
+      const titleMatch = content.match(/^#\s+(.+)$/m);
+      return {
+        source: 'journal',
+        hash: fm.commit || null,
+        date: fm.date || null,
+        type: fm.domain || 'general',
+        subject: titleMatch ? titleMatch[1].trim() : basename(filePath, '.md'),
+        journalFile: basename(filePath),
+        qualityScore: fm.quality_score || null,
+        grade: fm.grade || null,
+      };
+    } catch (e) {
+      console.error(`Error parsing ${filePath}:`, e.message);
+      return null;
+    }
+  }).filter(Boolean);
+}
 
-  console.log(`Extracted ${journals.length} valid journals`);
+/**
+ * .thoughts/ CE 사고 여정 추출 (v4.0 신규)
+ */
+function extractAllThinkingLogs() {
+  const dir = '.thoughts';
+  if (!existsSync(dir)) return [];
 
-  return journals;
+  const files = readdirSync(dir).filter(f => f.endsWith('.md')).map(f => join(dir, f));
+  console.log(`Found ${files.length} thinking logs in .thoughts/`);
+
+  return files.map(filePath => {
+    try {
+      const content = readFileSync(filePath, 'utf8');
+      const fm = parseYamlFrontmatter(content);
+      const titleMatch = content.match(/^#\s+(.+)$/m);
+
+      // CE 전략 추출
+      const strategies = [];
+      if (content.includes('[x] Write') || content.includes('[X] Write')) strategies.push('write');
+      if (content.includes('[x] Select') || content.includes('[X] Select')) strategies.push('select');
+      if (content.includes('[x] Compress') || content.includes('[X] Compress')) strategies.push('compress');
+      if (content.includes('[x] Isolate') || content.includes('[X] Isolate')) strategies.push('isolate');
+
+      // 실패 모드 감지 여부 추출
+      const failureModes = {};
+      for (const mode of ['Poisoning', 'Distraction', 'Confusion', 'Clash']) {
+        const modeRegex = new RegExp(`${mode}[^|]*\\|[^|]*\\|([^|]+)\\|`, 'i');
+        const m = content.match(modeRegex);
+        failureModes[mode.toLowerCase()] = m ? m[1].trim() !== '' : false;
+      }
+
+      return {
+        source: 'thinking',
+        hash: fm.commit || null,
+        date: fm.date || null,
+        type: fm.type || 'unknown',
+        subject: fm.subject || (titleMatch ? titleMatch[1].trim() : basename(filePath, '.md')),
+        thinkingFile: basename(filePath),
+        ceStrategies: fm.ce_strategies || strategies,
+        failureModes,
+      };
+    } catch (e) {
+      console.error(`Error parsing ${filePath}:`, e.message);
+      return null;
+    }
+  }).filter(Boolean);
 }
 
 /**
@@ -246,190 +204,94 @@ function extractAllJournals() {
  */
 function extractAllCommitPrompts() {
   try {
-    // 모든 커밋 가져오기 (최근 500개까지)
     const gitLog = execSync(
       'git log --format="COMMIT_START%n%H%n%aI%n%B%nCOMMIT_END" -500',
       { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 }
     );
 
-    // 커밋 파싱
-    const commits = gitLog
-      .split('COMMIT_START')
-      .filter(c => c.trim())
-      .map(block => {
-        const lines = block.trim().split('\n');
-        const hash = lines[0];
-        const date = lines[1];
-        const message = lines.slice(2, -1).join('\n').replace('COMMIT_END', '').trim();
-        return { hash, date, message };
-      });
+    const commits = gitLog.split('COMMIT_START').filter(c => c.trim()).map(block => {
+      const lines = block.trim().split('\n');
+      return { hash: lines[0], date: lines[1], message: lines.slice(2, -1).join('\n').replace('COMMIT_END', '').trim() };
+    });
 
     console.log(`Found ${commits.length} commits`);
 
-    // 16개 섹션이 있는 커밋만 필터링
-    const validCommits = commits.filter(c => has16Sections(c.message));
-    console.log(`Found ${validCommits.length} commits with 16 sections`);
+    const results = [];
+    for (const commit of commits) {
+      const version = isValidCommit(commit.message);
+      if (version === 'v4') {
+        results.push(extractFromV4Commit(commit));
+      } else if (version === 'legacy') {
+        results.push(extractFromLegacyCommit(commit));
+      }
+    }
 
-    // 프롬프트 정보 추출
-    return validCommits.map(extractPromptFromCommit);
-
-  } catch (error) {
-    console.error('Error extracting commit prompts:', error.message);
+    console.log(`Found ${results.length} valid commits`);
+    return results;
+  } catch (e) {
+    console.error('Error extracting commits:', e.message);
     return [];
   }
 }
 
 /**
- * 저널 통계 계산 (v3.1)
- */
-function calculateJournalStats(journals) {
-  if (journals.length === 0) {
-    return {
-      totalJournals: 0,
-      byMonth: {},
-      byDomain: {},
-      byComplexity: {},
-      avgQualityScore: null,
-      gradeDistribution: {}
-    };
-  }
-
-  // 월별 통계
-  const byMonth = {};
-  for (const j of journals) {
-    if (j.date) {
-      const month = j.date.substring(0, 7);
-      byMonth[month] = (byMonth[month] || 0) + 1;
-    }
-  }
-
-  // 도메인별 통계
-  const byDomain = {};
-  for (const j of journals) {
-    const domain = j.type || 'unknown';
-    byDomain[domain] = (byDomain[domain] || 0) + 1;
-  }
-
-  // 복잡도별 통계
-  const byComplexity = {};
-  for (const j of journals) {
-    const complexity = j.complexity || 'unknown';
-    byComplexity[complexity] = (byComplexity[complexity] || 0) + 1;
-  }
-
-  // 평균 품질 점수
-  const scores = journals
-    .filter(j => typeof j.qualityScore === 'number')
-    .map(j => j.qualityScore);
-  const avgQualityScore = scores.length > 0
-    ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10
-    : null;
-
-  // 등급 분포
-  const gradeDistribution = {};
-  for (const j of journals) {
-    if (j.grade) {
-      gradeDistribution[j.grade] = (gradeDistribution[j.grade] || 0) + 1;
-    }
-  }
-
-  return {
-    totalJournals: journals.length,
-    byMonth,
-    byDomain,
-    byComplexity,
-    avgQualityScore,
-    gradeDistribution
-  };
-}
-
-/**
- * 메인 함수: 모든 소스에서 프롬프트 추출
+ * 메인
  */
 function extractAllPrompts() {
   try {
-    // Git 저장소 정보 가져오기
-    let repoUrl = '';
-    let repoName = '';
-    let owner = '';
-
+    let repoUrl = '', repoName = '', owner = '';
     try {
       repoUrl = execSync('git config --get remote.origin.url', { encoding: 'utf8' }).trim();
-      // GitHub URL에서 owner/repo 추출
       const match = repoUrl.match(/github\.com[:/]([^/]+)\/([^/.]+)/);
-      if (match) {
-        owner = match[1];
-        repoName = match[2];
-      }
-    } catch (e) {
-      console.warn('Warning: Could not get remote URL');
-    }
+      if (match) { owner = match[1]; repoName = match[2]; }
+    } catch {}
 
-    // 1. 커밋에서 프롬프트 추출 (기존 로직)
     const commitPrompts = extractAllCommitPrompts();
-
-    // 2. 저널에서 프롬프트 추출 (v3.0 추가)
     const journalPrompts = extractAllJournals();
+    const thinkingLogs = extractAllThinkingLogs();
 
-    // 3. 두 소스 통합 (중복 제거: 같은 commit hash가 있으면 저널 우선)
-    const commitHashes = new Set(journalPrompts.filter(j => j.hash).map(j => j.hash));
-    const filteredCommitPrompts = commitPrompts.filter(c => !commitHashes.has(c.hash));
-
-    const allPrompts = [...journalPrompts, ...filteredCommitPrompts];
-
-    // 날짜순 정렬 (최신 먼저)
-    allPrompts.sort((a, b) => {
-      const dateA = a.date ? new Date(a.date) : new Date(0);
-      const dateB = b.date ? new Date(b.date) : new Date(0);
-      return dateB - dateA;
+    // 중복 제거 (같은 commit hash → thinking > journal > commit 우선)
+    const seen = new Set();
+    const all = [...thinkingLogs, ...journalPrompts, ...commitPrompts].filter(item => {
+      if (item.hash && seen.has(item.hash)) return false;
+      if (item.hash) seen.add(item.hash);
+      return true;
     });
 
-    // 저널 통계 계산 (v3.1)
-    const journalStats = calculateJournalStats(journalPrompts);
+    all.sort((a, b) => {
+      const da = a.date ? new Date(a.date) : new Date(0);
+      const db = b.date ? new Date(b.date) : new Date(0);
+      return db - da;
+    });
 
-    // 결과 JSON 생성 (v3.1 스키마)
     const result = {
-      version: '3.1',
-      project: {
-        name: repoName || 'unknown',
-        owner: owner || 'unknown',
-        url: repoUrl || ''
-      },
+      version: '4.0',
+      project: { name: repoName || 'unknown', owner: owner || 'unknown', url: repoUrl || '' },
       extractedAt: new Date().toISOString(),
       stats: {
-        totalCommits: commitPrompts.length + filteredCommitPrompts.length,
-        fromCommits: filteredCommitPrompts.length,
+        total: all.length,
+        fromCommitsV4: commitPrompts.filter(c => c.source === 'commit-v4').length,
+        fromCommitsLegacy: commitPrompts.filter(c => c.source === 'commit-legacy').length,
         fromJournals: journalPrompts.length,
-        total: allPrompts.length,
-        journalStats: journalStats
+        fromThinking: thinkingLogs.length,
       },
-      prompts: allPrompts
+      prompts: all
     };
 
-    // prompts.json 저장
     writeFileSync('prompts.json', JSON.stringify(result, null, 2));
-    console.log(`\nSaved ${allPrompts.length} prompts to prompts.json`);
-    console.log(`  - From commits: ${filteredCommitPrompts.length}`);
-    console.log(`  - From journals: ${journalPrompts.length}`);
+    console.log(`\nSaved ${all.length} entries to prompts.json (v4.0)`);
+    console.log(`  - Commits (v4): ${result.stats.fromCommitsV4}`);
+    console.log(`  - Commits (legacy): ${result.stats.fromCommitsLegacy}`);
+    console.log(`  - Journals: ${result.stats.fromJournals}`);
+    console.log(`  - Thinking logs: ${result.stats.fromThinking}`);
 
-    return result;
-
-  } catch (error) {
-    console.error('Error extracting prompts:', error.message);
-
-    // 빈 결과 저장
-    const emptyResult = {
-      version: '3.0',
-      project: { name: 'unknown', owner: 'unknown', url: '' },
-      extractedAt: new Date().toISOString(),
-      stats: { totalCommits: 0, fromCommits: 0, fromJournals: 0, total: 0 },
-      prompts: []
-    };
-
-    writeFileSync('prompts.json', JSON.stringify(emptyResult, null, 2));
-    return emptyResult;
+  } catch (e) {
+    console.error('Error:', e.message);
+    writeFileSync('prompts.json', JSON.stringify({
+      version: '4.0', project: {}, extractedAt: new Date().toISOString(),
+      stats: { total: 0 }, prompts: []
+    }, null, 2));
   }
 }
 
-// 실행
 extractAllPrompts();

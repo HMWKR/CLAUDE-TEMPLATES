@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 /**
- * create-journal-from-commit.js v1.0
+ * @deprecated v4.0에서 create-thinking-log.js로 대체됨.
+ * 레거시 호환을 위해 유지. 신규 사용 금지.
+ *
+ * create-journal-from-commit.js v1.0 (DEPRECATED)
  *
  * 16섹션 커밋 메시지에서 프롬프트 저널을 자동 생성합니다.
  * post-commit 훅에서 호출됩니다.
