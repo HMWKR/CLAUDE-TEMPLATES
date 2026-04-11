@@ -5,15 +5,88 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-02-20T05:54:04.779Z",
+  "extractedAt": "2026-04-11T08:37:33.527Z",
   "stats": {
-    "total": 17,
-    "fromCommitsV4": 1,
+    "total": 27,
+    "fromCommitsV4": 6,
     "fromCommitsLegacy": 13,
-    "fromJournals": 3,
-    "fromThinking": 0
+    "fromJournals": 6,
+    "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "a9911072f0ede094bd0811453d401f8b41673e71",
+      "date": "2026-04-11T17:37:13+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "CLAUDE.md 섹션 8에 글로벌 인프라 참조 추가 + 권한 allowlist 동기화",
+      "what": "- CLAUDE.md 섹션 8 \"알려진 이슈 & TODO\"에 하위섹션 \"글로벌 인프라 상태 (참고용, 이 저장소 범위 밖)\" 추가",
+      "why": "이 저장소는 CE v2.0 템플릿만 관리하는 씨앗 저장소이므로 구체적 MCP 서버/로컬 도구 목록을 CLAUDE.md에 박으면 CE Distraction 위반 + 중복(claude mcp list 조회 가능). 대신 \"참고용\" 경계선을 명시하고 실제 인벤토리는 프로젝트 메모리(environment_inventory.md)로 위임. 권한 allowlist는 최근 세션에서 누적된 Bash 허용 목록을 반영하여 재발 프롬프트 제거.",
+      "impact": "- 범위: CLAUDE.md 섹션 8 (18줄 추가), .claude/settings.local.json 41줄 추가 + 3줄 삭제"
+    },
+    {
+      "source": "commit-v4",
+      "hash": "df567843662c3256ac3def869174817f311203f9",
+      "date": "2026-04-11T17:36:52+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "CE 사고여정 2건 + 프롬프트 저널 3건 축적",
+      "what": "- .thoughts/2026-02-20-ce-v20-.md — CE v2.0 리팩토링 6단계 사고여정 (커밋 9854f1f)",
+      "why": "harness-eval 기준 CE 축 A+(9.0+) 도달에는 .thoughts/ 10건+ 축적이 필요하다고 2026-02-21 스냅샷에서 식별됨. 이 2건이 쌓이면 4건 → 현재 목표까지 절반. 또한 분산 Push 아키텍처에서 .prompts/와 .thoughts/는 extract-local-prompts.js v4.0의 입력이며, 미푸시 상태면 prompt-dashboard에서 이 저장소가 \"CE 전략 0건\"으로 집계되는 오인 발생.",
+      "impact": "- 범위: .thoughts/ 신규 2개, .prompts/ 신규 3개"
+    },
+    {
+      "source": "commit-v4",
+      "hash": "8d4c5f0e27535ee3c9adad1ebd08dfaa7303004b",
+      "date": "2026-04-11T17:36:30+09:00",
+      "type": "feat",
+      "scope": "rules",
+      "subject": "template-quality 프로젝트 규칙 신설",
+      "what": "- .claude/rules/template-quality.md — 4개 규칙 정의",
+      "why": "claude-templates는 씨앗 저장소이므로 템플릿이 구 패턴(PE 시대 16섹션 커밋, 48점 자기검증, ultrathink 키워드)으로 퇴행하면 파생 프로젝트가 모두 오염된다. CE v2.0 품질 기준을 .claude/rules/에 명문화하여 Claude가 작업 시 자동 참조하게 하고, harness-gc.js가 이 규칙 위반을 감지할 수 있게 함.",
+      "impact": "- 범위: .claude/rules/ 신규 1파일"
+    },
+    {
+      "source": "commit-v4",
+      "hash": "75a37624cdbcd36116626b46c44274f8bd7ead15",
+      "date": "2026-04-11T17:36:12+09:00",
+      "type": "feat",
+      "scope": "",
+      "subject": "하니스 엔지니어링 평가/GC 자동화 도구 추가",
+      "what": "- scripts/harness-eval.js — CE/AC/GC/EL/SI 5축 자동 평가 파이프라인",
+      "why": "하니스 엔지니어링 원칙(\"모델이 좋아지면 하니스를 벗겨내라\" — Anthropic)을 실행 가능한 측정 루프로 정착시키기 위함. 수동 점검 대신 node scripts/harness-eval.js 한 번으로 현재 점수와 drift를 수치화하여, 모델 업그레이드 시 HARNESS_UPGRADE_CHECKLIST.md의 Phase 1(측정) 단계를 자동화한다.",
+      "impact": "- 범위: scripts/ 신규 2개 파일, 기존 파일 영향 없음"
+    },
+    {
+      "source": "commit-v4",
+      "hash": "9b4e3a06dc6d1660587901b33bfe14d92d7a57b8",
+      "date": "2026-04-11T17:35:52+09:00",
+      "type": "chore",
+      "scope": "",
+      "subject": "runtime state 파일 gitignore 확장",
+      "what": "- .claude/anti-loop-state.json 및 .bak 추가 gitignore",
+      "why": "anti-loop-guard.py가 세션마다 tool_history를 누적 기록하는 volatile 런타임 상태 파일. 커밋되면 매 세션 변경으로 diff 오염 및 루프 방지 로직 간섭 위험.",
+      "impact": "- 범위: .gitignore 1파일"
+    },
+    {
+      "source": "thinking",
+      "hash": "N/A (로컬 인프라 변경, 프로젝트 외부)",
+      "date": "2026-03-04",
+      "type": "chore",
+      "subject": "system_prompts_leaks 분석 → _core/ 인프라 4개 항목 반영",
+      "thinkingFile": "2026-03-04-system-prompts-leaks-infra.md",
+      "ceStrategies": [
+        "select",
+        "compress"
+      ],
+      "failureModes": {
+        "poisoning": true,
+        "distraction": true,
+        "confusion": true,
+        "clash": true
+      }
+    },
     {
       "source": "commit-v4",
       "hash": "9854f1f937e24a833a2cdd13b62e5855f7c3ef40",
@@ -24,6 +97,46 @@
       "what": "- CLAUDE.md 91% 축소, 커밋 16섹션→4섹션, .thoughts/ CE 사고 여정",
       "why": "- 세션당 ~17,000 토큰 중복 → ~4,700 토큰으로 72% 절감",
       "impact": "- 범위: 전체 5개 프로젝트 통일"
+    },
+    {
+      "source": "thinking",
+      "hash": "9854f1f",
+      "date": "2026-02-20",
+      "type": "refactor",
+      "subject": "CE v2.0 전면 리팩토링 + 하니스 엔지니어링 개선",
+      "thinkingFile": "2026-02-20-ce-v20-.md",
+      "ceStrategies": [
+        "write",
+        "select",
+        "compress",
+        "isolate"
+      ],
+      "failureModes": {
+        "poisoning": true,
+        "distraction": true,
+        "confusion": true,
+        "clash": true
+      }
+    },
+    {
+      "source": "journal",
+      "hash": "06a7095",
+      "date": "2026-01-19",
+      "type": "docs",
+      "subject": "5단계 고차원 사고 유도 프롬프트 체계 추가",
+      "journalFile": "2026-01-19-docs-5단계-고차원-사고-유도-프롬프트-체계-추가.md",
+      "qualityScore": "47",
+      "grade": "S"
+    },
+    {
+      "source": "journal",
+      "hash": "e774395",
+      "date": "2026-01-19",
+      "type": "docs",
+      "subject": "섹션 1-8 상세 작성 가이드 추가 및 템플릿 시스템 개선",
+      "journalFile": "2026-01-19-docs-섹션-1-8-상세-작성-가이드-추가-및-템플릿-시스템-.md",
+      "qualityScore": "47",
+      "grade": "S"
     },
     {
       "source": "commit-legacy",
@@ -57,6 +170,16 @@
       "originalPrompt": "",
       "optimizedPrompt": "1. 모든 문서에서 ultrathink 키워드를 제거하고 \"깊이 분석해줘\"로 대체해줘.\n2. arXiv 논문(CodeX-Verify, CodeAgent, Agentic Testing)을 기반으로\n   CODE_REVIEW_GUIDE.md를 작성해줘.",
       "qualityScore": null
+    },
+    {
+      "source": "journal",
+      "hash": "726615a",
+      "date": "2026-01-18",
+      "type": "docs",
+      "subject": "ultrathink 키워드 제거 및 논문 기반 코드 검수 가이드 추가",
+      "journalFile": "2026-01-18-docs-ultrathink-키워드-제거-및-논문-기반-코드-검.md",
+      "qualityScore": null,
+      "grade": "A+"
     },
     {
       "source": "commit-legacy",
