@@ -18,6 +18,24 @@ Thumbs.db
 # Temporary files
 tmpclaude-*
 *.tmp
+nul
+--version/
 
 # Generated files
 prompts.json
+
+# Session state
+checkpoint.md
+.task-state.md
+
+# Tool artifacts
+.bkit/
+.playwright-mcp/
+
+# Misplaced files
+calclab-initial.png
+
+# Anti-loop runtime state (volatile, session-local)
+.claude/anti-loop-state.json
+.claude/anti-loop-state.json.bak
+*.bak
