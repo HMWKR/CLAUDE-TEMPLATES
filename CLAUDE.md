@@ -83,6 +83,20 @@ claude-templates/
 ├── .husky/                      # Git 훅 설정
 │   ├── commit-msg               # 커밋 메시지 검증 훅
 │   └── post-commit              # 저널 자동 생성 훅 (v3.1)
+├── .claude/                     # Claude Code 프로젝트 설정
+│   ├── rules/                   # 프로젝트별 규칙
+│   │   └── template-quality.md  # 템플릿 품질 검증 규칙
+│   └── skills/                  # 프로젝트 스킬 자산
+│       ├── aidlc-baseline/      # AI-DLC baseline lifecycle 스킬 (v1.0) — § 4.8
+│       │   ├── SKILL.md         # frontmatter + Skill Bundle Note + 원본 CLAUDE.md byte-for-byte
+│       │   ├── README.md        # 출처·제외·install 안내
+│       │   └── references/      # 30개 baseline-lifecycle md 원문 보존
+│       │       ├── original-CLAUDE.md          # 원본 byte-for-byte 사본
+│       │       └── aws-aidlc-rule-details/     # 29 파일 (common/inception/construction/operations/extensions)
+│       └── aidlc-realizesoft/   # RealizeSoft Layer 스킬 (v1.0) — § 4.9
+│           ├── SKILL.md         # frontmatter + 12 섹션 (Purpose/Layer/§4 규칙 7/Helper Routing/Explicit-Only/Selection Gate/UI-UX Gate/Deployment Gate/UserChoice/Workflow/Completion/Universal AskUserQuestion Wrapper)
+│           ├── README.md        # 출처·2-Layer 도식·install·§18 11항목
+│           └── references/      # 10개 가이드 §section 원문 인용 사본
 ├── scripts/                     # 자동화 스크립트
 │   ├── extract-local-prompts.js # CE 데이터 추출 (v4.0)
 │   ├── create-thinking-log.js   # .thoughts/ 사고여정 생성
@@ -90,7 +104,9 @@ claude-templates/
 │   ├── validate-journals.js     # 저널/사고여정 형식 검증
 │   ├── journal-stats.js         # 저널 통계 분석
 │   ├── harness-eval.js          # 하니스 5축 자동 평가
-│   └── harness-gc.js            # 하니스 가비지 컬렉션
+│   ├── harness-gc.js            # 하니스 가비지 컬렉션
+│   ├── install-aidlc-baseline.ps1     # aidlc-baseline 글로벌 install (v1.0)
+│   └── install-aidlc-realizesoft.ps1  # aidlc-realizesoft 글로벌 install (v1.0)
 ├── .github/                     # GitHub 설정
 │   └── workflows/
 │       └── sync-prompts.yml     # 프롬프트 자동 동기화 워크플로우
@@ -289,6 +305,110 @@ prompt-dashboard가 프로젝트 목록을 가져오는 **프로젝트 레지스
 1. prompt-library 저장소에 PR 생성
 2. `data/projects.json`에 프로젝트 정보 추가 (v3.0 스키마)
 3. 머지 후 자동으로 prompt-dashboard에서 집계됨
+
+### 4.8 aidlc-baseline 스킬 (v1.0)
+
+**위치**: `.claude/skills/aidlc-baseline/`
+
+`realizesoft/table-order-macos-claudecode/` 의 baseline lifecycle 을 byte-for-byte 보존하여 자산화한 첫 프로젝트 스킬.
+
+**구성**:
+- `SKILL.md` — Claude Code 스킬 진입점. frontmatter + Skill Bundle Note (references/ 우선순위 안내) + 원본 `.claude/CLAUDE.md` byte-for-byte 본문
+- `README.md` — 출처, 가이드 §4.7·6.4 에 따른 `requirements/` 제외 사유, install 방법, 스킬 2 부착 명시
+- `references/original-CLAUDE.md` — 원본 byte-for-byte 100% 보존 사본
+- `references/aws-aidlc-rule-details/` — 29 파일 (common/inception/construction/operations/extensions)
+
+**제외 (가이드 §4.7·6.4)**:
+- `requirements/table-order-requirements.md`, `requirements/constraints.md` — product input 이므로 generic skill 의 source 아님
+
+**Hybrid 배치 전략**:
+- **마스터 사본** (git 추적): `claude-templates/.claude/skills/aidlc-baseline/`
+- **활성 글로벌 사본**: `~/.claude/skills/aidlc-baseline/` — `scripts/install-aidlc-baseline.ps1` 실행으로 배포
+
+**글로벌 install**:
+```powershell
+.\scripts\install-aidlc-baseline.ps1
+```
+
+활성화 후 어느 프로젝트에서나 "AI-DLC workflow", "aidlc baseline", "inception phase" 등 키워드로 호출 가능.
+
+**스킬 2 (RealizeSoft 레이어) 부착 완료**:
+가이드 §3 Core Architecture 의 2-Layer 모델 — 본 baseline 위에 cross-runtime-guide §4 비협상 규칙 (Selection Gate, UserChoice, Strict Gate Preservation, Provider-Neutral Deployment, Explicit-Only Skills) 을 강제하는 RealizeSoft 레이어가 §4.9 `aidlc-realizesoft` 스킬로 부착됨.
+
+**참조**:
+- `realizesoft/realizesoft-cross-runtime-skill-guide.md` (§6.4 Concrete Example, §11.2 Claude, §16 Build Procedure, §18 Verification Checklist)
+- `.claude/plans/table-order-macos-claudecode-requirement-iridescent-leaf.md` — 본 스킬화 작업의 plan 기록
+
+### 4.9 aidlc-realizesoft 스킬 (v1.0)
+
+**위치**: `.claude/skills/aidlc-realizesoft/`
+
+cross-runtime-guide §3 의 2-Layer 모델을 완성하는 RealizeSoft 레이어 스킬. `aidlc-baseline` (§4.8) 위에 부착되어 가이드 §4 비협상 규칙 7개를 강제하는 helper routing + user-choice gate 레이어.
+
+**2-Layer 관계**:
+
+```
+AI-DLC Workflow Invocation
+        ↓
+Layer 2: RealizeSoft Layer  ← aidlc-realizesoft (본 스킬)
+  • §4 비협상 규칙 7개 강제
+  • Selection Gate (AskUserQuestion)
+  • Universal AskUserQuestion Wrapper (3-Layer)
+  • UserChoice Records
+  • Provider-Neutral Deployment Gate
+  • Explicit-Only Skills isolation
+        ↓ attaches on top of (never modifies)
+Layer 1: Baseline Layer  ← aidlc-baseline (§4.8)
+  • AI-DLC 3-Phase 14-stage lifecycle 본문
+  • 원본 byte-for-byte 보존
+```
+
+**구성**:
+- `SKILL.md` — frontmatter (REQUIRES aidlc-baseline 명시) + 12 섹션 본문 (§1 Purpose / §2 Layer Relationship / §3 Non-Negotiable Rules 7개 / §4 Helper Routing Matrix / §5 Explicit-Only Skills / §6 Selection Gate Protocol / §7 UI/UX Decision Gate / §8 Deployment Provider Gate / §9 UserChoice Standard / §10 Workflow 8단계 / §11 Completion Report / §12 Universal AskUserQuestion Enforcement 3-Layer)
+- `README.md` — 출처, 2-Layer 도식, 사전조건 (aidlc-baseline 먼저 설치), install 방법, 가이드 §18 RealizeSoft 11 항목 충족
+- `references/` — 10개 가이드 §section 원문 인용 사본 (§4 / §9 / §10 / §11.2 / §12 / §13 / §14 / §15 / §17 / §18)
+
+**§4 비협상 규칙 7개 (cross-runtime-guide 인용)**:
+1. Preserve The Baseline (§4.1)
+2. No Hidden Helper Execution (§4.2)
+3. Strict Gate Preservation (§4.3)
+4. UserChoice Records (§4.4)
+5. Provider-Neutral Deployment (§4.5)
+6. No Fake Runtime Equivalence (§4.6)
+7. Product Input Exclusion (§4.7)
+
+**Universal AskUserQuestion Wrapper (사용자 명시 요청 2026-05-14)**:
+helper routing 시점에 AskUserQuestion gate 를 3 계층으로 강제:
+- **Layer 1**: Pre-Helper Selection Gate (본 스킬 직접 발동)
+- **Layer 2**: Helper Self-Gate Preservation (helper 자체 gate 보존)
+- **Layer 3**: Helper Self-Gate Absence Fallback (helper 가 자체 gate 없으면 본 스킬이 wrapper 로 강제 발동)
+
+→ 본 스킬이 활성화된 모든 helper 호출에서 AskUserQuestion 이 반드시 뜸. helper 가 자체 미지원이어도 over-coverage.
+
+**Hybrid 배치 전략**:
+- **마스터 사본** (git 추적): `claude-templates/.claude/skills/aidlc-realizesoft/`
+- **활성 글로벌 사본**: `~/.claude/skills/aidlc-realizesoft/` — `scripts/install-aidlc-realizesoft.ps1` 실행으로 배포
+- **backup 격리**: `~/.claude/skills-backups/` (skill registry 오염 방지 — 스킬 1 에서 검증된 패턴)
+
+**사전조건**:
+`aidlc-baseline` (§4.8) 이 먼저 글로벌 설치되어 있어야 함. install 스크립트가 `~/.claude/skills/aidlc-baseline/SKILL.md` 존재 여부를 검증.
+
+**글로벌 install**:
+```powershell
+# 스킬 1 먼저 (이미 설치되어 있으면 skip)
+.\scripts\install-aidlc-baseline.ps1
+# 스킬 2
+.\scripts\install-aidlc-realizesoft.ps1
+```
+
+활성화 후 어느 프로젝트에서나 "aidlc realizesoft", "AI-DLC workflow", "start AI-DLC with realizesoft" 등 키워드로 호출. 두 스킬 모두 매칭되어 RealizeSoft 레이어가 baseline 위에서 작동.
+
+**가이드 §18 RealizeSoft Verification Checklist (11 항목 모두 통과)**:
+Layer 분리 / 조건부 helper routing / Selection Gate 5요소 / Strict Gate Preservation / Q4 mandatory / UserChoice 표준 / Provider-Neutral deployment / Explicit-only 격리 / Runtime 차이 명시 / Project-specific exclusion / Generated layer type 명시.
+
+**참조**:
+- `realizesoft/realizesoft-cross-runtime-skill-guide.md` (§3 Core Architecture, §4 Non-Negotiable Rules, §9 Helper Routing, §10 Selection Gate, §11.2 Claude command skeleton, §12 UserChoice, §13 UI/UX Gate, §14 Deployment Gate, §15 Explicit-Only Skills, §17 Minimal Template, §18 Verification Checklist)
+- `.claude/plans/table-order-macos-claudecode-requirement-iridescent-leaf.md` — 본 스킬 작업의 plan 기록 (Why/What/How/So What 4단계 + 9 실행 단계)
 
 ---
 
