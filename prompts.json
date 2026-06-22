@@ -5,15 +5,48 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-04-11T08:37:33.527Z",
+  "extractedAt": "2026-06-22T10:44:43.517Z",
   "stats": {
-    "total": 27,
-    "fromCommitsV4": 6,
+    "total": 30,
+    "fromCommitsV4": 9,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "1f68953c6a17f6a09f1ece9c9f03a08996e3b07a",
+      "date": "2026-06-22T19:41:14+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "claude-templates 레거시 청산 + 템플릿 현 하네스 정렬",
+      "what": "- archive/pe-legacy/ 3파일 제거 (16섹션 커밋가이드·구 최적화 분석·구 universal rules)",
+      "why": "2026-06-11 글로벌 하네스 재구축(착수 계약·fablize·최소주의) 후, 마스터 템플릿 저장소가 폐기된 구 하네스를 작동하는 것처럼 설명하던 Poisoning을 제거해 새 프로젝트로의 레거시 전파를 차단한다.",
+      "impact": "활성 CE 코어 문서 레거시 0. 멀티에이전트 오버레이·역사 기록 무손상. git rm이라 복원 가능."
+    },
+    {
+      "source": "commit-v4",
+      "hash": "95823639f2cd9cc8acb468f245da2fd52b7e47e4",
+      "date": "2026-06-21T23:27:46+09:00",
+      "type": "fix",
+      "scope": "templates",
+      "subject": "KI-1 worker-brief 첫 의미줄 평문 목적화",
+      "what": "_templates/worker-brief.md 제목 다음에 평문 \"한 줄 목적\" 줄 추가(행동규약 블록 위).",
+      "why": "mat firstMeaningfulLine이 빈줄·#·주석만 skip → 기존엔 행동규약 첫 불릿/yaml펜스를 워커 목적으로 오표시(KNOWN_ISSUES KI-1). 수정안(a) 적용.",
+      "impact": "mat 화면에 실제 목적 표시(파서 시뮬 통과). 1200자 한도·Execution Context yaml 양립, 행동규약 고정블록 유지."
+    },
+    {
+      "source": "commit-v4",
+      "hash": "558ef3e6ec863e32daef7f51337de92c47c642d0",
+      "date": "2026-05-16T13:13:36+09:00",
+      "type": "feat",
+      "scope": "skills",
+      "subject": "AI-DLC 2-Layer 스킬화 (aidlc-baseline + aidlc-realizesoft)",
+      "what": "- 신규 스킬 2개 자산화:",
+      "why": "cross-runtime-guide §3 의 2-Layer 모델 (Baseline Source Discovery → RealizeSoft Layer → Baseline AI-DLC Stage Continues) 을 claude-templates 마스터 저장소에 완전 실현. 어느 프로젝트에서나 두 스킬 호출 시 자동 helper 폭주 / deploy 자동 가정 / product input 오염이 차단된 통제 가능한 AI-DLC 워크플로우가 실행됨. 가이드 §4 비협상 규칙 7개 (Preserve Baseline / No Hidden Helper / Strict Gate / UserChoice / Provider-Neutral / No Fake Runtime / Product Input Exclusion) 가 helper routing 레이어로 강제됨. 사용자 명시 요구로 모든 gate 가 AskUserQuestion 으로 처리되도록 Universal Wrapper 3-Layer 추가.",
+      "impact": "- 범위: 82 파일 추가 (.claude/skills/aidlc-baseline/ 32 + aidlc-realizesoft/ 12 + realizesoft/ 38 + scripts/ 2) + CLAUDE.md 수정 (§3 폴더 구조 + §4.8 갱신 + §4.9 신설, ~120 라인 추가). 글로벌 ~/.claude/skills/ 에 양 레이어 활성 (총 44 파일)"
+    },
     {
       "source": "commit-v4",
       "hash": "a9911072f0ede094bd0811453d401f8b41673e71",
