@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-06-26T12:18:20.768Z",
+  "extractedAt": "2026-06-26T12:54:56.085Z",
   "stats": {
-    "total": 31,
-    "fromCommitsV4": 10,
+    "total": 32,
+    "fromCommitsV4": 11,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "6f6ab8aeba4f098b04881ba0a6654503d4006bd7",
+      "date": "2026-06-26T21:53:34+09:00",
+      "type": "feat",
+      "scope": "harness",
+      "subject": "현재 하네스 전체 재현 키트 추가 (글로벌+플러그인+MCP)",
+      "what": "- harness/ 레이어 신설 — git clone만으로 현재 하네스 전 구성 재현:",
+      "why": "- 기존 레포는 전체 하네스의 ~8%(오케스트레이션 템플릿)만 담아 재현 불가였음",
+      "impact": "- 재현 완성도 8% → 글로벌 지침·규칙·에이전트·스킬·플러그인·MCP 전 구성 재현 가능"
+    },
     {
       "source": "commit-v4",
       "hash": "629b842ba979da7ea8f63e71033f0f2a752a629a",
