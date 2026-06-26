@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-06-22T10:44:43.517Z",
+  "extractedAt": "2026-06-26T12:18:20.768Z",
   "stats": {
-    "total": 30,
-    "fromCommitsV4": 9,
+    "total": 31,
+    "fromCommitsV4": 10,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "629b842ba979da7ea8f63e71033f0f2a752a629a",
+      "date": "2026-06-26T21:17:35+09:00",
+      "type": "docs",
+      "scope": "harness",
+      "subject": "하네스 핵심 자산 추적 추가 + 노이즈 제외 정비",
+      "what": "- 미추적 하네스/템플릿 자산 추적 등록: AGENTS.md, LICENSE, NOTICE,",
+      "why": "- 하네스 핵심 구성요소가 git에 누락돼 원격에서 재현 불가능했음",
+      "impact": "- 33개 파일 추적, 원격에서 하네스 템플릿 재현 가능"
+    },
     {
       "source": "commit-v4",
       "hash": "1f68953c6a17f6a09f1ece9c9f03a08996e3b07a",
