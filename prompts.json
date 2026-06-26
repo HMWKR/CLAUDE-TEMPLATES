@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-06-26T12:54:56.085Z",
+  "extractedAt": "2026-06-26T13:12:50.706Z",
   "stats": {
-    "total": 32,
-    "fromCommitsV4": 11,
+    "total": 33,
+    "fromCommitsV4": 12,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "4b82ebb40b563bc2ead64f2b912cc34f071c9f66",
+      "date": "2026-06-26T22:12:32+09:00",
+      "type": "feat",
+      "scope": "harness",
+      "subject": "설치 범위 선택(글로벌/프로젝트) 대화형 프롬프트 추가",
+      "what": "- install.{sh,ps1}: 실행 시작에 설치 범위를 묻는 대화형 프롬프트 추가",
+      "why": "- 기존엔 글로벌(~/.claude)로만 설치돼 특정 프로젝트에만 격리 적용 불가",
+      "impact": "- 한 스크립트로 글로벌·프로젝트 양쪽 설치 경로 제공"
+    },
     {
       "source": "commit-v4",
       "hash": "6f6ab8aeba4f098b04881ba0a6654503d4006bd7",
