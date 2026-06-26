@@ -1,0 +1,17 @@
+{
+  "name": "claude-templates",
+  "description": "개인 하네스 마켓플레이스 — jusan-harness 플러그인 호스팅. 글로벌 CLAUDE.md·rules·third-party 플러그인/MCP 재현은 harness/ 키트 참조.",
+  "owner": {
+    "name": "HMWKR",
+    "email": "dltysl123@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "jusan-harness",
+      "source": "./plugins/jusan-harness",
+      "description": "CE·하니스 엔지니어링 글로벌 스킬 50종 + 에이전트 6종 + 기존 하네스 충돌 분석 advisor 스킬.",
+      "version": "1.0.0",
+      "author": { "name": "HMWKR" }
+    }
+  ]
+}

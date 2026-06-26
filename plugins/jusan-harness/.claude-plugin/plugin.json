@@ -1,0 +1,7 @@
+{
+  "name": "jusan-harness",
+  "description": "개인 하네스 — CE·하니스 엔지니어링 글로벌 스킬 50종 + 에이전트 6종(harness-loop, live-verify-loop, project-ultra-audit, ce-advisor, infra-audit, what/what-ce, playwright/QA 계열, ui-ux-pro-max 등). 글로벌 CLAUDE.md·rules·third-party 플러그인·MCP는 CLAUDE-TEMPLATES의 harness/ 재현 키트로 보완. 기존 하네스 위 설치 시 harness-merge-advisor 스킬로 충돌 분석·제안.",
+  "version": "1.0.0",
+  "author": { "name": "HMWKR" },
+  "homepage": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
+}
