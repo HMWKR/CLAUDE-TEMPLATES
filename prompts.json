@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-06-26T13:12:50.706Z",
+  "extractedAt": "2026-06-26T13:32:13.744Z",
   "stats": {
-    "total": 33,
-    "fromCommitsV4": 12,
+    "total": 34,
+    "fromCommitsV4": 13,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "320384db7734f983bb4324990a2d108173b7e443",
+      "date": "2026-06-26T22:31:53+09:00",
+      "type": "feat",
+      "scope": "harness",
+      "subject": "플러그인+마켓플레이스 하이브리드 + 병합/교체 모드 + 충돌 advisor",
+      "what": "- 하이브리드 패키징: 스킬 50·에이전트 6 정본을 plugins/jusan-harness/로 이전(git mv),",
+      "why": "- \"하네스를 플러그인화 + 다른 플러그인 종합\" 요청 → 자작 레이어는 플러그인,",
+      "impact": "- 스킬/에이전트 1벌로 플러그인 설치·파일 복사 양쪽 충족(중복 없음)"
+    },
     {
       "source": "commit-v4",
       "hash": "4b82ebb40b563bc2ead64f2b912cc34f071c9f66",
