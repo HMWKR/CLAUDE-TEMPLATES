@@ -2,6 +2,20 @@
 
 Claude Code를 오케스트레이터로 두고 Claude·Codex·Gemini를 워커로 호출하는 **파일 기반 멀티에이전트 시스템**.
 
+---
+
+## 이 레포의 두 레이어
+
+| 레이어 | 위치 | 목적 |
+|---|---|---|
+| **① 오케스트레이션 스타터** | 루트 (`CLAUDE.md`·`_shared/`·`_templates/`·`tasks/`) | 새 프로젝트에 멀티에이전트 협업 환경 부트스트랩 (아래 본문) |
+| **② 하네스 재현 키트** | [`harness/`](./harness/) | **현재 Claude Code 하네스 전체**(글로벌 지침·규칙·에이전트·스킬 50종·플러그인 13마켓/26·MCP 22)를 새 머신(Mac/Windows)에 동일 재구성 |
+
+> 전체 하네스를 새 머신에 깔려면 → **[`harness/README.md`](./harness/README.md)** 의 Mac/Windows 설치 절차를 따른다.
+> 이 레포는 글로벌 `~/.claude/CLAUDE.md`를 루트가 아니라 `harness/dot-claude/`에 백업한다(루트 `CLAUDE.md`는 프로젝트 전용 오케스트레이션 규칙으로, 의도적으로 분리됨).
+
+---
+
 ## 핵심 아이디어
 
 - **Orchestrator = Claude Code 세션** (이 폴더 안에서 실행 시 `CLAUDE.md` 자동 적용)

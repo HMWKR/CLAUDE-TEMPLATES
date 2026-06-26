@@ -2,7 +2,8 @@
 
 설치된 플러그인의 기능을 정리한 문서입니다.
 
-> ⚠️ **2026-06-22 갱신**: 본문 표는 2026-01-18 스냅샷(CC 2.1.12)으로 일부 항목이 현재 `claude plugin list`와 불일치(greptile·agent-sdk-dev·ralph-loop 등 변동). 이번 갱신은 **신규 2종(insane-search·bkit)만 §10에 반영**, 전체 재동기화는 미수행(범위 외). 실시간 상태는 `claude plugin list`로 확인.
+> ⛔ **DEPRECATED (2026-06-26)**: 본문 표는 **2026-01-18 스냅샷(CC 2.1.12)** 으로 현재 환경과 불일치한다(github·gitlab·slack·greptile·stripe·firebase·asana·linear·laravel-boost 등 옛 목록 — 현재 설치 마켓플레이스 13종과 다름). **기능 설명 참고용으로만** 본다.
+> 👉 **현재 하네스의 정확한 플러그인·MCP 재현 매니페스트는 [`harness/PLUGINS.md`](./harness/PLUGINS.md) · [`harness/MCP.md`](./harness/MCP.md)** 를 본다. 실시간 상태는 `claude plugin list` / `claude mcp list`.
 
 ---
 

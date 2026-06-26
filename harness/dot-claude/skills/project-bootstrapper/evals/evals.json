@@ -1,0 +1,20 @@
+{
+  "skill_name": "project-bootstrapper",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "온라인 교육 플랫폼을 만들고 싶어. 강사가 강의를 올리고 학생이 수강하는 사이트야.",
+      "expected_output": "교육 도메인 에이전트팀 + LMS 아키텍처 + 강의/수강 와이어프레임 + courses/enrollments DB + 전체 코드 + 사업계획서"
+    },
+    {
+      "id": 2,
+      "prompt": "맛집 예약 앱 개발해줘. 레스토랑 검색하고 예약하는 서비스.",
+      "expected_output": "예약 도메인 에이전트 + 캘린더/알림 아키텍처 + 검색/예약 와이어프레임 + bookings DB + 코드 + 사업계획서"
+    },
+    {
+      "id": 3,
+      "prompt": "당근마켓 같은 중고거래 마켓플레이스 만들어줘. 채팅이랑 위치기반 필요.",
+      "expected_output": "양면 마켓 에이전트 + WebSocket 채팅 아키텍처 + 피드/채팅/거래 와이어프레임 + listings/chats DB + 코드 + 사업계획서"
+    }
+  ]
+}

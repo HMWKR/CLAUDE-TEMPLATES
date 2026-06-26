@@ -1,0 +1,148 @@
+{
+  "$schema": "verification-spec-v2",
+  "_comment": "Observer 검증 기준 템플릿 — 3유형(구조/시각/동작) + 상태별 + 디자인 기준선",
+
+  "version": 2,
+  "targetUrl": "http://localhost:3000",
+  "maxRounds": 10,
+  "gate": {
+    "rule": "BLOCKER + CRITICAL = 0",
+    "description": "BLOCKER와 CRITICAL이 모두 0이어야 라운드 통과"
+  },
+
+  "viewports": {
+    "desktop": { "width": 1280, "height": 720 },
+    "tablet": { "width": 768, "height": 1024 },
+    "mobile": { "width": 375, "height": 812 }
+  },
+
+  "features": [
+    {
+      "id": "feature-id-example",
+      "description": "기능 설명",
+      "assignedWorker": "fe-worker",
+      "pages": ["/page-path"],
+      "designBaseline": "design-baselines/feature-desktop.png",
+
+      "criteria": [
+        {
+          "id": "FE-01",
+          "description": "검증 기준 설명",
+          "type": "structure",
+          "selector": "CSS 셀렉터",
+          "severity": "CRITICAL",
+          "required": true
+        },
+        {
+          "id": "FE-02",
+          "description": "동작 검증 예시",
+          "type": "behavioral",
+          "action": "fill",
+          "selector": "input[name='field']",
+          "value": "테스트 입력값",
+          "expect": "기대 결과 셀렉터 또는 설명",
+          "severity": "CRITICAL"
+        },
+        {
+          "id": "FE-03",
+          "description": "시각 검증 예시",
+          "type": "visual",
+          "viewport": "mobile",
+          "description_detail": "시각적으로 기대하는 상태에 대한 상세 설명",
+          "severity": "MAJOR"
+        }
+      ],
+
+      "states": [
+        {
+          "name": "initial",
+          "trigger": "페이지 로드 직후",
+          "expect": "기본 레이아웃이 올바르게 표시"
+        },
+        {
+          "name": "loading",
+          "trigger": "API 호출 중",
+          "expect": "로딩 인디케이터 표시 + 버튼 비활성화"
+        },
+        {
+          "name": "success",
+          "trigger": "API 성공 응답 후",
+          "expect": "데이터가 올바르게 렌더링"
+        },
+        {
+          "name": "error",
+          "trigger": "API 실패 응답 후",
+          "expect": "에러 메시지 표시 + 재시도 버튼"
+        },
+        {
+          "name": "empty",
+          "trigger": "데이터가 없는 경우",
+          "expect": "빈 상태 메시지 또는 CTA 표시"
+        },
+        {
+          "name": "interaction",
+          "trigger": "사용자 호버/포커스/클릭",
+          "expect": "적절한 시각적 피드백 (호버 효과, 포커스 링)"
+        }
+      ]
+    }
+  ],
+
+  "globalCriteria": [
+    {
+      "id": "G-01",
+      "description": "콘솔 에러 없음",
+      "type": "behavioral",
+      "action": "check-console",
+      "severity": "BLOCKER",
+      "required": true
+    },
+    {
+      "id": "G-02",
+      "description": "모든 페이지에서 반응형 레이아웃 유지",
+      "type": "visual",
+      "viewports": ["desktop", "tablet", "mobile"],
+      "severity": "CRITICAL",
+      "required": true
+    },
+    {
+      "id": "G-03",
+      "description": "페이지 간 네비게이션이 정상 동작",
+      "type": "behavioral",
+      "action": "navigate",
+      "severity": "BLOCKER",
+      "required": true
+    },
+    {
+      "id": "G-04",
+      "description": "모든 링크/버튼에 접근 가능한 레이블 존재",
+      "type": "structure",
+      "selector": "a, button",
+      "expect": "aria-label 또는 텍스트 콘텐츠 존재",
+      "severity": "MAJOR"
+    }
+  ],
+
+  "_typeReference": {
+    "type": "structure | visual | behavioral",
+    "severity": "BLOCKER | CRITICAL | MAJOR | MINOR",
+    "action_values": [
+      "fill — 입력 필드에 값 입력",
+      "click — 요소 클릭",
+      "navigate — 페이지 이동",
+      "check-console — 콘솔 에러 확인",
+      "hover — 요소 호버",
+      "press-key — 키 입력",
+      "select — 드롭다운 선택",
+      "scroll — 스크롤",
+      "drag — 드래그 앤 드롭",
+      "upload — 파일 업로드"
+    ],
+    "severity_guide": {
+      "BLOCKER": "핵심 기능 불가 — 페이지 안 열림, JS 크래시, 라우팅 실패",
+      "CRITICAL": "설계 불일치 — 레이아웃 깨짐, 데이터 안 보임, 필수 요소 누락",
+      "MAJOR": "부분 불일치 — 간격/색상/폰트 차이, 비필수 요소 누락",
+      "MINOR": "미세 개선 — 정렬 미세 차이, 호버 효과, 전환 애니메이션"
+    }
+  }
+}

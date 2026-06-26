@@ -1,0 +1,185 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "OMC_SECURITY": "strict",
+    "ALLOW_ULTRAGOAL_WITHOUT_GOAL": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npx commitlint:*)",
+      "Bash(npx:*)",
+      "Bash(node scripts/harness-eval.js:*)",
+      "Bash(node:*)",
+      "Read(//c/Users/jusan/**)",
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(git -c:*)",
+      "Bash(perl -i -0pe:*)",
+      "Bash(tasklist:*)",
+      "Bash(grep:*)",
+      "Bash(file:*)",
+      "Bash(head:*)",
+      "Read(//c/Users/jusan/Desktop/claude-templates/**)",
+      "mcp__claude_ai_Notion__notion-search",
+      "mcp__claude_ai_Notion__notion-create-pages",
+      "mcp__claude_ai_Notion__notion-fetch",
+      "mcp__claude_ai_Notion__notion-update-page",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_console_messages",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_press_key",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_run_code",
+      "mcp__playwright__browser_handle_dialog",
+      "mcp__playwright__browser_network_requests",
+      "WebFetch(domain:www.anthropic.com)",
+      "WebFetch(domain:deepwiki.com)",
+      "WebFetch(domain:claude.com)",
+      "WebFetch(domain:blog.langchain.com)",
+      "WebFetch(domain:blog.jetbrains.com)",
+      "WebFetch(domain:gist.github.com)",
+      "WebFetch(domain:www.wadiz.kr)",
+      "WebFetch(domain:zdnet.co.kr)"
+    ],
+    "defaultMode": "auto",
+    "additionalDirectories": [
+      "C:\\Users\\jusan\\Desktop\\yt-longfrom-ai",
+      "C:\\Users\\jusan\\Desktop\\Heuriflow",
+      "C:\\Users\\jusan\\Desktop\\promptProjct",
+      "C:\\Users\\jusan\\Desktop\\calclab",
+      "C:\\Users\\jusan\\.claude",
+      "C:\\Users\\jusan\\knot-vault"
+    ]
+  },
+  "model": "opus[1m]",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\jusan\\.claude\\hooks\\knot-session-check.bat"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "commit-commands@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "hookify@claude-plugins-official": true,
+    "explanatory-output-style@claude-plugins-official": false,
+    "learning-output-style@claude-plugins-official": true,
+    "plugin-dev@claude-plugins-official": true,
+    "slack@claude-plugins-official": true,
+    "firebase@claude-plugins-official": false,
+    "supabase@claude-plugins-official": true,
+    "stripe@claude-plugins-official": true,
+    "playwright@claude-plugins-official": false,
+    "context7@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true,
+    "codex@openai-codex": true,
+    "accesslint@accesslint": true,
+    "superpowers@claude-plugins-official": true,
+    "andrej-karpathy-skills@karpathy-skills": true,
+    "watch@claude-video": true,
+    "understand-anything@understand-anything": true,
+    "agentmemory@agentmemory": true,
+    "superpowers@superpowers-marketplace": false,
+    "oh-my-claudecode@omc": true,
+    "fablize@fablize": true,
+    "insane-search@gptaku-plugins": true,
+    "bkit@bkit-marketplace": true
+  },
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    },
+    "accesslint": {
+      "source": {
+        "source": "github",
+        "repo": "accesslint/claude-marketplace"
+      }
+    },
+    "karpathy-skills": {
+      "source": {
+        "source": "github",
+        "repo": "multica-ai/andrej-karpathy-skills"
+      }
+    },
+    "claude-video": {
+      "source": {
+        "source": "github",
+        "repo": "bradautomates/claude-video"
+      }
+    },
+    "understand-anything": {
+      "source": {
+        "source": "github",
+        "repo": "Lum1104/Understand-Anything"
+      }
+    },
+    "agentmemory": {
+      "source": {
+        "source": "github",
+        "repo": "rohitg00/agentmemory"
+      }
+    },
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "omc": {
+      "source": {
+        "source": "github",
+        "repo": "Yeachan-Heo/oh-my-claudecode"
+      }
+    },
+    "multi-agent-starter": {
+      "source": {
+        "source": "github",
+        "repo": "netwaif/multi-agent-starter"
+      }
+    },
+    "fablize": {
+      "source": {
+        "source": "github",
+        "repo": "fivetaku/fablize"
+      }
+    },
+    "gptaku-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "fivetaku/gptaku_plugins"
+      }
+    },
+    "bkit-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "popup-studio-ai/bkit-claude-code"
+      }
+    }
+  },
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "high",
+  "autoUpdatesChannel": "latest",
+  "skipWorkflowUsageWarning": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "tui": "fullscreen"
+}
