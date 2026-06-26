@@ -21,6 +21,20 @@
 
 ---
 
+## 설치 범위 — 글로벌 vs 프로젝트
+
+`install.sh`/`install.ps1`은 실행 시작에 **설치 범위를 묻는다**(`--scope`/`-Scope`로 비대화형 지정 가능).
+
+| 범위 | 대상 | 적용 | 플러그인·MCP 스코프 |
+|---|---|---|---|
+| **글로벌** (기본) | `~/.claude/` (`CLAUDE.md`는 `~/.claude/CLAUDE.md`) | 이 머신의 **모든 프로젝트** | `-s user` |
+| **프로젝트** | `<프로젝트>/.claude/` (`CLAUDE.md`는 `<프로젝트>/CLAUDE.md`) | **해당 프로젝트만** | `-s project` |
+
+- 글로벌: 머신 전체 하네스를 깐다(지금까지의 기본 동작).
+- 프로젝트: 특정 프로젝트에만 하네스를 격리 적용. `rules/`는 글로벌처럼 자동주입되지 않고 보존 목적으로 복사되며, `CLAUDE.md`·`skills/`·`agents/`는 그 프로젝트에서 로드된다.
+
+---
+
 ## 사전 요구사항 (공통)
 
 - **Claude Code CLI** 설치 + 로그인 (`claude` 명령 사용 가능)
@@ -36,16 +50,18 @@
 git clone https://github.com/HMWKR/CLAUDE-TEMPLATES.git
 cd CLAUDE-TEMPLATES
 
-# 1) 글로벌 파일 설치 (CLAUDE.md·rules·agents·skills → ~/.claude, 기존본 자동 백업)
+# 1) 하네스 파일 설치 — 실행하면 범위(글로벌/프로젝트)를 물어본다 (기존본 자동 백업)
 bash harness/install.sh
+#    비대화형 지정:  bash harness/install.sh --scope global
+#                    bash harness/install.sh --scope project --project /path/to/proj
 
-# 2) 플러그인 (마켓 13 + 플러그인 26)
-bash harness/setup-plugins.sh
+# 2) 플러그인 (글로벌=user / 프로젝트=project)
+bash harness/setup-plugins.sh user           # 프로젝트면 해당 폴더에서:  bash <repo>/harness/setup-plugins.sh project
 
 # 3) MCP (standalone 6) — 파일 상단 경로 변수 확인 후
-bash harness/setup-mcp.sh
+bash harness/setup-mcp.sh user
 
-# 한 번에:  bash harness/install.sh --with-plugins --with-mcp
+# 한 번에:  bash harness/install.sh --scope global --with-plugins --with-mcp
 ```
 
 ## 설치 — Windows (PowerShell)
@@ -54,16 +70,18 @@ bash harness/setup-mcp.sh
 git clone https://github.com/HMWKR/CLAUDE-TEMPLATES.git
 cd CLAUDE-TEMPLATES
 
-# 1) 글로벌 파일 설치
+# 1) 하네스 파일 설치 — 실행하면 범위(글로벌/프로젝트)를 물어본다
 pwsh harness/install.ps1        # 또는 Windows PowerShell:  powershell -File harness/install.ps1
+#    비대화형 지정:  pwsh harness/install.ps1 -Scope global
+#                    pwsh harness/install.ps1 -Scope project -Project C:\path\to\proj
 
-# 2) 플러그인
-pwsh harness/setup-plugins.ps1
+# 2) 플러그인 (글로벌=user / 프로젝트=project)
+pwsh harness/setup-plugins.ps1 user          # 프로젝트면 해당 폴더에서:  pwsh <repo>\harness\setup-plugins.ps1 project
 
 # 3) MCP (standalone 6)
-pwsh harness/setup-mcp.ps1
+pwsh harness/setup-mcp.ps1 user
 
-# 한 번에:  pwsh harness/install.ps1 -WithPlugins -WithMcp
+# 한 번에:  pwsh harness/install.ps1 -Scope global -WithPlugins -WithMcp
 ```
 
 > Windows에서 `harness/install.sh`(bash)를 쓰려면 **Git Bash** 또는 **WSL**이 필요하다. PowerShell만 있으면 `.ps1`을 쓴다.

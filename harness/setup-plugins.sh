@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 # 하네스 플러그인 재현 — 마켓플레이스 13종 + 활성 플러그인 26종
-# 사용: bash harness/setup-plugins.sh
+# 사용: bash harness/setup-plugins.sh [user|project]   (기본 user=글로벌)
+#   project 범위는 현재 디렉토리의 .claude/settings.json 에 기록되므로 대상 프로젝트에서 실행할 것.
 # 멱등: 이미 추가/설치된 항목은 CLI가 스킵하거나 무해하게 실패한다.
 set -uo pipefail
 
+SCOPE="${1:-user}"
+case "$SCOPE" in user|project|local) ;; *) echo "✗ scope는 user|project|local: $SCOPE"; exit 1 ;; esac
+
 command -v claude >/dev/null 2>&1 || { echo "✗ 'claude' CLI를 찾을 수 없습니다. Claude Code를 먼저 설치하세요."; exit 1; }
+echo "(설치 스코프: -s $SCOPE)"
 
 add() { echo "+ marketplace add $1"; claude plugin marketplace add "$1" || echo "  (이미 추가됨/스킵)"; }
-ins() { echo "+ install $1"; claude plugin install "$1" -s user || echo "  ✗ 실패/스킵: $1"; }
+ins() { echo "+ install $1"; claude plugin install "$1" -s "$SCOPE" || echo "  ✗ 실패/스킵: $1"; }
 
 echo "===== 1/2 마켓플레이스 (13) ====="
 add anthropics/claude-plugins-official

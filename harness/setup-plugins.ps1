@@ -1,11 +1,14 @@
 ﻿# 하네스 플러그인 재현 — 마켓플레이스 13종 + 활성 플러그인 26종
-# 사용: pwsh harness/setup-plugins.ps1  (또는 Windows PowerShell)
+# 사용: pwsh harness/setup-plugins.ps1 [user|project]   (기본 user=글로벌)
+#   project 범위는 현재 디렉토리의 .claude/settings.json 에 기록되므로 대상 프로젝트에서 실행할 것.
 # 멱등: 이미 추가/설치된 항목은 CLI가 스킵하거나 무해하게 실패한다.
+param([ValidateSet('user','project','local')] [string]$Scope = 'user')
 
 if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
   Write-Host "X 'claude' CLI를 찾을 수 없습니다. Claude Code를 먼저 설치하세요." -ForegroundColor Red
   exit 1
 }
+Write-Host "(설치 스코프: -s $Scope)" -ForegroundColor DarkGray
 
 function Add-Market($src) {
   Write-Host "+ marketplace add $src"
@@ -13,7 +16,7 @@ function Add-Market($src) {
 }
 function Install-Plugin($p) {
   Write-Host "+ install $p"
-  try { claude plugin install $p -s user } catch { Write-Host "  X 실패/스킵: $p" -ForegroundColor Yellow }
+  try { claude plugin install $p -s $Scope } catch { Write-Host "  X 실패/스킵: $p" -ForegroundColor Yellow }
 }
 
 Write-Host "===== 1/2 마켓플레이스 (13) =====" -ForegroundColor Cyan

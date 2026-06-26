@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 # 하네스 standalone MCP 재현 — 6종 (플러그인 제공 MCP는 플러그인 설치 시 자동)
-# 사용: 아래 플레이스홀더를 본인 환경에 맞게 채운 뒤  bash harness/setup-mcp.sh
+# 사용: 아래 플레이스홀더를 본인 환경에 맞게 채운 뒤  bash harness/setup-mcp.sh [user|project]  (기본 user)
+#   project 범위는 현재 디렉토리의 .mcp.json 에 기록되므로 대상 프로젝트에서 실행할 것.
 # 토큰을 레포에 커밋하지 말 것. 필요 시 -e KEY=값 또는 /mcp OAuth 사용.
 set -uo pipefail
 
+SCOPE="${1:-user}"
+case "$SCOPE" in user|project|local) ;; *) echo "✗ scope는 user|project|local: $SCOPE"; exit 1 ;; esac
+
 command -v claude >/dev/null 2>&1 || { echo "✗ 'claude' CLI 없음. Claude Code 먼저 설치."; exit 1; }
+echo "(등록 스코프: -s $SCOPE)"
 
 # ── 머신 특화 경로 (본인 환경에 맞게 수정) ─────────────────────────
 SERENA_BIN="${SERENA_BIN:-$HOME/.local/bin/serena}"        # Windows: C:/Users/<you>/.local/bin/serena.exe
@@ -15,7 +20,7 @@ VECTCUTAPI="${VECTCUTAPI:-}"                               # 예: ~/tools/VectCu
 CANTOS_DIR="${CANTOS_DIR:-}"                               # 예: ~/.claude/mcp/cantos
 # ────────────────────────────────────────────────────────────────
 
-mcp() { echo "+ mcp add $1"; claude mcp add -s user "$@" || echo "  ✗ 실패/스킵: $1"; }
+mcp() { echo "+ mcp add $1"; claude mcp add -s "$SCOPE" "$@" || echo "  ✗ 실패/스킵: $1"; }
 
 # 항상 등록 (외부 경로 의존 없음)
 mcp codex -- codex mcp-server
