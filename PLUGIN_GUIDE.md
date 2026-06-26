@@ -1,6 +1,8 @@
 # Claude Code 플러그인 완전 가이드
 
-설치된 24개 플러그인의 모든 기능을 정리한 문서입니다.
+설치된 플러그인의 기능을 정리한 문서입니다.
+
+> ⚠️ **2026-06-22 갱신**: 본문 표는 2026-01-18 스냅샷(CC 2.1.12)으로 일부 항목이 현재 `claude plugin list`와 불일치(greptile·agent-sdk-dev·ralph-loop 등 변동). 이번 갱신은 **신규 2종(insane-search·bkit)만 §10에 반영**, 전체 재동기화는 미수행(범위 외). 실시간 상태는 `claude plugin list`로 확인.
 
 ---
 
@@ -294,11 +296,15 @@ claude plugin update <이름>
 23. **greptile** - AI 코드 검색
 24. **context7** - 컨텍스트 관리
 
+### 리서치·웹 / 개발 방법론 (2026-06-22 신규, 2개)
+25. **insane-search** (gptaku-plugins) — WebFetch 차단 우회 리더(공개 엔드포인트 → curl_cffi TLS 위장 → headless). skill 기반 자동 발동. Windows는 dep 수동 시드 필요(python3=3.14: curl_cffi/bs4/pyyaml). MCP 없음.
+26. **bkit** (bkit-marketplace) — AI Native Dev OS(PDCA/Sprint/Agent Teams/Memory Enforcer). 22훅 + 40에이전트 + 45스킬 + MCP 2종(bkit-pdca/bkit-analysis). **능동 풀 ON이되 fablize 종속** — 완료선언·검증 권위는 fablize, 충돌 시 fablize 우선(글로벌 CLAUDE.md `## bkit 하이브리드` 참조).
+
 ---
 
 **참고**: Claude Code 재시작 후 모든 기능이 완전히 적용됩니다.
 
 ---
 
-*작성일: 2026-01-18*
-*Claude Code 버전: 2.1.12*
+*작성일: 2026-01-18 (최종 부분 갱신: 2026-06-22 — insane-search·bkit 추가)*
+*Claude Code 버전: 2.1.12 (현재 환경: 2.1.185)*

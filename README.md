@@ -1,80 +1,94 @@
-# CLAUDE-TEMPLATES
+# MultiAgent — Claude · Codex · Gemini Orchestration Starter
 
-Claude Code CLI 협업을 위한 마스터 템플릿 저장소 (CE v2.0)
+Claude Code를 오케스트레이터로 두고 Claude·Codex·Gemini를 워커로 호출하는 **파일 기반 멀티에이전트 시스템**.
 
-## 이 저장소는?
+## 핵심 아이디어
 
-새 프로젝트에 Claude Code 협업 환경을 빠르게 구축하기 위한 템플릿 모음입니다.
-**Context Engineering(CE) v2.0** 원칙에 기반하여 최소 토큰으로 최대 효과를 달성합니다.
+- **Orchestrator = Claude Code 세션** (이 폴더 안에서 실행 시 `CLAUDE.md` 자동 적용)
+- **Workers** = 외부 모델 호출. 모두 승인 게이트 통과 필요.
+  - `claude-main` — 메인 코딩·디버깅·설계·아키텍처·전략
+  - `codex-main` — 보조 구현·코드 분석·테스트·로컬 검증·이미지 생성
+  - `codex-critic` — `claude-main` 산출물 리뷰·비평 (Codex의 주된 역할)
+  - `gemini` — 이미지·긴 문서·제3자 시각의 검토
+- **Memory = filesystem.** 런타임 상태 없음. 모든 결정·승인·검증이 파일로 남는다.
 
-## 원클릭 설정
+## 폴더 구조
+
+```
+<설치한-폴더>/
+├── CLAUDE.md              # 운영 규칙 전문 (이 폴더 안에서 claude 실행 시만 적용)
+├── _shared/
+│   ├── routing.md             # worker 선택 decision tree + 호출 명령
+│   ├── approval-policy.md     # 승인 게이트 정책 (claude-main 포함)
+│   ├── orchestrator-rules.md  # 세션 시작 시 자체 점검 규칙
+│   └── learnings.md           # 시스템 일반 재사용 교훈 (추적·공개, append-only)
+├── _templates/
+│   ├── task.md            # status, goal, constraints, planned_workers, workers_approved
+│   ├── context.md         # 현재 스냅샷 ≤ 1500자 / 300단어
+│   ├── worker-brief.md    # ≤ 1200자 / 240단어, target_repo + write_scope
+│   ├── worker-result.md   # Verification Checklist 포함
+│   ├── log.md             # append-only 이력
+│   └── task-folder.md     # 새 작업 폴더 생성 가이드
+└── tasks/                 # 작업별 폴더 (동적 생성)
+    └── <task-name>/
+        ├── task.md
+        ├── context.md
+        ├── log.md
+        ├── sources/       # 원본 자료 (선택)
+        ├── workers/<role>/
+        │   ├── brief.md
+        │   └── result.md
+        └── artifacts/     # 산출물 원본 (선택)
+```
+
+> `_local/` (git 추적 안 함, clone 시 빈 폴더): 작성자의 **프로젝트 특화** 교훈
+> (`_local/learnings.md`)이 여기 쌓인다. 공개 starter에는 **시스템 일반** 교훈만
+> `_shared/learnings.md`로 배포된다. 분류 규칙은 `_shared/learnings.md` 헤더 참조.
+
+## 사용 시작
 
 ```bash
-curl -sL https://raw.githubusercontent.com/HMWKR/CLAUDE-TEMPLATES/main/init-project.sh | bash
+cd <설치한-폴더>
+claude
 ```
 
-**자동으로 수행되는 작업:**
-- CLAUDE.md 템플릿 다운로드 (프로젝트 고유 섹션 1-8 + 글로벌 참조)
-- 4섹션 커밋 검증 시스템 설치 (commitlint + husky)
-- CE 사고 여정 폴더 생성 (`.thoughts/`)
-- 프롬프트 추출 스크립트 다운로드 (`extract-local-prompts.js` v4.0)
-- GitHub Actions 워크플로우 생성 (`sync-prompts.yml`)
+자연어로 새 작업 요청:
+> "새 작업 만들어줘. 목표는 ○○이고 ○○ worker가 필요할 것 같아."
 
-## 포함 파일
+Orchestrator가 `_templates/task-folder.md` 가이드에 따라 작업 폴더 생성 → worker 승인 요청 → 진행.
 
-| 파일 | 용도 |
-|------|------|
-| `init-project.sh` | 원클릭 자동 설정 스크립트 |
-| `CLAUDE_TEMPLATE.md` | CLAUDE.md 템플릿 (섹션 1-8 TODO + 글로벌 참조) |
-| `commitlint.config.cjs` | 4개 필수 섹션 검증 규칙 |
-| `.gitmessage` | 커밋 메시지 템플릿 (What/Why/Impact) |
-| `scripts/extract-local-prompts.js` | 프롬프트 + CE 사고여정 추출 v4.0 |
-| `scripts/create-thinking-log.js` | CE 사고 여정 템플릿 생성 |
-| `scripts/validate-journals.js` | 저널 + 사고여정 검증 v2.0 |
-| `.thoughts/` | CE 사고 여정 저장 폴더 |
-| `.github/workflows/sync-prompts.yml` | 푸시 시 자동 추출 및 gh-pages 배포 |
+## 모니터링 (선택) — mat
 
-## 핵심 기능
+작업 진행을 터미널에서 지켜보고 싶다면 **[mat](https://github.com/netwaif/mat)** (MultiAgent Tracker)를 함께 쓴다.
+한 작업의 워커 상태(대기·실행 중·완료·에러)·goal·로그를 한 화면에서 본다.
+시스템을 **읽기만** 한다 — 작업 생성·승인·워커 호출은 하지 않으므로, 켜두거나 꺼도 진행에 영향이 없다.
 
-### 1. 4섹션 커밋 메시지 검증
-
-```
-[type]: [한 줄 요약]
-
-## What        ← 변경 사항
-## Why         ← 변경 이유
-## Impact      ← 영향 범위 + 위험도
-
-Co-Authored-By: Claude <noreply@anthropic.com>
+```bash
+brew install netwaif/tap/mat
+MAT_ROOT=<설치한-폴더> mat
 ```
 
-### 2. CE 사고 여정 (.thoughts/)
+설치·키 조작 등 자세한 내용은 [mat 저장소](https://github.com/netwaif/mat) 참고.
 
-Claude가 작업 완료 시 `.thoughts/YYYY-MM-DD-{subject}.md`에 기록:
-- 컨텍스트 수집/선택/폐기 과정
-- 4대 실패 모드 감지 (Poisoning/Distraction/Confusion/Clash)
-- 적용된 CE 전략 (Write/Select/Compress/Isolate)
-- 대안 비교 및 결정 근거
+> ⚠️ mat에서 워커 한 줄 목적이 ` ```yaml `로 보이면 **알려진 경미 이슈**(KI-1)다.
+> 시스템·진행에는 영향 없다. [`KNOWN_ISSUES.md`](./KNOWN_ISSUES.md) 참고.
 
-### 3. 글로벌 + 프로젝트 분리 구조
+## 알려진 이슈
 
-```
-~/.claude/CLAUDE.md          ← 공통 규칙 (72줄, ~700 토큰)
-프로젝트/CLAUDE.md           ← 프로젝트 고유 정보 (섹션 1-8)
-                               + "글로벌 참조" 1줄
-```
+해결·보류 중인 알려진 결함은 [`KNOWN_ISSUES.md`](./KNOWN_ISSUES.md)에 추적한다.
 
-> CE 원칙: 중복 제거 → 세션당 ~12,000 토큰 절감
+## 핵심 원칙
 
-## CE v2.0 원칙
+| 원칙 | 강제 방식 |
+|------|---------|
+| 모든 worker 호출 전 승인 | `task.md`의 `workers_approved` 필드 |
+| 측정 가능한 컨텍스트 한도 | `wc -m` / `wc -w`로 검증 |
+| append-only 로그 | `log.md` 수정·삭제 금지 |
+| 최소 worker set | `routing.md` decision tree로 강제 |
+| codex-main 외부 repo 쓰기 4-조건 | `target_repo` + `write_scope` + 승인 + log [APPROVAL] |
 
-| 원칙 | 이 저장소에서의 적용 |
-|:----:|---------------------|
-| **Right Altitude** | CLAUDE.md가 과도하지도 모호하지도 않은 적정 수준 |
-| **Compress** | 글로벌 72줄로 핵심만 유지 |
-| **Select** | 프로젝트 CLAUDE.md에서 글로벌 중복 100% 제거 |
-| **Isolate** | .thoughts/를 커밋과 분리하여 독립 컨텍스트 |
+자세한 규칙은 [`CLAUDE.md`](./CLAUDE.md) 참고.
 
 ## 라이선스
 
-MIT
+개인 사용 및 학습 목적.

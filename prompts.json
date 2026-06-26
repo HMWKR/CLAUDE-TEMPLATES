@@ -1,0 +1,252 @@
+{
+  "version": "4.0",
+  "project": {
+    "name": "CLAUDE-TEMPLATES",
+    "owner": "HMWKR",
+    "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES.git"
+  },
+  "extractedAt": "2026-02-20T15:21:43.994Z",
+  "stats": {
+    "total": 21,
+    "fromCommitsV4": 1,
+    "fromCommitsLegacy": 13,
+    "fromJournals": 6,
+    "fromThinking": 1
+  },
+  "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "9854f1f937e24a833a2cdd13b62e5855f7c3ef40",
+      "date": "2026-02-20T14:53:10+09:00",
+      "type": "refactor",
+      "scope": "",
+      "subject": "CE v2.0 전면 리팩토링",
+      "what": "- CLAUDE.md 91% 축소, 커밋 16섹션→4섹션, .thoughts/ CE 사고 여정",
+      "why": "- 세션당 ~17,000 토큰 중복 → ~4,700 토큰으로 72% 절감",
+      "impact": "- 범위: 전체 5개 프로젝트 통일"
+    },
+    {
+      "source": "thinking",
+      "hash": "9854f1f",
+      "date": "2026-02-20",
+      "type": "refactor",
+      "subject": "CE v2.0 전면 리팩토링 + 하니스 엔지니어링 개선",
+      "thinkingFile": "2026-02-20-ce-v20-.md",
+      "ceStrategies": [
+        "write",
+        "select",
+        "compress",
+        "isolate"
+      ],
+      "failureModes": {
+        "poisoning": true,
+        "distraction": true,
+        "confusion": true,
+        "clash": true
+      }
+    },
+    {
+      "source": "journal",
+      "hash": "06a7095",
+      "date": "2026-01-19",
+      "type": "docs",
+      "subject": "5단계 고차원 사고 유도 프롬프트 체계 추가",
+      "journalFile": "2026-01-19-docs-5단계-고차원-사고-유도-프롬프트-체계-추가.md",
+      "qualityScore": "47",
+      "grade": "S"
+    },
+    {
+      "source": "journal",
+      "hash": "e774395",
+      "date": "2026-01-19",
+      "type": "docs",
+      "subject": "섹션 1-8 상세 작성 가이드 추가 및 템플릿 시스템 개선",
+      "journalFile": "2026-01-19-docs-섹션-1-8-상세-작성-가이드-추가-및-템플릿-시스템-.md",
+      "qualityScore": "47",
+      "grade": "S"
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "06a70959b8287c995db92fb459d32177b132fc2f",
+      "date": "2026-01-19T02:44:15+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "5단계 고차원 사고 유도 프롬프트 체계 추가",
+      "originalPrompt": "ultrathink 모드가 사라졌잖아 Chain of Thought 기법을 활용한걸 추가적으로 claude.md 지침에 넣고 싶은데",
+      "optimizedPrompt": "## 역할\nClaude 협업 지침 작성자\n\n## 목표\n5단계 고차원 사고 유도 프롬프트 체계 추가\n\n## 기술 요구사항\n- 5단계 레벨별 프롬프트 템플릿\n- Thinking Mode ON/OFF 분기 가이드\n- 상황별 프롬프트 (의사결정/디버깅/창의적 작업)\n\n## 금지 사항\n- 추상적 설명 (구체적 템플릿 필수)",
+      "qualityScore": 47
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "e77439541dd3b12e330830a1b7fb57868109d453",
+      "date": "2026-01-19T02:21:22+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "섹션 1-8 상세 작성 가이드 추가 및 템플릿 시스템 개선",
+      "originalPrompt": "템플릿 시스템이 calclab처럼 자세한 CLAUDE.md를 생성하지 못하는 근본 원인을 분석하고, 개선 방안을 마련하라",
+      "optimizedPrompt": "## 역할\n템플릿 시스템 품질 분석가\n\n## 목표\ncalclab CLAUDE.md를 참조 표준으로 삼아 섹션 1-8 작성 가이드 생성\n\n## 기술 요구사항\n- 섹션별 최소 요구사항 정의\n- 좋은 예시 vs 나쁜 예시 제공\n- 15개 항목 품질 체크리스트\n\n## 금지 사항\n- 추상적 가이드라인 금지 (구체적 예시 필수)",
+      "qualityScore": 47
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "726615a0968518b5c2c0c1452d19ac5965362b01",
+      "date": "2026-01-18T21:04:49+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "ultrathink 키워드 제거 및 논문 기반 코드 검수 가이드 추가",
+      "originalPrompt": "",
+      "optimizedPrompt": "1. 모든 문서에서 ultrathink 키워드를 제거하고 \"깊이 분석해줘\"로 대체해줘.\n2. arXiv 논문(CodeX-Verify, CodeAgent, Agentic Testing)을 기반으로\n   CODE_REVIEW_GUIDE.md를 작성해줘.",
+      "qualityScore": null
+    },
+    {
+      "source": "journal",
+      "hash": "726615a",
+      "date": "2026-01-18",
+      "type": "docs",
+      "subject": "ultrathink 키워드 제거 및 논문 기반 코드 검수 가이드 추가",
+      "journalFile": "2026-01-18-docs-ultrathink-키워드-제거-및-논문-기반-코드-검.md",
+      "qualityScore": null,
+      "grade": "A+"
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "3c648472eff2e55587c8b0ee10a3f3a89c204c80",
+      "date": "2026-01-14T23:49:33+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "CLAUDE.md 아키텍처 섹션 v3.1 동기화",
+      "originalPrompt": "이러한 것들 또한 전체적으로 바뀐 부분에 대해서 파일들을 업데이트를 해줘",
+      "optimizedPrompt": "CLAUDE.md 아키텍처 섹션을 v3.1 실제 파일 구조와 동기화해줘.\n\n요구사항:\n- scripts/ 폴더: 4개 스크립트 반영\n- .husky/ 폴더: post-commit 추가\n- init-project.sh: 10단계로 업데이트\n\n제약조건:\n- 최소 변경 원칙 (필요한 부분만)\n- 실제 파일과 100% 일치",
+      "qualityScore": null
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "131b177a266e6bfc337a9ff539438142f190d5ed",
+      "date": "2026-01-14T18:16:42+09:00",
+      "type": "feat",
+      "scope": "automation",
+      "subject": "v3.1 프롬프트 저널 자동화 시스템 구현",
+      "originalPrompt": "사용자 작업 또한 자동화 할 수는 없는거야?\nPhase 1+2+3 전체 (권장) 선택\n구현을 시작해줘",
+      "optimizedPrompt": "v3.1 프롬프트 저널 자동화를 구현해줘.\n\n요구사항:\n- Phase 1: 저널 자동 생성 (create-journal-from-commit.js + post-commit)\n- Phase 2: 형식 검증 (validate-journals.js + CI)\n- Phase 3: 통계 분석 (journal-stats.js + prompts.json v3.1)\n\n제약조건:\n- 기존 v3.0 기능 유지 (하위 호환)\n- 사용자 편집 항목: 사고 여정, 핵심 학습만",
+      "qualityScore": null
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "f41fcb6ade870fc8c7dfef3ecc65131576164a40",
+      "date": "2026-01-14T13:04:56+09:00",
+      "type": "feat",
+      "scope": "",
+      "subject": "v3.0 프롬프트 저널 시스템 도입 - 듀얼 소스 아키텍처",
+      "originalPrompt": "",
+      "optimizedPrompt": "ultrathink 모드로 v3.0 프롬프트 저널 시스템을 배포해줘.\n\n## 진행 순서\n1. claude-templates 커밋/푸시\n2. init-project.sh 테스트 (임시 폴더)\n3. promptProjct에 v3.0 적용\n4. calclab에 v3.0 적용\n\n## 제약조건\n- 각 단계 완료 후 검증\n- 테스트 실패 시 수정 후 재시도\n- 기존 설정 유지\n\n## 검증\n- 각 프로젝트에서 extract-local-prompts.js 실행\n- prompt-dashboard에서 데이터 확인",
+      "qualityScore": null
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "576519e1cb1d1a69d82ea3994e839c4d41975a62",
+      "date": "2026-01-14T10:17:25+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "Claude 프롬프트 사용 가이드 추가",
+      "originalPrompt": "새로운 폴더를 만든 이후 여기 폴더에서 너한테 어떠한 형식으로 프롬프트를 해야할지 까지 업데이트를 해줘",
+      "optimizedPrompt": "## 역할\n문서 작성자\n\n## 목표\n새 프로젝트에서 Claude에게 효과적으로 프롬프트하는 방법 가이드 추가",
+      "qualityScore": null
+    },
+    {
+      "source": "journal",
+      "hash": "3c64847",
+      "date": "2026-01-14",
+      "type": "docs",
+      "subject": "CLAUDE.md 아키텍처 섹션 v3.1 동기화",
+      "journalFile": "2026-01-14-docs-claudemd-아키텍처-섹션-v31-동기화.md",
+      "qualityScore": null,
+      "grade": "A+"
+    },
+    {
+      "source": "journal",
+      "hash": "131b177",
+      "date": "2026-01-14",
+      "type": "backend",
+      "subject": "v3.1 프롬프트 저널 자동화 시스템 구현",
+      "journalFile": "2026-01-14-feat-automation.md",
+      "qualityScore": null,
+      "grade": null
+    },
+    {
+      "source": "journal",
+      "hash": null,
+      "date": "2026-01-14",
+      "type": "docs",
+      "subject": "프롬프트 저널 시스템 설계",
+      "journalFile": "2026-01-14-prompt-journal-system.md",
+      "qualityScore": "44",
+      "grade": "A+"
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "70ed6d994e2bc85dfecd2aa55f8db9cfacdb8b09",
+      "date": "2026-01-14T05:21:19+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "검수 결과 반영 - prompt-library 참조 및 정책 명확화",
+      "originalPrompt": "",
+      "optimizedPrompt": "",
+      "qualityScore": null
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "263ff80b0f6bcdefc27f65e2e194616a44296ef5",
+      "date": "2026-01-14T05:10:37+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "prompt-library 연동 및 트러블슈팅 문서 보완",
+      "originalPrompt": "",
+      "optimizedPrompt": "",
+      "qualityScore": null
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "79e974815648686d2475079235770511c5a23607",
+      "date": "2026-01-14T04:17:19+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "분산 Push 아키텍처 문서 업데이트",
+      "originalPrompt": "이제 우리가 이러한 정보들을 바탕으로 바꾼것들을 필요하면 깃을 조회해도 상관이 없으니 바뀐 부분이 있다면 전체적으로 cladue.md 나 template.md 등등 이거에 맞춰서 바꿔줘",
+      "optimizedPrompt": "분산 Push 아키텍처 구현 완료 후, README.md, CLAUDE.md, PROJECT_SETUP_CHECKLIST.md를 업데이트하여:\n1. 7단계 자동화 설명 추가\n2. 새 파일(extract-local-prompts.js, sync-prompts.yml) 문서화\n3. GitHub Pages 설정 가이드 추가",
+      "qualityScore": 48
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "7b56f804382e3105304f070ece6c9632f2f81a93",
+      "date": "2026-01-12T19:48:11+09:00",
+      "type": "feat",
+      "scope": "",
+      "subject": "init-project.sh 원클릭 설정 스크립트 추가",
+      "originalPrompt": "모든 프로젝트를 할때에 claude-library랑 자동으로 연결되게끔 하고 싶은거야",
+      "optimizedPrompt": "## 역할\nDevOps 엔지니어\n\n## 목표\n새 프로젝트 시작 시 CLAUDE-TEMPLATES와 prompt-library가\n자동으로 연동되는 원클릭 설정 시스템 구축\n\n## 기술 요구사항\n- curl로 실행 가능한 bash 스크립트\n- CLAUDE.md, commitlint, husky 자동 설정\n- prompt-library 연동 가이드 포함\n\n## 금지 사항\n- npm 패키지 배포 불필요\n- 복잡한 의존성 추가 금지",
+      "qualityScore": 48
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "97bd6cb4941763c07fffffae101691b44d602aef",
+      "date": "2026-01-12T19:29:58+09:00",
+      "type": "docs",
+      "scope": "",
+      "subject": "README.md 및 CLAUDE.md 추가",
+      "originalPrompt": "지금 해당되는 폴더가 어떤걸 하는 폴더인지에 대해서 분석을 한다음 나한테 말해봐\n이때 CLAUTE_TEMPLATE.md 지침을 반드시 그대로 적용 시킨다음 너만의 claude.md 파일을 만들어",
+      "optimizedPrompt": "## 역할\nClaude Code 전문가\n\n## 목표\n1. claude-templates 폴더 분석\n2. CLAUDE_TEMPLATE.md 지침 기반 CLAUDE.md 생성\n\n## 기술 요구사항\n- 19개 섹션 완비\n- 환각 방지 프로토콜 적용\n\n## 금지 사항\n- 추정 정보 제시 금지",
+      "qualityScore": 42
+    },
+    {
+      "source": "commit-legacy",
+      "hash": "8518514f394e86b208084bc4bb3e67d8a7262432",
+      "date": "2026-01-12T17:11:47+09:00",
+      "type": "chore",
+      "scope": "",
+      "subject": "Claude 협업 템플릿 저장소 초기화 (16섹션 커밋 검증 시스템)",
+      "originalPrompt": "커밋 메시지 시스템 설정까지 해줘",
+      "optimizedPrompt": "## 역할\n너는 DevOps 엔지니어야.\n\n## 목표\nclaude-templates 폴더에 16섹션 커밋 메시지 검증 시스템을 설정해줘.\n\n## 기술 요구사항\n- Git 저장소 초기화\n- Husky + Commitlint 설치\n- 16개 필수 섹션 검증 규칙\n\n## 금지 사항\n- 기존 템플릿 파일 손상",
+      "qualityScore": 31
+    }
+  ]
+}

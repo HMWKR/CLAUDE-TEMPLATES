@@ -1,41 +1,49 @@
-# Dependencies
-node_modules/
-
-# Logs
-*.log
-npm-debug.log*
-
-# OS generated files
+# macOS
 .DS_Store
-Thumbs.db
+.AppleDouble
+.LSOverride
 
-# Editor directories and files
+# Editor
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
-# Temporary files
-tmpclaude-*
+# Logs / temp
+*.log
 *.tmp
-nul
---version/
 
-# Generated files
-prompts.json
+# 런타임 캐시 — 로컬 경로·UUID 포함, git 추적 안 함
+cache/
 
-# Session state
-checkpoint.md
-.task-state.md
+# 작업 데이터 — 사용자 사적 자료, git 추적 안 함 (폴더 구조 유지를 위해 .gitkeep만 추적)
+tasks/*
+!tasks/.gitkeep
 
-# Tool artifacts
+# 프로젝트 특화 교훈 — 작성자 사적 누적물, git 추적 안 함 (폴더만 유지)
+_local/*
+!_local/.gitkeep
+
+# 의존성 — git 추적 안 함
+node_modules/
+
+# 로컬 도구 상태/캐시 — 머신 특화, git 추적 안 함
+.serena/
+.omc/
 .bkit/
+.agents/
 .playwright-mcp/
-
-# Misplaced files
-calclab-initial.png
-
-# Anti-loop runtime state (volatile, session-local)
+.obsidian/
 .claude/anti-loop-state.json
 .claude/anti-loop-state.json.bak
-*.bak
+
+# 개인 산출물 (스크린샷·PDF·저널·스크래치) — git 추적 안 함
+/*.png
+/*.pdf
+.thoughts/
+Excalidraw/
+*.canvas
+*.base
+checkpoint.md
+.task-state.md
