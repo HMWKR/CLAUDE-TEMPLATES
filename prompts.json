@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-06-27T03:46:00.903Z",
+  "extractedAt": "2026-06-27T04:09:48.716Z",
   "stats": {
-    "total": 35,
-    "fromCommitsV4": 14,
+    "total": 36,
+    "fromCommitsV4": 15,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "9d2e21a46197cddd13ad1073d70bb62fa6919927",
+      "date": "2026-06-27T13:09:29+09:00",
+      "type": "feat",
+      "scope": "harness",
+      "subject": "loop-runner를 플러그인 정본으로 이전 + 무비용 회귀 테스트",
+      "what": "- harness/loop-runner/ → plugins/jusan-harness/loop-runner/ 이전(git mv, 이력 보존)",
+      "why": "- 사용자 요청: loop-runner 검증을 영속화하고 GitHub·플러그인 두 채널에 추가",
+      "impact": "- 검증: test-loop.sh 실행 PASS=2 FAIL=0(exit 0) — 양 경로 실거동 통과, bash -n OK"
+    },
     {
       "source": "commit-v4",
       "hash": "f1dc106dad7116f25eb0fda295be23edcd17598c",
