@@ -47,6 +47,7 @@ bash plugins/jusan-harness/loop-runner/loop.sh --run --max-calls-per-hour 100 --
 - `/loop`·`ScheduleWakeup` = 페이싱(외부). 이 러너 = **제어 게이트의 결정론적 강제**(내부). 병용 가능.
 - `ralph-loop` 플러그인(Stop훅) = 인-세션 재투입. 이 러너 = 외부 프로세스 fresh-context. 용도 분리.
 - `live-verify-loop`/`harness-loop` 스킬 = 이 러너의 `prompt.md` payload(방법론)로 호출 가능 — 스킬은 "무엇을", 러너는 "반복·종료·예산"을 담당.
+  - **배선(Mode C)**: `live-verify-loop` SKILL.md "Mode C — 구조적 위임" 참조. 스킬 방법론 → `prompt.md`, 종결조건 Layer 1~4 → `gate.sh`, 무인 반복 → `loop.sh --run`. 무인 자율 검증 시 모델-페이싱(Mode B) 대신 이 결정론 경로를 쓴다.
 
 ## 근거 (적대검증 출처)
 - Ralph: `ghuntley.com/ralph`, `github.com/ghuntley/how-to-ralph-wiggum` (3-0)

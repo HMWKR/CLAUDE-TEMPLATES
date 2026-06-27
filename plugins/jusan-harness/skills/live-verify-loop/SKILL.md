@@ -706,6 +706,17 @@ ScheduleWakeup({
 })
 ```
 
+### Mode C — 구조적 위임 (loop-runner, 무인 자율 권장)
+
+> 사용자 통찰 "루프 제어는 스킬 프로세가 아니라 구조로" + 조사 확증(Ralph/frankbria/OpenHands 전부 구조적) 반영. 자율·무인 반복은 모델이 라운드를 "기억해서" 도는 Mode B 대신 **결정론적 러너에 control plane을 위임**한다(정지오염·자기정당화 R76 우회 원천 차단).
+
+- 스킬 = **payload**: 라운드 작업 지시를 `.harness-loop/prompt.md`에(9모드·페르소나 방법론 인용).
+- 종결조건 Layer 1~4 = **객관 gate**: `.harness-loop/gate.sh`(예: `npx tsc --noEmit && bash enforce-layer-matrix.sh && 라우트 200·console 0 체크`) exit 0.
+- 반복·종료·예산·정체 = **러너**: `bash <plugin>/jusan-harness/loop-runner/loop.sh --run`.
+- 종료 = plan 소진 **AND** gate exit 0 **AND** exit_signal (3중, 자기선언 종료 불가 — H-2가 구조로 강제).
+
+→ Mode B(ScheduleWakeup·모델 페이싱)=대화형·검토 중심 / Mode C(loop-runner)=무인·결정론 중심. 상호 보완. 무인 장시간 검증은 Mode C 권장.
+
 ### Cost Guardrails (D-2) — Mode B 자동 활성화
 
 ```yaml
