@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-06-27T04:09:48.716Z",
+  "extractedAt": "2026-06-27T04:10:42.421Z",
   "stats": {
-    "total": 36,
-    "fromCommitsV4": 15,
+    "total": 37,
+    "fromCommitsV4": 16,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "65a8215144db9855a2c526899ccdee99c0ed8aa0",
+      "date": "2026-06-27T13:10:26+09:00",
+      "type": "fix",
+      "scope": "harness",
+      "subject": "loop-runner README 경로 갱신 + test-loop.sh 누락분 커밋",
+      "what": "- 직전 커밋에서 git add pathspec 에러로 누락됐던 2건 반영:",
+      "why": "- 직전 커밋(9d2e21a)이 git mv 원본만 담아 sed 수정·신규 테스트가 빠짐",
+      "impact": "- 플러그인 loop-runner에 README(정확 경로)+test-loop.sh 완비. test PASS=2 FAIL=0 기검증"
+    },
     {
       "source": "commit-v4",
       "hash": "9d2e21a46197cddd13ad1073d70bb62fa6919927",
