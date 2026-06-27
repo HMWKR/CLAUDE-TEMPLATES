@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-06-26T13:32:13.744Z",
+  "extractedAt": "2026-06-27T03:46:00.903Z",
   "stats": {
-    "total": 34,
-    "fromCommitsV4": 13,
+    "total": 35,
+    "fromCommitsV4": 14,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "f1dc106dad7116f25eb0fda295be23edcd17598c",
+      "date": "2026-06-27T12:45:45+09:00",
+      "type": "feat",
+      "scope": "harness",
+      "subject": "결정론적 구조적 루프 러너 + 검증반영 루프 Hardening",
+      "what": "- harness/loop-runner/ 신설 — 루프 제어(반복·종료·예산·정체)를 스킬 프로세에서",
+      "why": "- 루프 하네스 전수조사(적대검증 24/25 confirmed) 결과 베스트프랙티스는 전부 '구조적'",
+      "impact": "- 스킬=payload(방법론) / 러너=control plane(반복·게이트) 분리 — 모델이 루프 못 건너뜀"
+    },
     {
       "source": "commit-v4",
       "hash": "320384db7734f983bb4324990a2d108173b7e443",
