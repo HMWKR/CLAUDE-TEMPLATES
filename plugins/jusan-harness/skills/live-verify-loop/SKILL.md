@@ -727,6 +727,42 @@ guardrails:
 
 ---
 
+## Loop Hardening — 루프 하네스 조사 반영 (2026-06-26)
+
+> 루프 하네스 베스트프랙티스 전수조사(Ralph/ghuntley · frankbria/ralph-claude-code · Microsoft Agentic AI Failure Taxonomy · Termination-Poisoning arxiv:2605.05846) 반영. 기존 D-2 가드레일을 **보강**한다(대체 아님).
+
+### H-1. Fresh-Context Round (Mode B 권장 — 컨텍스트 오염 차단)
+> 근거: Ralph "각 이터레이션 = 새 컨텍스트 윈도우 = 한 작업 = 한 커밋, 상태는 디스크로만 공유"(github.com/ghuntley/how-to-ralph-wiggum). 동일 컨텍스트 라운드 누적 = Distraction/Poisoning 위험.
+
+Mode B(자동 반복)에서 라운드 N+1을 **독립 서브에이전트(새 컨텍스트)** 로 실행하는 옵션:
+- 라운드 상태는 인-컨텍스트가 아니라 **디스크로만 인계**: `r<N>-summary.md` + `session-handoff.md` + 미해결 이슈 목록.
+- 다음 라운드 에이전트는 그 파일만 읽고 출발 → 이전 라운드 추론 누적 차단(출발선 평행이동 강화).
+- 권장 트리거: 라운드 ≥ 5 또는 누적 토큰 ≥ 100K. Mode A(수동)는 기존대로 동일 컨텍스트 유지 가능.
+
+### H-2. Deterministic Exit Gate — 이중조건 (정지 오염 방어)
+> 근거: Termination-poisoning(arxiv:2605.05846) — 자기평가형 정지조건이 공격면(평균 3.57x·최대 25x 비용 폭주). ralph-claude-code = 휴리스틱 완료지표 AND 명시 `EXIT_SIGNAL` 이중조건.
+
+"Layer 1~4 PASS / 이슈 0건"을 **자기 선언만으로 종료 금지**. 종료는 아래 **둘 다** 충족 시에만:
+1. **결정론적 게이트**: 외부 검증 명령 **exit 0** (`enforce-layer-matrix.sh` + `tsc --noEmit` + 종결조건 검증). 에이전트 판단이 아닌 프로세스 exit code.
+2. **명시 종료 신호**: 라운드 요약에 `EXIT_SIGNAL: true` + Layer 1~4 PASS 증거 첨부.
+→ 하나라도 미충족 시 라운드 N+1. self-eval 단독 stop 시도 = R76 카테고리 C-C 자기위반(detect-self-justification 가드 연동).
+
+### H-3. Sub-Agent Call Budget (자원 고갈 방어)
+> 근거: Microsoft Taxonomy — 'Resource exhaustion'(서브에이전트 무한 호출, 10만 리뷰어 콜). 기존 D-2는 라운드·토큰만 캡, 호출 수 미캡.
+
+- 라운드당 서브에이전트(Agent 도구) 호출 상한: 기본 **8** (초과 시 사용자 승인 요청).
+- 전체 루프 누적 호출 상한: 기본 **60** (초과 시 자동 정지 + 진단 요청).
+
+### H-4. Multi-Signal Stagnation + Cooldown (D-2 강화)
+> 근거: ralph-claude-code circuit breaker — 무진척 3회 / 동일에러 5회 / 출력 >70% 감소 → cooldown 자동복구.
+
+기존 D-2 "동일결함 3라운드"에 신호 추가:
+- 동일 에러 시그니처 **5라운드 연속** → 정지
+- 라운드 산출(변경 파일 수·diff 라인) 직전 대비 **>70% 감소 2연속** → 정지
+- 정지 시 즉시 종료가 아니라 **cooldown 라운드 1회**(다른 가설·접근으로 재시도) 후에도 정체면 인간 개입 요청.
+
+---
+
 ## Reusability Test
 
 스킬 작성 직후 다른 도메인에서 호출하여 검증:

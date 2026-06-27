@@ -392,6 +392,12 @@ for round in range(1, N+1):
 3. 연속 2라운드 점수 변화 없음 (수렴)
 4. 사용자가 중단 요청
 
+> **종료·예산 강화 (루프 하네스 조사 반영 2026-06-26)** — 가능하면 프로세스(훅/스크립트)로 **결정론적 강제**, 스킬 프로세는 그 스펙 문서일 뿐:
+> - #2 "이슈 0건"은 **자기 선언만으로 종료 금지** — 외부 검증 명령 **exit 0**(빌드/`tsc --noEmit`/Playwright Final Gate) **AND** 명시 종료신호 이중조건 충족 시에만. 자기평가 단독 종료는 정지오염(평균 3.57x·최대 25x 비용폭주, arxiv:2605.05846 / ralph-claude-code) 공격면.
+> - **서브에이전트 호출 예산**: 라운드당 8 / 전체 60 초과 시 정지 + 진단요청(자원고갈 방어, Microsoft Agentic AI Failure Taxonomy).
+> - **다신호 stagnation**: 동일 에러 5라운드 / 산출 70% 감소 2연속 → cooldown 1회 후 정체면 인간 개입.
+> - **컨텍스트 오염** 누적 시 다음 라운드를 fresh-context 서브에이전트로(Ralph: 1이터=새컨텍스트=1커밋, 상태는 디스크 인계). 상세: `live-verify-loop` "Loop Hardening" 섹션.
+
 ---
 
 > ## Phase 3: 최종 보고 — **최종 보고서 템플릿**(라운드별 추적 표 + 점수 변화 그래프 + 잔여 이슈 handoff)은 [references/report-templates.md](references/report-templates.md) 참조.
