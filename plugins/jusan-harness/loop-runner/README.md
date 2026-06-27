@@ -27,13 +27,13 @@
 ## 사용
 ```bash
 # 1) 작업 폴더에서 초기화 (.harness-loop/ 생성: prompt.md, plan.md, gate.sh 스텁)
-bash harness/loop-runner/loop.sh --init
+bash plugins/jusan-harness/loop-runner/loop.sh --init
 
 # 2) prompt.md(작업 지시) + plan.md([ ] 체크박스 백로그) + gate.sh(검증 명령) 작성
 
 # 3) 실행 — plan 소진 + gate 0 + exit_signal 까지 결정론적 반복
-bash harness/loop-runner/loop.sh --run --max-calls-per-hour 100 --cooldown 30
-#   Windows:  pwsh harness/loop-runner/loop.ps1 -Run
+bash plugins/jusan-harness/loop-runner/loop.sh --run --max-calls-per-hour 100 --cooldown 30
+#   Windows:  pwsh plugins/jusan-harness/loop-runner/loop.ps1 -Run
 ```
 
 ## .harness-loop/ 상태 스키마
