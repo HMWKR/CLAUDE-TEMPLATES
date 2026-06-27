@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-06-27T04:10:42.421Z",
+  "extractedAt": "2026-06-27T04:37:04.931Z",
   "stats": {
-    "total": 37,
-    "fromCommitsV4": 16,
+    "total": 38,
+    "fromCommitsV4": 17,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "0ff64040a05ea611f098e1b08c53df054c1370d7",
+      "date": "2026-06-27T13:36:48+09:00",
+      "type": "feat",
+      "scope": "harness",
+      "subject": "loop-runner를 스킬에 배선 — Mode C 구조적 위임 (P3)",
+      "what": "- live-verify-loop SKILL.md: \"Mode C — 구조적 위임(loop-runner)\" 추가",
+      "why": "- \"루프 제어는 스킬 프로세가 아니라 구조로\"(사용자 통찰) + 조사 확증을 코드 경로로 연결",
+      "impact": "- 정지오염·자기정당화(R76) 우회를 구조로 원천 차단하는 경로 제공"
+    },
     {
       "source": "commit-v4",
       "hash": "65a8215144db9855a2c526899ccdee99c0ed8aa0",
