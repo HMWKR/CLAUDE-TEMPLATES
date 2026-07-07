@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-07-07T01:28:49.874Z",
+  "extractedAt": "2026-07-07T01:45:14.077Z",
   "stats": {
-    "total": 39,
-    "fromCommitsV4": 18,
+    "total": 40,
+    "fromCommitsV4": 19,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "e4e787c165f65bf15b7cca9b6a8aeeb9c0115887",
+      "date": "2026-07-07T10:44:29+09:00",
+      "type": "fix",
+      "scope": "harness",
+      "subject": "install 스크립트가 현행 하네스 전체(adapters·scripts·workflows·commands·verification-templates) 설치",
+      "what": "- install.sh/install.ps1: dot-claude의 adapters·scripts·workflows·commands·verification-templates 복사 추가(기존엔 CLAUDE.md·rules·skills·agents만)",
+      "why": "훅(settings)이 ~/.claude/scripts/* 참조, L0가 adapters/ 프로파일 필요 — 누락 시 fresh 설치가 불완전(훅 깨짐). 격리 HOME 재설치로 전 디렉토리 설치 확인.",
+      "impact": "install.sh/.ps1로 현행 하네스 완전 재현 가능."
+    },
     {
       "source": "commit-v4",
       "hash": "94444cd73a27fe90a4354c0bc6f60ba825b2da56",
