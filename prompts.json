@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-06-27T04:37:04.931Z",
+  "extractedAt": "2026-07-07T01:28:49.874Z",
   "stats": {
-    "total": 38,
-    "fromCommitsV4": 17,
+    "total": 39,
+    "fromCommitsV4": 18,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "94444cd73a27fe90a4354c0bc6f60ba825b2da56",
+      "date": "2026-07-07T10:26:48+09:00",
+      "type": "chore",
+      "scope": "harness",
+      "subject": "sync current ~/.claude harness + architecture doc",
+      "what": "- harness/dot-claude/ ← 현행 ~/.claude 하네스 정의(CLAUDE.md·rules·skills·commands·workflows·adapters·verification-templates·scripts)",
+      "why": "현재 하네스를 정본으로 repo 전면 갱신(사용자 지시). plan-first·conductor-verify·Playwright-first·codex 교차게이트·what→goal 반영.",
+      "impact": "템플릿 harness/dot-claude가 현행과 일치. 개인경로(/Users→~) 스크럽, 런타임상태·시크릿 제외 검증."
+    },
     {
       "source": "commit-v4",
       "hash": "0ff64040a05ea611f098e1b08c53df054c1370d7",
