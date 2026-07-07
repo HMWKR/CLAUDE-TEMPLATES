@@ -1,6 +1,7 @@
 ﻿# 하네스 설치 (Windows PowerShell)
 # 사용: pwsh harness/install.ps1 [-Scope global|project] [-Project <경로>]
-#                               [-Mode merge|replace] [-WithPlugins] [-WithMcp]
+#                               [-Mode merge|replace] [-WithPlugins] [-WithMcp] [-NoSettings]
+#   -NoSettings: settings.json 자동병합 생략(참고본만 제공). 기본은 자동 병합(mode 정책 따름).
 #   미지정 + 대화형이면 범위/모드를 묻는다.
 #     범위  글로벌 : ~/.claude (모든 프로젝트) -s user · 프로젝트: <proj>/.claude -s project
 #     모드  replace: 기존 백업 후 교체 · merge: 덧씌움(비충돌만 추가, 충돌 보존 .harness-incoming + 리포트)
@@ -10,7 +11,8 @@ param(
   [string]$Project,
   [ValidateSet('merge','replace')] [string]$Mode,
   [switch]$WithPlugins,
-  [switch]$WithMcp
+  [switch]$WithMcp,
+  [switch]$NoSettings
 )
 $ErrorActionPreference = 'Stop'
 
@@ -142,13 +144,37 @@ Put-Tree (Join-Path $Plug 'agents') 'agents'
 Put-Tree (Join-Path $Plug 'skills') 'skills'
 # 현행 하네스 정의(2026-07-07): L0 어댑터·훅 스크립트·오케스트레이션 워크플로·커맨드·검증템플릿.
 # 훅(settings)이 ~/.claude/scripts/* 를 참조하고 L0가 adapters/ 프로파일을 필요로 하므로 필수 복사.
-foreach ($d in @('adapters','scripts','workflows','commands','verification-templates')) {
+foreach ($d in @('adapters','scripts','workflows','commands','verification-templates','hooks')) {
   $srcDir = Join-Path $Dot $d
   if (Test-Path $srcDir) { Put-Tree $srcDir $d }
 }
 
+# settings 자동 병합 — merge-settings.py 정본 정책(replace=reference우선 / merge=사용자우선, 리스트 union). 백업+검증+실패 시 롤백.
 Copy-Item (Join-Path $Dot 'settings.reference.json') (Join-Path $Dest 'settings.reference.json') -Force
-Write-Host "OK settings.reference.json 제공(수동 병합)" -ForegroundColor Green
+$settingsTgt = Join-Path $Dest 'settings.json'
+$py = Get-Command python3 -ErrorAction SilentlyContinue
+if (-not $py) { $py = Get-Command python -ErrorAction SilentlyContinue }
+if ($NoSettings) {
+  Write-Host "OK settings.reference.json 제공(-NoSettings: 자동병합 생략 -> 수동 병합)" -ForegroundColor Green
+} elseif (-not $py) {
+  Write-Host "! python 없음 -> settings 자동병합 생략. settings.reference.json 수동 병합 필요" -ForegroundColor Yellow
+} else {
+  $had = Test-Path $settingsTgt
+  if ($had) { New-Item -ItemType Directory -Force -Path $Backup | Out-Null; Copy-Item $settingsTgt (Join-Path $Backup 'settings.json') -Force }
+  $tmp = "$settingsTgt.merge-tmp"
+  # PS5.1 함정 회피: EAP=Stop 상태에서 네이티브 stderr(merge 성공 메시지)가 NativeCommandError로 throw됨 → 임시 Continue + 전 스트림 폐기
+  $prevEAP = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+  & $py.Source (Join-Path $Dot 'scripts\merge-settings.py') (Join-Path $Dot 'settings.reference.json') $settingsTgt $Mode $tmp *>$null
+  $mergeExit = $LASTEXITCODE
+  $ErrorActionPreference = $prevEAP
+  if (($mergeExit -eq 0) -and (Test-Path $tmp)) {
+    Move-Item $tmp $settingsTgt -Force
+    if ($had) { Write-Host "OK settings.json 자동 병합(mode=$Mode, 기존 백업)" -ForegroundColor Green } else { Write-Host "OK settings.json 신규 생성(reference)" -ForegroundColor Green }
+  } else {
+    Remove-Item $tmp -Force -ErrorAction SilentlyContinue
+    Write-Host "! settings 병합 실패 -> 기존 settings.json 유지, 수동 병합 필요" -ForegroundColor Yellow
+  }
+}
 # 재설치/업그레이드 감지용 source marker — 다음 실행 심층분석이 이전 설치(및 그 mode)를 인식해 적절한 모드를 추천
 $MarkerPath = Join-Path $Dest '.harness-source'
 if (Test-Path $MarkerPath) { New-Item -ItemType Directory -Force -Path $Backup | Out-Null; Copy-Item $MarkerPath (Join-Path $Backup '.harness-source') -Force }   # 이전 마커 이력 백업(설치 시각·mode 보존)
@@ -172,4 +198,4 @@ function Invoke-Setup([string]$name) {
 if ($WithPlugins) { Write-Host "`n-> 플러그인 설치..."; Invoke-Setup 'setup-plugins.ps1' }
 if ($WithMcp)     { Write-Host "`n-> MCP 설치...";     Invoke-Setup 'setup-mcp.ps1' }
 
-Write-Host "`n다음: 1) 충돌시 advisor  2) setup-plugins.ps1 $PluginScope  3) setup-mcp.ps1 $PluginScope  4) settings 병합  5) 재시작"
+Write-Host "`n다음: 1) 충돌시 advisor  2) setup-plugins.ps1 $PluginScope  3) setup-mcp.ps1 $PluginScope  4) 재시작 (settings는 자동 병합됨 — -NoSettings로 수동 전환 가능)"

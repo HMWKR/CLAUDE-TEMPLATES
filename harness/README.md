@@ -14,9 +14,10 @@
 | `dot-claude/adapters/` | L0 모델 프로파일 4종 (미검출 기본값·fable·opus·sonnet — 세션 모델 감지값별 처방 수준 조정) | 파일 복사 |
 | `dot-claude/scripts/` | 훅 스크립트 13종 (adapter-inject·gate 검증(verify-lock)·checkpoint(checkpoint-save)·anti-loop-guard·sanitize-korean 등) | 파일 복사 |
 | `dot-claude/workflows/` | 오케스트레이션 워크플로 3종 (conductor-verify·fix-skills·p2-consolidate) | 파일 복사 |
-| `dot-claude/commands/` | 슬래시 커맨드 4종 (analyze·journal·pdca·rules) | 파일 복사 |
+| `dot-claude/commands/` | 슬래시 커맨드 6종 (analyze·journal·pdca·rules·propose-skill·web-audit) | 파일 복사 |
 | `dot-claude/verification-templates/` | 검증 템플릿 5종 (README + bugfix·feature-impl·refactor·review-qa) | 파일 복사 |
-| `dot-claude/settings.reference.json` | settings 참조본 (env 플래그·enabledPlugins 맵) | **수동 병합** (머신 특화 경로 포함) |
+| `dot-claude/hooks/` | SessionStart 훅 (knot-session-check.sh + Windows .bat 래퍼) | 파일 복사 |
+| `dot-claude/settings.reference.json` | settings 참조본 (env 플래그·enabledPlugins 맵) | **자동 병합** (merge-settings.py — mode 정책·백업·롤백, `--no-settings`로 수동 전환) |
 | `../plugins/jusan-harness/skills/` | 글로벌 스킬 50종 (4.6M) | 파일 복사 **또는** 플러그인 설치 |
 | `../plugins/jusan-harness/agents/` | 글로벌 서브에이전트 6종 | 파일 복사 **또는** 플러그인 설치 |
 | `PLUGINS.md` + `setup-plugins.*` | 마켓플레이스 13 + 플러그인 26 | `claude plugin` 명령 |
@@ -28,7 +29,7 @@
 >
 > ⚠️ **third-party 플러그인·MCP 서버 본체는 번들하지 않는다** — 설치 명령으로 재현(라이선스·용량·자동업데이트). 위 스크립트가 공식 마켓플레이스에서 받아 설치한다.
 >
-> ⚙️ `install.sh`/`install.ps1`은 `dot-claude/{adapters,scripts,workflows,commands,verification-templates}`도 함께 복사한다 — 훅(settings)이 `scripts/`를 참조하고 L0 어댑터 라우팅이 `adapters/` 프로파일을 필요로 하므로 **필수** 항목이다.
+> ⚙️ `install.sh`/`install.ps1`은 `dot-claude/{adapters,scripts,workflows,commands,verification-templates,hooks}`도 함께 복사하고, `settings.reference.json`을 대상 `settings.json`에 **자동 병합**한다(merge-settings.py 정본 정책: `replace`=reference 우선 / `merge`=사용자 우선, 리스트 union, 기존 백업 후 JSON 검증, 실패 시 롤백; `--no-settings`/`-NoSettings`로 수동 전환). 훅(settings)이 `scripts/`·`hooks/`를 참조하고 L0 어댑터 라우팅이 `adapters/` 프로파일을 필요로 하므로 **필수** 항목이다. (python3 부재 시 자동병합을 건너뛰고 참고본만 제공.)
 
 ---
 

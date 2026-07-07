@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # 하네스 설치 (Mac/Linux/Git-Bash)
 # 사용: bash harness/install.sh [--scope global|project] [--project <경로>]
-#                              [--mode merge|replace] [--with-plugins] [--with-mcp]
+#                              [--mode merge|replace] [--with-plugins] [--with-mcp] [--no-settings]
+#   --no-settings: settings.json 자동병합 생략(참고본만 제공). 기본은 자동 병합(mode 정책 따름).
 #   미지정 + 대화형이면 범위/모드를 묻는다.
 #     범위  글로벌  : ~/.claude (모든 프로젝트) · 플러그인/MCP -s user
 #           프로젝트: <프로젝트>/.claude (해당 프로젝트만) · -s project
@@ -14,7 +15,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOT="$SCRIPT_DIR/dot-claude"                 # CLAUDE.md, rules, settings.reference.json
 PLUG="$SCRIPT_DIR/../plugins/jusan-harness"  # skills, agents (플러그인 정본)
 
-SCOPE=""; PROJECT_ROOT=""; MODE=""; WITH_PLUGINS=0; WITH_MCP=0
+SCOPE=""; PROJECT_ROOT=""; MODE=""; WITH_PLUGINS=0; WITH_MCP=0; NO_SETTINGS=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --scope) SCOPE="${2:-}"; shift 2 ;;
@@ -22,6 +23,7 @@ while [ $# -gt 0 ]; do
     --mode) MODE="${2:-}"; shift 2 ;;
     --with-plugins) WITH_PLUGINS=1; shift ;;
     --with-mcp) WITH_MCP=1; shift ;;
+    --no-settings) NO_SETTINGS=1; shift ;;
     *) echo "알 수 없는 옵션: $1"; exit 1 ;;
   esac
 done
@@ -142,12 +144,27 @@ put_tree "$PLUG/agents" agents
 put_tree "$PLUG/skills" skills
 # 현행 하네스 정의(2026-07-07): L0 어댑터·훅 스크립트·오케스트레이션 워크플로·커맨드·검증템플릿.
 # 훅(settings)이 ~/.claude/scripts/* 를 참조하고 L0가 adapters/ 프로파일을 필요로 하므로 필수 복사.
-for _d in adapters scripts workflows commands verification-templates; do
+for _d in adapters scripts workflows commands verification-templates hooks; do
   [ -d "$DOT/$_d" ] && put_tree "$DOT/$_d" "$_d"
 done
 
-cp "$DOT/settings.reference.json" "$DEST/settings.reference.json"
-echo "✓ settings.reference.json 제공(수동 병합)"
+# settings 자동 병합 — merge-settings.py 정본 정책(replace=reference우선 / merge=사용자우선, 리스트 union). 백업+검증+실패 시 롤백.
+cp "$DOT/settings.reference.json" "$DEST/settings.reference.json"   # 참고본은 항상 제공
+_settings_tgt="$DEST/settings.json"
+if [ "$NO_SETTINGS" = "1" ]; then
+  echo "✓ settings.reference.json 제공(--no-settings: 자동병합 생략 → 수동 병합)"
+elif ! command -v python3 >/dev/null 2>&1; then
+  echo "⚠ python3 없음 → settings 자동병합 생략. settings.reference.json 수동 병합 필요"
+else
+  _had=0; [ -f "$_settings_tgt" ] && { _had=1; mkdir -p "$BACKUP"; cp "$_settings_tgt" "$BACKUP/settings.json"; }
+  _settings_tmp="$_settings_tgt.merge-tmp"
+  if python3 "$DOT/scripts/merge-settings.py" "$DOT/settings.reference.json" "$_settings_tgt" "$MODE" "$_settings_tmp" 2>/dev/null; then
+    mv "$_settings_tmp" "$_settings_tgt"
+    [ "$_had" = 1 ] && echo "✓ settings.json 자동 병합(mode=$MODE, 기존 백업)" || echo "✓ settings.json 신규 생성(reference)"
+  else
+    rm -f "$_settings_tmp"; echo "⚠ settings 병합 실패 → 기존 settings.json 유지, settings.reference.json 수동 병합 필요"
+  fi
+fi
 # 재설치/업그레이드 감지용 source marker — 다음 실행의 심층분석이 이전 설치(및 그 mode)를 인식해 적절한 모드를 추천
 [ -f "$DEST/.harness-source" ] && { mkdir -p "$BACKUP"; cp "$DEST/.harness-source" "$BACKUP/.harness-source"; }   # 이전 마커 이력 백업(설치 시각·mode 보존)
 printf 'source=HMWKR/CLAUDE-TEMPLATES\ninstalled=%s\nmode=%s\nscope=%s\n' "$TS" "$MODE" "$SCOPE" > "$DEST/.harness-source"
@@ -169,4 +186,4 @@ run_setup() { if [ "$SCOPE" = "project" ]; then ( cd "$PROJECT_ROOT" && bash "$S
 [ "$WITH_MCP" = "1" ]     && { echo ""; echo "→ MCP 설치...";     run_setup setup-mcp.sh; }
 
 echo ""
-echo "다음 단계: 1) 충돌 있으면 advisor 분석  2) 플러그인 setup-plugins.sh $PLUGIN_SCOPE  3) MCP setup-mcp.sh $PLUGIN_SCOPE  4) settings 병합  5) 재시작"
+echo "다음 단계: 1) 충돌 있으면 advisor 분석  2) 플러그인 setup-plugins.sh $PLUGIN_SCOPE  3) MCP setup-mcp.sh $PLUGIN_SCOPE  4) 재시작 (settings는 자동 병합됨 — --no-settings로 수동 전환 가능)"
