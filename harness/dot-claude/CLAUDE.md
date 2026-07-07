@@ -88,6 +88,6 @@ Apply what the task signals; with no signal, baseline only. Read each pack only 
 
 ## 레이어 서열 — Fable 정합 (2026-07-02, 하네스-Fable 정합 감사 결과)
 
-- **멀티에이전트 정본 = 네이티브 Workflow/Agent 도구.** "울트라워크" 요청은 Fable Workflow 실행(적대 검증·판정단 패턴 포함)으로 해석한다. **팀 편성 요청도 동일** — 네이티브 Agent 팀(teammates)이 1차, omc /team·jusan agent-teams-* 는 명시 호출 시에만. omc(ultrawork/team/ralph/autopilot 등)는 사용자가 명시 호출한 때만 사용. 서브에이전트 모델은 스킬·에이전트 정의의 하드코딩(haiku 등)을 무시하고 **미지정(세션 모델 상속) 또는 fable**로 오버라이드한다(haiku 금지·소넷 이상 선호와 정합). **2026-07-07부터 Fable 사용 불가(사용자 고지 07-03)** — 그날부터 fable 오버라이드는 **opus**로 대체하고 세션 모델도 Opus 4.8로 전환한다(절차: `~/.thoughts/2026-07-07-opus-transition-checklist.md`).
+- **멀티에이전트 정본 = 네이티브 Workflow/Agent 도구.** "울트라워크" 요청은 Fable Workflow 실행(적대 검증·판정단 패턴 포함)으로 해석한다. **팀 편성 요청도 동일** — 네이티브 Agent 팀(teammates)이 1차, omc /team·jusan agent-teams-* 는 명시 호출 시에만. omc(ultrawork/team/ralph/autopilot 등)는 사용자가 명시 호출한 때만 사용. 서브에이전트 모델은 스킬·에이전트 정의의 하드코딩(haiku 등)을 무시하고 **미지정(현재 세션 모델 상속)**으로 둔다(haiku 금지·소넷 이상 선호와 정합). **기본 모델이 무엇이든 그 모델로 진행한다 — 세션이 Fable이면 Fable, Opus면 Opus.** 특정 모델을 강제하지 않고, L0 어댑터(adapters/)가 감지된 세션 모델별 처방 수준을 자동 조정한다.
 - **강제 게이트 종속**: superpowers·jusan의 무조건 게이트(brainstorming HARD-GATE, 1%-rule 스킬 강제, Iron Law, STEP별 confirmation loop)는 위 착수 계약의 발동 판정에 종속된다 — 단순·명확·가역 작업과 전자율 모드(autopilot/백그라운드/사용자 AFK)에서는 면제. AskUserQuestion은 산출물의 핵심 형태를 바꾸는 진짜 사용자 결정에만 쓰고, 무응답(AFK/타임아웃) 시 가정을 1줄 명시하고 진행한다.
 - **Stop 차단 권위 = fablize gate_stop 1곳.** 네이티브 /goal과 omc ralph 지속 루프는 동시 사용하지 않는다(택1). bkit unified-stop은 관찰 전용.
