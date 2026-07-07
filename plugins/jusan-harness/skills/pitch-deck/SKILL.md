@@ -5,9 +5,9 @@ description: 범용 발표 덱 제작 엔진(Presentation Engine). 어떤 프로
 
 # Presentation Engine — 범용 발표 덱 제작 (맥락 연역 + 프로젝트-네이티브 스토리)
 
-> **전체 방법론 SSoT**: `C:\Users\jusan\Desktop\발표 PPT\mongpet 발표자료\PPT-제작-방법론.md` (이 스킬은 그 실행기. 깊이 필요 시 Read).
-> **골든 레퍼런스(읽기 전용 *사례*)**: `...\mongpet 발표자료\2026-05-30\` — **구조/CSS/컴포넌트/빌드만 복제, 텍스트·spine·카피·수치는 0에서**.
-> **출력**: `<프로젝트명> 발표자료\<YYYY-MM-DD>\` (작업 cwd 기준). 슬라이드 우선(HTML→PNG→PPTX), 대본·근거·배포본 선택. 한국어 기본+영어 대응.
+> **전체 방법론 SSoT**: 별도 방법론 문서(`PPT-제작-방법론.md`)가 **있으면** 참조(이 스킬은 그 실행기, 깊이 필요 시 Read). 없으면 이 SKILL.md 본문만으로 자족 실행.
+> **골든 레퍼런스(읽기 전용 *사례*)**: 골든 레퍼런스 덱이 **있으면** — **구조/CSS/컴포넌트/빌드만 복제, 텍스트·spine·카피·수치는 0에서**.
+> **출력**: `<프로젝트명> 발표자료/<YYYY-MM-DD>/` (작업 cwd 기준). 슬라이드 우선(HTML→PNG→PPTX), 대본·근거·배포본 선택. 한국어 기본+영어 대응.
 
 ## 세 개의 북극성 (충돌 시 우선)
 1. **맥락이 슬라이드를 결정한다.**
@@ -52,7 +52,7 @@ SCQA(논리·내부·임원) / Monroe's(행동촉구·영업·기금) / Pixar Sp
 수치↔출처 1:1, 추정 표기, 근거 별도 문서, 1차출처 우선. 프로파일별 증거 어휘(IR=작동·재무 / 세일즈=고객케이스·ROI / 내부=파일럿·비용편익 / 교육=실증·사례). traction 부재 시 "베이스라인(업계평균)→목표→측정방법". 의심 Top3 → 슬라이드로 선제 무력화 + ARA(Acknowledge-Reframe-Answer) Q&A 노트.
 
 ## S6 — 빌드
-골든 레퍼런스 HTML 구조/CSS토큰/빌드 복제(텍스트는 0에서). 1280×720 #stage → Chrome MCP(우선)/Playwright로 #stage 캡처(DSF2x, export 모드) → python build_pptx.py → 16:9 PPTX.
+골든 레퍼런스 HTML 구조/CSS토큰/빌드 복제(텍스트는 0에서). 1280×720 #stage → 브라우저(우선순위: rules/uncompromising-rigor §1, Playwright MCP 전역 우선)로 #stage 캡처(DSF2x, export 모드) → python build_pptx.py → 16:9 PPTX.
 
 ## S7 — QA 루프 (통과까지 반복) ⭐
 글로벌 `~/.claude/rules/uncompromising-rigor.md` 준수(모든 발견=결함·자기정당화 차단).
@@ -77,7 +77,7 @@ SCQA(논리·내부·임원) / Monroe's(행동촉구·영업·기금) / Pixar Sp
 > 구체 금칙어는 S1-4에서 *참조 레퍼런스 실제 텍스트*를 Read해 프로젝트별 `_blacklist.txt`로 생성(고정 목록 금지 — 신규 도메인엔 무력).
 
 ## 출력 위치 규약
-`<프로젝트명> 발표자료\<YYYY-MM-DD>\` (작업 cwd). 분석 대상 프로젝트 디렉토리에는 **산출물을 만들지 않는다(읽기 전용)** — 항상 작업 디렉토리에 생성.
+`<프로젝트명> 발표자료/<YYYY-MM-DD>/` (작업 cwd). 분석 대상 프로젝트 디렉토리에는 **산출물을 만들지 않는다(읽기 전용)** — 항상 작업 디렉토리에 생성.
 
 ---
 *v2 · 범용 Presentation Engine. v1(심사·투자 전용 + MongPet spine 고정)의 복제 유발 결함을 코어/프로파일 분리·Soul-to-Spine·QA 루프로 차단. 전체 근거: 방법론 문서. (Notion 동기화 생략 — 로컬 전용.)*

@@ -93,7 +93,7 @@ description: |
 
 ## 2. 환각 방지 프로토콜
 
-> **공통 프로토콜**: `~/.claude/skills/_core/protocols.md` 참조
+> **공통 프로토콜**: `${CLAUDE_PLUGIN_ROOT}/../_core/protocols.md` (플러그인의 형제 `_core/` 스킬) 참조
 > Read Before Write, 검증 마커 5종, 에러 핸들링, 5단계 메타인지 포함.
 
 ### 이 스킬 고유 규칙

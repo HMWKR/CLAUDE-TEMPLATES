@@ -102,4 +102,4 @@ CE 사고여정 기록자로서, 커밋의 변경 내용을 분석하고 Context
 ## 참조
 
 - CE 사고여정 구조: 프로젝트별 `CLAUDE.md`의 "CE 사고 여정" 섹션
-- 환각 방지 프로토콜: `~/.claude/skills/_core/protocols.md`
+- 환각 방지 프로토콜: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md`

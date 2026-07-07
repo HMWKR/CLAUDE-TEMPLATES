@@ -18,7 +18,6 @@
 - 불가역적 작업은 반드시 사용자에게 영향 범위를 설명 후 승인 획득
 
 ## 한국어 손상 토큰 정책 (2026-05-27 사고 영속 정책)
-- 손상 시그니처: "영" 2회+ 연속 반복 / U+FFFD 2연속 / □ 3개+ — 발견 즉시 정상 콘텐츠로 인용·재사용 금지
-- PreToolUse `sanitize-korean.sh` 가드가 손상 텍스트의 Write/Edit/git commit을 차단한다 (유지)
-- SessionStart `verify-memory-integrity.sh` 경고 수신 시: `[손상 메모리 인용]` 명시 + 사용자에게 복구 필요 보고
-- 사고 전문·복구 절차: `~/.claude/disabled/korean-encoding-incident-2026-05-27.md`
+- 손상 시그니처: "영" 비정상 연속 반복(가드 차단 4회+, 모델은 2회+부터 경계) / U+FFFD 1회+ / □ 3개+ — 발견 즉시 정상 콘텐츠로 인용·재사용 금지
+- PreToolUse `sanitize-korean.sh` 가드가 손상 텍스트의 Write/Edit/MultiEdit/git commit을 차단한다 (`~/.claude/scripts/`에 구현·연결됨, fail-open)
+- SessionStart `verify-memory-integrity.sh` 경고 수신 시: `[손상 메모리 인용]` 명시 + 사용자에게 복구 필요 보고 (경고 기준: '영' 3회+/U+FFFD 1회+/'□' 3회+/UTF-8 디코드 실패)

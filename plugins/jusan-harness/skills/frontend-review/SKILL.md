@@ -12,8 +12,8 @@ user_invocable: true
 # Frontend Review — 프론트엔드 전수 코드 리뷰
 
 > **원칙**: "프론트엔드는 백엔드보다 사용자 경험에 직접 노출 — 한 줄 코드 차이가 전환율을 흔든다."
-> **공통 프로토콜**: `~/.claude/skills/_core/protocols.md` 참조
-> **역할 정의**: `~/.claude/skills/_core/roles.md` 참조
+> **공통 프로토콜**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` 참조
+> **역할 정의**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md` 참조
 > **P3-6 신설**: 2026-05-26. 사용자 명시 발화 "code-review 처럼 UI/UX 디자인 전부 진행하는 스킬 만들자" + `/propose-skill` 워크플로우 통과 (skill-candidate 2/4 트리거 충족: 사용자 명시 + CE Architect 권장 / B 카테고리 / ROI High).
 
 ---
@@ -22,7 +22,7 @@ user_invocable: true
 
 이 스킬은 `~/.claude/rules/uncompromising-rigor.md` 4개 정책을 **무조건 준수**:
 
-1. **§1 Browser Tool Priority** — 본 스킬은 정적 코드 리뷰. 라이브 검증 필요 시 `playwright-uiux-audit` / `playwright-design-audit` 로 위임 (Chrome MCP 우선)
+1. **§1 Browser Tool Priority** — 본 스킬은 정적 코드 리뷰. 라이브 검증 필요 시 `playwright-uiux-audit` / `playwright-design-audit` 로 위임 (브라우저 우선순위는 rules/uncompromising-rigor §1 — 2026-07-07 Playwright MCP 전역 우선)
 2. **§2 Self-Justification 차단** — "이 정도면 충분" / "사소함" / "사용자가 신경 안 씀" 표현 즉시 차단
 3. **§3 All Findings Are Defects** — 모든 발견은 결함. 사용자 명시 강등만 Low
 4. **§4 Per-Round Deep Analysis** — `--loop` 모드 시 매 라운드 5단계 강제
@@ -271,10 +271,10 @@ Stage 2: Lead 통합 + Frontend Quality Score 산정
 
 - **`vercel-react-best-practices`** — React/Next.js 성능 50+ 규칙
 - **`web-design-guidelines`** — Web Interface Guidelines compliance
-- **`_core/qa/checklist-175.md`** — QA 체크리스트 베이스
-- **`_core/qa/behavioral-signals.md`** — 역할 채택 신호 (Signal 1-3)
-- **`_core/roles.md`** — 전문가 역할 정의
-- **`_core/protocols.md`** — 환각 방지 프로토콜
+- **`${CLAUDE_PLUGIN_ROOT}/skills/_core/qa/checklist-175.md`** — QA 체크리스트 베이스
+- **`${CLAUDE_PLUGIN_ROOT}/skills/_core/qa/behavioral-signals.md`** — 역할 채택 신호 (Signal 1-3)
+- **`${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`** — 전문가 역할 정의
+- **`${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md`** — 환각 방지 프로토콜
 
 ---
 
@@ -335,12 +335,12 @@ basic 모드: 6 Tier 대표 항목만 (~30 항목) — 단일 에이전트 1회 
 - **인사이트 1**: `.thoughts/2026-05-25-harness-insights-round1.md` (10단계 파이프라인)
 - **라운드 2-3 합의**: `.thoughts/2026-05-25-harness-insights-round2-round3.md`
 - **회고**: `.thoughts/2026-05-25-harness-application-completed.md`
-- **P3-5 메타 루프**: `~/.claude/skills/insight-sentinel/SKILL.md` (skill-candidate 유형)
+- **P3-5 메타 루프**: `insight-sentinel` 스킬 (skill-candidate 유형)
 - **P3-6 본 스킬 신설 결정**: 사용자 발화 "code-review 처럼 UI/UX 디자인 전부 진행" (2026-05-26)
 - **분담 스킬**:
   - `code-review` (외부 플러그인 — 백엔드/일반 코드)
-  - `security-reviewer` (`~/.claude/agents/security-reviewer.md` — 보안만)
-  - `ce-reviewer` (`~/.claude/agents/ce-reviewer.md` — CE)
+  - `security-reviewer` (`${CLAUDE_PLUGIN_ROOT}/agents/security-reviewer.md` — 보안만)
+  - `ce-reviewer` (`${CLAUDE_PLUGIN_ROOT}/agents/ce-reviewer.md` — CE)
   - `playwright-uiux-audit` (라이브 UI/UX)
   - `playwright-design-audit` (라이브 디자인 통합)
   - `vercel-react-best-practices` (가이드라인 참조)

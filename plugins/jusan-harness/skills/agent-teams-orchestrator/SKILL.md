@@ -12,6 +12,10 @@ description: |
 > **철학**: "한 명의 전문가보다 전문가 팀이 더 나은 결과를 만든다"
 > **원칙**: Lead는 조율하고, 팀원은 실행하며, 검증은 전원이 한다
 
+## conductor-verify 정합
+
+이 스킬은 conductor-verify 파이프라인 하위의 `<agent-teams-orchestrator>` 전문 진입점이다. **완료권위·최종검증은 conductor-verify(계획→검수→실행→종합→독립검증→승인)·codex 교차벤더 게이트·verify-lock을 따른다** — 이 스킬의 자체 스코어링·완료 보고는 그 단계에 종속되며 경쟁 권위가 아니다. 이 스킬의 고유 기여(100점 패턴 스코어링·5패턴 자동선택·4-Block spawn 템플릿)는 그대로 유지한다.
+
 ## 목차
 - [1. 작업 분석 & 오케스트레이션 패턴 자동 선택](#1-작업-분석--오케스트레이션-패턴-자동-선택)
 - [2. 동적 팀 구성](#2-동적-팀-구성)
@@ -357,7 +361,7 @@ Lead가 수집/준비한 다음 데이터를 기반으로 작업합니다:
 > [T3] Expert: --all 모드에서 추가 점검
 
 **환각 방지 프로토콜** (필수 — 위반 시 재작업):
-> `~/.claude/skills/_core/protocols.md` 의 Read Before Write 원칙, 검증 마커 6개, 심각도 L1-L4 적용
+> `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` (플러그인 동봉 _core) 의 Read Before Write 원칙, 검증 마커 6개, 심각도 L1-L4 적용
 
 === Block 4: Completion Conditions ===
 
@@ -486,8 +490,8 @@ Lead → spawnTeam([
 
 ## 6. 행동 채택 표준 (Behavioral Adoption Standards)
 
-> **전문가 역할 정의**: `~/.claude/skills/_core/roles.md` 참조
-> **Agent-Teams 패턴**: `~/.claude/skills/_core/team-patterns.md` 참조
+> **전문가 역할 정의**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md` (플러그인 동봉 _core) 참조
+> **Agent-Teams 패턴**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/team-patterns.md` (플러그인 동봉 _core) 참조
 
 ### 이 스킬의 오케스트레이터 역할
 
@@ -584,6 +588,8 @@ Lead → spawnTeam([
 └─────────────────────────────────────────────────────┘
 ```
 
+> **정합**: 위 게이트 1-3은 팀 내부의 1차·2차 검수로 동작하며, 게이트 3의 "최종 보고"·완료 판정은 자체 최종 게이트가 아니라 **conductor-verify의 독립 사전검증→승인 단계에 위임**한다(codex 교차벤더 게이트·verify-lock 경유).
+
 ### TeammateIdle Hook 활용
 
 유휴 팀원에게 자동으로 리뷰/테스트 작업을 할당한다:
@@ -631,7 +637,7 @@ TaskCompleted hook 전략:
 
 ## 8. 멀티 에이전트 환각 방지 프로토콜
 
-> **공통 프로토콜**: `~/.claude/skills/_core/protocols.md` 참조
+> **공통 프로토콜**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` (플러그인 동봉 _core) 참조
 
 **이 스킬 고유의 멀티 에이전트 확장 규칙**:
 
@@ -881,7 +887,7 @@ Lead는 각 Stage 완료 시 체크포인트를 디스크에 저장:
 
 ### 절대 금지
 
-- ❌ 게이트 검증 없이 완료 선언
+- ❌ 게이트 검증 없이 완료 선언 (최종 완료권위는 conductor-verify 승인 단계에 위임)
 - ❌ 팀원 간 직접 통신 (Lead 우회)
 - ❌ 동일 파일 동시 수정 (파일 충돌)
 - ❌ 승인 없는 계획 변경

@@ -1,7 +1,7 @@
 # 행동 채택 표준 (Behavioral Adoption Standards)
 
 > **공유 파일**: playwright-qa-expert, playwright-qa-agent-teams, playwright-uiux-audit 공통 참조
-> **위치**: `~/.claude/skills/_core/qa/behavioral-signals.md`
+> **위치**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/qa/behavioral-signals.md`
 
 ---
 

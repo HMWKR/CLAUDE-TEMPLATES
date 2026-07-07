@@ -10,6 +10,10 @@ trigger: auto
 
 # Agent Teams 코드베이스 심층 분석 스킬
 
+## conductor-verify 정합
+
+이 스킬은 conductor-verify 파이프라인 하위의 `<agent-teams-deep-analysis>` 전문 진입점이다. **완료권위·최종검증은 conductor-verify(계획→검수→실행→종합→독립검증→승인)·codex 교차벤더 게이트·verify-lock을 따른다** — 자체 스코어링/완료보고는 그 단계에 종속(경쟁 권위 아님). 이 스킬의 고유 기여(읽기전용 심층분석 Lead+3TM 병렬 분업·데이터 디렉토리 계약)는 유지한다.
+
 ## 목차
 - [1. 실행 모드](#1-실행-모드)
 - [2. 핵심 원칙](#2-핵심-원칙)
@@ -232,6 +236,8 @@ trigger: auto
 
 ## 8. Stage 2: Lead — 리포트 통합
 
+> 정합: 이 단계의 통합 리포트는 파이프라인의 **종합 산출물**이며 완료 선언이 아니다 — 최종검증·승인은 conductor-verify 승인 단계에 위임한다(자체 완료권위 아님).
+
 ### 8.1 통합 절차
 
 ```
@@ -339,12 +345,14 @@ trigger: auto
 - [의존성 분석 상세](dependency.md)
 ```
 
+> 정합: 위 건강도 점수·등급은 이 스킬의 자체 진단 기여일 뿐 **자체 최종 게이트가 아니다** — 점수 확정·최종검증·승인은 conductor-verify 승인 단계에 위임한다.
+
 ---
 
 ## 9. 행동 채택 표준 (Behavioral Adoption Standards)
 
-> **전문가 역할 정의**: `~/.claude/skills/_core/roles.md` 참조
-> **Agent-Teams 패턴**: `~/.claude/skills/_core/team-patterns.md` 참조
+> **전문가 역할 정의**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md` (플러그인 동봉 _core) 참조
+> **Agent-Teams 패턴**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/team-patterns.md` (플러그인 동봉 _core) 참조
 
 ### 이 스킬 고유 역할 구성
 
@@ -399,7 +407,7 @@ trigger: auto
 
 ## 11. 환각 방지 프로토콜 (Anti-Hallucination)
 
-> **공통 프로토콜**: `~/.claude/skills/_core/protocols.md` 참조
+> **공통 프로토콜**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` (플러그인 동봉 _core) 참조
 
 **이 스킬 고유 규칙**:
 - 패턴 식별 시 최소 3개 파일에서 근거 제시 필수 (예: "MVC 사용" 주장 시 3개 이상 파일 증거)

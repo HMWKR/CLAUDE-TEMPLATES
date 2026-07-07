@@ -298,7 +298,7 @@ memory에 기록할 형식:
 
 ## 9. Confirmation Loop
 
-> **프로토콜 참조**: `_core/confirmation-loop.md`
+> **프로토콜 참조**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/confirmation-loop.md`
 
 이 스킬은 **2턴 인터랙티브** 구조에서 각 턴 종료 시 확인 루프를 적용한다.
 
@@ -324,5 +324,5 @@ memory에 기록할 형식:
 
 > 고급 사용 패턴(연쇄 최적화 / 컨텍스트 예산 자동추천 표 / 엣지 케이스 처리)은 `references/examples.md` 참조.
 
-> **_core 참조**: 전문가 역할은 `~/.claude/skills/_core/roles.md`,
-> 환각 방지 프로토콜은 `~/.claude/skills/_core/protocols.md` 참조.
+> **_core 참조**: 전문가 역할은 `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`,
+> 환각 방지 프로토콜은 `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` 참조.

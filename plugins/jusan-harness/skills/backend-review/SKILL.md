@@ -12,7 +12,7 @@ user_invocable: true
 # Backend Review — 백엔드 전수 코드 리뷰
 
 > **P3-7b 신설 (2026-05-26)**: 외부 code-review (45줄) 자체 대체. frontend-review 짝.
-> **공통**: `~/.claude/skills/_core/protocols.md` + `_core/roles.md`
+> **공통**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` + `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`
 
 ## ⚠️ Uncompromising Rigor §1-§4 정합
 

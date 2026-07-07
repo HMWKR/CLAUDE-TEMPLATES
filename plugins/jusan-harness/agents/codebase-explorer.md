@@ -95,4 +95,4 @@ model: opus
 
 ## 참조
 
-- 환각 방지 프로토콜: `~/.claude/skills/_core/protocols.md`
+- 환각 방지 프로토콜: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md`

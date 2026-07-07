@@ -284,7 +284,7 @@ options:
 
 ## Confirmation Loop
 
-> **프로토콜 참조**: `_core/confirmation-loop.md`
+> **프로토콜 참조**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/confirmation-loop.md`
 
 ### Stage 1 훅 오버라이드
 
@@ -366,6 +366,6 @@ options:
 
 ## 참조
 
-- Confirmation Loop 프로토콜: `~/.claude/skills/_core/confirmation-loop.md`
-- 전문가 역할: `~/.claude/skills/_core/roles.md`
-- 문제 해결 프로토콜: `~/.claude/skills/_core/protocols.md`
+- Confirmation Loop 프로토콜: `${CLAUDE_PLUGIN_ROOT}/skills/_core/confirmation-loop.md`
+- 전문가 역할: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`
+- 문제 해결 프로토콜: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md`

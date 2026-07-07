@@ -77,5 +77,5 @@ model: opus
 
 ## 참조
 
-- 역할 정의: `~/.claude/skills/_core/roles.md`
-- 환각 방지 프로토콜: `~/.claude/skills/_core/protocols.md`
+- 역할 정의: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`
+- 환각 방지 프로토콜: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md`

@@ -31,13 +31,13 @@ Baseline AI-DLC Stage Continues
 
 | Layer | 자산 | 역할 |
 |---|---|---|
-| **Baseline Layer** | `aidlc-baseline` 스킬 (`~/.claude/skills/aidlc-baseline/SKILL.md`) | AI-DLC 3-Phase 14-stage lifecycle 본문. 가이드 §4.1 에 따라 절대 수정하지 않음. |
+| **Baseline Layer** | `aidlc-baseline` 스킬 (`${CLAUDE_PLUGIN_ROOT}/../aidlc-baseline/SKILL.md`, 플러그인의 형제 스킬) | AI-DLC 3-Phase 14-stage lifecycle 본문. 가이드 §4.1 에 따라 절대 수정하지 않음. |
 | **RealizeSoft Layer** | **본 스킬** | Baseline 위에 부착되는 helper routing + user-choice gate + 비협상 규칙 강제. AI 모델이 본 스킬을 호출하면 Baseline 의 lifecycle 본문을 자동으로 참조 (글로벌 같은 위치에 설치된 동등 자산). |
 
 ### Activation Order
 
 - 사용자 트리거 키워드로 호출 → AI 모델이 두 스킬 모두 매칭 → 본 스킬이 RealizeSoft 레이어로 활성화하면서 Baseline 의 lifecycle 본문을 따라 진행
-- 또는 사용자가 명시적으로 본 스킬만 호출 → 본 스킬이 글로벌 위치 `~/.claude/skills/aidlc-baseline/` 의 Baseline 자산을 자동 참조
+- 또는 사용자가 명시적으로 본 스킬만 호출 → 본 스킬이 형제 스킬 위치 `${CLAUDE_PLUGIN_ROOT}/../aidlc-baseline/` 의 Baseline 자산을 자동 참조
 
 ### Hard Constraint
 
@@ -83,7 +83,7 @@ Baseline AI-DLC Stage Continues
 | Continuous QA | `continuous-qa-loop` | repeated automated fix-verify 비용 |
 | Ultradetail walks | `ultradetail-walk`, `ultradetail-loop`, `ultra-walk-deep`, `walk-all-deep` | exhaustive browser inspection 고비용 |
 | Project bootstrap | `project-bootstrapper`, `project-kickstart`, `pipeline-orchestrator` | baseline lifecycle 덮어쓸 위험 |
-| Thinking chains | `think-deep`, `think-full`, `think-teams` | `cynefin` / `what` / `first-principles` 와 중복 가능성 |
+| Thinking chains | `think-lite`, `think-full` | `cynefin` / `what` / `first-principles` 와 중복 가능성 |
 | External record writers | (Cantos MCP / journal 등 명시 호출만) | ADR/DDR/journal 쓰기는 별도 user intent 필요 |
 
 본 스킬은 위 helper 들의 **자동 spawn 시도를 차단**. 사용자가 직접 트리거 키워드를 입력할 때만 호출됨 (Q4 explicit approval, §12 Layer 1).
@@ -224,7 +224,7 @@ aidlc-docs/UserChoice/<stage>/<gate-slug>/
 
 | Step | 동작 | Gate? |
 |:-:|---|:-:|
-| 1 | Resolve baseline source — `~/.claude/skills/aidlc-baseline/references/aws-aidlc-rule-details/` 우선, 워크스페이스 `.aidlc-rule-details/` 도 발견 시 인지 | — |
+| 1 | Resolve baseline source — `${CLAUDE_PLUGIN_ROOT}/../aidlc-baseline/references/aws-aidlc-rule-details/` 우선, 워크스페이스 `.aidlc-rule-details/` 도 발견 시 인지 | — |
 | 2 | Classify and exclude product inputs — 워크스페이스의 `requirements/`, `constraints.md`, `docs/prd*` 발견 시 generic source 에서 제외 명시 | — |
 | 3 | Extract stage / gate / artifact / validation rules from baseline | — |
 | 4 | Detect current AI-DLC stage — baseline lifecycle 의 어느 stage 인지 (Workspace Detection → Requirements Analysis → ...) | — |
@@ -291,7 +291,7 @@ Option 3. <Alternative helper or Explore subagent>
 
 본 스킬을 사용한 작업이 완료되면 다음 항목을 보고:
 
-- **Baseline source**: 어디서 lifecycle 본문을 가져왔는지 (`~/.claude/skills/aidlc-baseline/` 또는 워크스페이스 `.aidlc-rule-details/`)
+- **Baseline source**: 어디서 lifecycle 본문을 가져왔는지 (`${CLAUDE_PLUGIN_ROOT}/../aidlc-baseline/` 또는 워크스페이스 `.aidlc-rule-details/`)
 - **Excluded product inputs**: 제외한 파일 목록 (`requirements/` 등)
 - **Stages used**: baseline 의 어느 stage 들이 실행되었는지
 - **Helpers selected**: Selection Gate 에서 선택된 helper 목록
@@ -396,7 +396,7 @@ helper 가 user input 이 필요한 시점에서 자체 `AskUserQuestion` 을 **
 
 ### 사전 조건
 
-- `aidlc-baseline` 스킬이 글로벌 `~/.claude/skills/aidlc-baseline/` 에 설치되어 있어야 함
+- `aidlc-baseline` 스킬이 형제 스킬로 `${CLAUDE_PLUGIN_ROOT}/../aidlc-baseline/` 에 설치되어 있어야 함 (동일 플러그인에 동봉)
 - 미설치 시 본 스킬은 사용자에게 baseline 설치를 안내하고 종료
 
 ### Baseline 단독 사용 vs 본 스킬 함께 사용

@@ -37,7 +37,7 @@ version: 1.0.0
 `scripts/infra-audit.sh` 실행으로 기계적 검사 항목을 먼저 수집한다.
 
 ```bash
-bash ~/.claude/skills/infra-audit/scripts/infra-audit.sh
+bash ${CLAUDE_PLUGIN_ROOT}/skills/infra-audit/scripts/infra-audit.sh
 ```
 
 출력: JSON 형식의 PASS/WARN/FAIL 결과.
@@ -157,7 +157,7 @@ bash ~/.claude/skills/infra-audit/scripts/infra-audit.sh
 - **`scripts/infra-audit.sh`** — 자동화 구조 검사 (Bash)
 
 ### 연동 에이전트
-- **`~/.claude/agents/infra-auditor.md`** — 실제 검사 실행 에이전트
+- **`${CLAUDE_PLUGIN_ROOT}/agents/infra-auditor.md`** — 실제 검사 실행 에이전트
 
 
 ## 42개 검사 항목 요약
@@ -257,7 +257,7 @@ WARN 항목은 가중치 높은 영역부터 우선 수정한다.
 
 ```bash
 # 전체 검사
-bash ~/.claude/skills/infra-audit/scripts/infra-audit.sh
+bash ${CLAUDE_PLUGIN_ROOT}/skills/infra-audit/scripts/infra-audit.sh
 
 # 출력 예시
 {

@@ -16,16 +16,20 @@ triggers:
   - 리액티브 개발
 ---
 
+## conductor-verify 정합
+
+이 스킬은 conductor-verify 파이프라인 하위의 `<agent-teams-reactive-dev>` 전문 진입점이다. **완료권위·최종검증은 conductor-verify(계획→검수→실행→종합→독립검증→승인)·codex 교차벤더 게이트·verify-lock을 따른다** — 이 스킬의 자체 스코어링(수렴 추적·게이트 규칙)·완료보고는 그 단계에 **종속**되며 경쟁 권위가 아니다. 이 스킬의 고유 기여(Observer-Worker 폐쇄 검증 루프 — 고유 신규 패턴)는 그대로 유지한다.
+
+---
+
 ## ⚠️ Uncompromising Rigor (글로벌 룰 강제 적용)
 
 이 스킬은 `~/.claude/rules/uncompromising-rigor.md` 의 4개 정책을 **무조건 준수**한다:
 
-1. **Browser Tool Priority** — `mcp__claude-in-chrome__*` 우선, `mcp__playwright__*` 는 fallback only
+1. **Browser Tool Priority** — 브라우저 우선순위는 `rules/uncompromising-rigor` §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. 사용자의 실제 로그인 세션 재사용이 필요할 때만 Chrome MCP(`mcp__claude-in-chrome__*`).
 2. **Self-Justification Red Flags** — "이 정도면 충분" / "사소함" / "사용자가 신경 안 씀" / "베타니까 OK" / "fetch 진행 중이라 정상" 등장 시 **즉시 자기 차단**
 3. **All Findings Are Defects** — 모든 발견은 결함. 사용자가 명시적으로 "강등"한 것만 Low
 4. **Per-Round Deep Analysis** — 매 라운드 5단계 심층 분석 강제 (이전 재조회 → 미세 재스캔 → Adversarial walk → 자기 정당화 자가 검증 → 신규+재현성)
-
-훅 강제: `detect-self-justification.sh` (5개 키워드 차단) + `check-chrome-mcp-priority.sh` (Playwright 우선 호출 가드).
 
 ---
 
@@ -336,6 +340,8 @@ feature-id: login-form
 
 ## 8. Phase 3: FINALIZE
 
+> **완료권위 위임**: 이 Phase의 "라운드 통과·정상 종료·FINAL-VERIFICATION.md"는 팀 내부 검증 게이트이며 **최종 완료 선언·승인 권위가 아니다** → conductor-verify 승인 단계(+ codex 교차벤더 게이트·verify-lock)에 위임한다.
+
 ### 8.1 Lead 마무리 작업
 
 ```
@@ -582,6 +588,8 @@ Observer → Lead: "검증 결과 요약 (기록용)"
 | 회귀 3회 발생 | 아키텍처 재검토 요청 | `REGRESSION_LOOP` | 설계 결함 알림 |
 | Observer Playwright 끊김 | Lead 재spawn 또는 직접 검증 | `OBSERVER_CRASH` | 서비스 재시작 |
 
+> `ALL_VERIFIED`(정상 종료)는 팀 내부 게이트 통과 신호일 뿐 최종 완료권위(자체 최종 게이트)가 아니다 → conductor-verify 승인 단계에 위임한다.
+
 ---
 
 ## 16. 에러 핸들링 & Fallback
@@ -641,8 +649,8 @@ Playwright 도구 미사용 가능 시:
 
 ## 행동 채택 표준 (Behavioral Adoption Standards)
 
-> **전문가 역할 정의**: `~/.claude/skills/_core/roles.md` 참조
-> **Agent-Teams 패턴**: `~/.claude/skills/_core/team-patterns.md` 참조
+> **전문가 역할 정의**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md` (플러그인 동봉 _core) 참조
+> **Agent-Teams 패턴**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/team-patterns.md` (플러그인 동봉 _core) 참조
 
 ### 이 스킬 고유 역할 구성
 
@@ -681,7 +689,7 @@ spawn → Playwright 접속 확인 → idle 대기
 
 ## 환각 방지 프로토콜
 
-> **공통 프로토콜**: `~/.claude/skills/_core/protocols.md` 참조
+> **공통 프로토콜**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` (플러그인 동봉 _core) 참조
 
 **이 스킬 고유 규칙**:
 - Observer는 **실제 Playwright 결과**만 보고 (추측 피드백 금지)
@@ -703,7 +711,7 @@ spawn → Playwright 접속 확인 → idle 대기
 | 3 | Task Router | Observer (Playwright) + Worker (Coder) 역할 분리 |
 | 4 | Context Builder | 페이지 구조 + verification 기준 + DOM 상태 |
 | 5 | Planner | 폐쇄 루프 반복 계획 — Worker 변경 → Observer 검증 → 피드백 |
-| 6 | **Tool Executor (강함)** | Worker: Read/Edit/Write / Observer: mcp__claude-in-chrome__* (우선) 또는 Playwright |
+| 6 | **Tool Executor (강함)** | Worker: Read/Edit/Write / Observer: mcp__playwright__* (browser_*) — 우선순위는 rules/uncompromising-rigor §1 |
 | 7 | Draft Generator | Worker가 코드 변경 + Observer가 검증 결과 캡처 |
 | 8 | **Critic / Verifier (강함)** | Observer가 즉시 검증 — verification-spec.json 기준만 (임의 기준 추가 금지) |
 | 9 | Refiner | 설계 불일치 시 Worker에게 즉시 피드백 → Worker 재변경 |
@@ -711,7 +719,7 @@ spawn → Playwright 접속 확인 → idle 대기
 
 ### Uncompromising Rigor §1 정합
 
-본 스킬의 Step 6은 **mcp__claude-in-chrome__* 우선** — Playwright는 fallback only.
+본 스킬의 Step 6 브라우저 도구 우선순위는 rules/uncompromising-rigor §1(2026-07-07 Playwright MCP 전역 우선)을 따른다 — Observer는 Playwright MCP(browser_*)로 검증.
 
 ### 확립 패턴 (P1-4) — 폐쇄 루프 특화
 

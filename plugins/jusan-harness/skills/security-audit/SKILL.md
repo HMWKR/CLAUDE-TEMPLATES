@@ -21,8 +21,8 @@ user_invocable: true
 트리거 충돌 해소: "security review"는 변경분 리뷰 의도가 강하므로 security-review로, "security audit / 보안 감사 / OWASP scan / 취약점 검사"처럼 전수 감사 의도일 때만 본 스킬을 활성화한다.
 
 > **원칙**: "보안은 후기에 발견할수록 비용이 기하급수적으로 증가한다." — Shift Left Security
-> **공통 프로토콜**: `~/.claude/skills/_core/protocols.md` 참조
-> **역할 정의**: `~/.claude/skills/_core/roles.md` 참조
+> **공통 프로토콜**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` 참조
+> **역할 정의**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md` 참조
 
 ---
 
@@ -305,7 +305,7 @@ agent-teams 불가 시:
 
 ## 9. 환각 방지 프로토콜
 
-> **공통 프로토콜**: `~/.claude/skills/_core/protocols.md` 참조
+> **공통 프로토콜**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` 참조
 
 **이 스킬 고유 규칙**:
 - Critical/High 이슈는 반드시 실제 코드에서 `[검증됨]` 마커로 입증

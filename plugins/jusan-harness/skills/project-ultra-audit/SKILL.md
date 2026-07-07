@@ -20,12 +20,12 @@ allowed-tools: ['*']
 
 이 스킬은 `~/.claude/rules/uncompromising-rigor.md` 4개 정책을 **무조건 준수**한다. blueprint §3 "절대 원칙"의 실행 강제 계층이다:
 
-1. **Browser Tool Priority** — `mcp__claude-in-chrome__*` 우선, `mcp__playwright__*` 는 fallback only
+1. **Browser Tool Priority** — 브라우저 우선순위는 rules/uncompromising-rigor §1(2026-07-07 Playwright MCP 전역 우선)을 따른다
 2. **Self-Justification Red Flags** — "일반적으로 됩니다" / "작동할 것으로 보입니다" / "문제없어 보입니다" / "구현된 것 같습니다" / "이 정도면 충분합니다" / "확인은 못 했지만 정상일 것입니다" 등장 시 **즉시 자기 차단**
 3. **All Findings Are Defects** — 모든 발견은 결함. 사용자 명시 강등만 Low
 4. **Per-Round Deep Analysis** — Stage 5 라이브 검증 / Stage 7 루프 매 라운드 5단계 심층 분석 강제
 
-훅 강제: `detect-self-justification.sh` + `block-on-self-justification.sh` + `check-chrome-mcp-priority.sh` + `anti-hallucination.md` ([검증됨]/[추정]/[미확인]).
+환각 방지: `anti-hallucination.md` 마커 적용 ([검증됨]/[추정]/[미확인]).
 
 ---
 
@@ -62,7 +62,7 @@ allowed-tools: ['*']
 |---|---|---|
 | **planning-only** | 실행 환경 없음 (설명/기획만) | domain-expert-analysis + 자료 기반 추정. 실행 항목 전부 NOT TESTED / BLOCKED |
 | **repository-audit** | 저장소/코드 있음 | walk-all-deep / Explore (라우트·관리자경로·API·권한·데이터모델·테스트코드 탐색) |
-| **runtime-verification** | 실행 환경 + 계정 있음 | Chrome MCP + live-verify-loop (실제 클릭·제출·API·저장·반영·차단 확인) |
+| **runtime-verification** | 실행 환경 + 계정 있음 | 브라우저(우선순위 rules/uncompromising-rigor §1) + live-verify-loop (실제 클릭·제출·API·저장·반영·차단 확인) |
 | **regression-suite** | 테스트 자동화 생성/보강 | playwright-qa-expert / playwright-qa-agent-teams (TC 생성) |
 
 여러 모드 동시 적용 가능. 환경에 따라 자동 분기.
@@ -82,7 +82,7 @@ allowed-tools: ['*']
         ↓
 [Stage 4 전수 상세 검수] ── 페이지/버튼/입력/기능/관리자/데이터/API
         ↓
-[Stage 5 라이브 작동 검증] ── Chrome MCP 증거 수집 → 5상태 판정
+[Stage 5 라이브 작동 검증] ── 브라우저 증거 수집 → 5상태 판정
         ↓
 [Stage 6 권한 테스트 매트릭스] ── 역할 × 접근대상 조합
         ↓
@@ -116,7 +116,7 @@ blueprint §6.4~§6.10 체크리스트로 전수 검수:
 
 ### Stage 5 — 라이브 작동 검증 (runtime-verification)
 - blueprint §10 실제 작동 확인 계약. 각 기능: 확인한 기능/방법/계정·권한/입력값/실행 결과/기대 일치 여부/증거/남은 문제.
-- **라우팅**: **Chrome MCP(1순위)** 실제 클릭·폼 제출·API 호출·저장 확인·관리자 반영·권한 차단. 실패 시 Playwright MCP. + `live-verify-loop`("코드 100% ≠ 라이브 100%").
+- **라우팅**: 브라우저로 실제 클릭·폼 제출·API 호출·저장 확인·관리자 반영·권한 차단 (브라우저 우선순위는 rules/uncompromising-rigor §1 — 2026-07-07 Playwright MCP 전역 우선). + `live-verify-loop`("코드 100% ≠ 라이브 100%").
 - **판정**: 증거 수집 후 5상태(PASS/FAIL/BLOCKED/NOT TESTED/NOT APPLICABLE). OK/완료/확인됨/문제없음 등 표현 금지.
 - **상태 분류 결정 규칙 (repository-audit ↔ runtime 경계)**: ① 코드상 구현은 확인됐으나 실제 실행/렌더/저장을 검증 안 함 → **NOT TESTED** (기본). ② 검증을 시도했으나 계정·권한·서버·실행환경·데이터 부재로 막힘 → **BLOCKED** (필요 조건 명시). ③ 런타임 실행 + 증거 확보 + 기대=실제 일치 → **PASS**. 즉 "코드 존재"는 절대 PASS 근거가 아니며, repository-audit 단독 결과의 기능 항목 기본값은 NOT TESTED다.
 - **환경 없을 때**: blueprint §11 고정 문구 출력 + 필요 자료·계정·환경·명령어·URL·테스트 순서 정리, 실행 항목 BLOCKED/NOT TESTED.
@@ -143,7 +143,7 @@ blueprint §6.4~§6.10 체크리스트로 전수 검수:
 | §3.5 임의 판단 금지 / §3.6 추정·확정 분리 | rigor §2 + `anti-hallucination.md` | 훅 exit2 |
 | §7 5상태값 (OK/완료 금지) | rigor §3 All Findings Are Defects | 룰 강제 |
 | §5.2 repository-audit | `walk-all-deep` / `ultra-walk-deep` Discovery / Explore | 스킬 위임 |
-| §5.3 runtime-verification | Chrome MCP(1순위) / Playwright(fallback) + `live-verify-loop` | rigor §1 |
+| §5.3 runtime-verification | 브라우저 (우선순위 rules/uncompromising-rigor §1) + `live-verify-loop` | rigor §1 |
 | §6.4~6.8 전수 검수 (페이지·버튼·입력·관리자) | `ultradetail-walk` DOM 전수 + 8축 카오스 | 스킬 위임 |
 | §5.4 regression-suite / §8 TC | `playwright-qa-expert` / `playwright-qa-agent-teams` | 스킬 위임 |
 | 수렴(발견→수정→재검증) | `continuous-qa-loop` / `harness-loop` | 스킬 위임 |
@@ -197,7 +197,7 @@ blueprint §6.4~§6.10 체크리스트로 전수 검수:
 | 3 | Task Router | 적합 하니스 스킬 라우팅 (live-verify-loop / ultradetail-walk / walk-all-deep / playwright-* / continuous-qa-loop / harness-loop / domain-expert-analysis) |
 | 4 | Context Builder | 페이지/권한/역할/API/데이터 매트릭스 수집 |
 | 5 | Planner | 각 페이지 + 모든 버튼/입력창/링크/폼/상태 체크 계획 |
-| 6 | **Tool Executor (강함)** | **실행 증거 필수** — 라이브 호출 결과 / 스크린샷 / API 응답 (`mcp__claude-in-chrome__*` 우선) |
+| 6 | **Tool Executor (강함)** | **실행 증거 필수** — 라이브 호출 결과 / 스크린샷 / API 응답 (브라우저 우선순위 rules/uncompromising-rigor §1) |
 | 7 | Draft Generator | 페이지별 / 기능별 검수 결과 |
 | 8 | **Critic / Verifier (강함)** | **화면 표시 ≠ 기능 작동** 분리 / 실행 증거 없으면 PASS 금지 / 임의 판단 PASS 금지 |
 | 9 | Refiner | 우선순위 + 사용자 명시 강등만 Low (UR §3) + Stage 7 --loop 수렴 |
