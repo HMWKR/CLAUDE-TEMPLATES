@@ -1,7 +1,7 @@
 # 하네스 재현 키트 (Harness Reproduction Kit)
 
 > 이 디렉토리만으로 **현재 Claude Code 하네스 전체**(글로벌 지침 · 규칙 · 에이전트 · 스킬 · 플러그인 · MCP)를 새 머신(Mac/Windows/Linux)에 동일하게 재구성한다.
-> 스냅샷: **2026-06-26** · Claude Code 2.1.185 기준.
+> 스냅샷: **2026-07-07** · Claude Code 2.1.185 이후 기준.
 
 ---
 
@@ -9,8 +9,13 @@
 
 | 경로 | 내용 | 재현 방식 |
 |---|---|---|
-| `dot-claude/CLAUDE.md` | 글로벌 지침 (81줄: CE·착수계약·FABLIZE 라우터·bkit 하이브리드) | 파일 복사 |
-| `dot-claude/rules/` | always-on 규칙 9종 | 파일 복사 |
+| `dot-claude/CLAUDE.md` | 글로벌 지침 (93줄: CE·착수계약·FABLIZE 라우터·bkit 하이브리드·레이어 서열) | 파일 복사 |
+| `dot-claude/rules/` | 규칙 12종 (always-on 8 + 경로 스코프 4) | 파일 복사 |
+| `dot-claude/adapters/` | L0 모델 프로파일 4종 (미검출 기본값·fable·opus·sonnet — 세션 모델 감지값별 처방 수준 조정) | 파일 복사 |
+| `dot-claude/scripts/` | 훅 스크립트 13종 (adapter-inject·gate 검증(verify-lock)·checkpoint(checkpoint-save)·anti-loop-guard·sanitize-korean 등) | 파일 복사 |
+| `dot-claude/workflows/` | 오케스트레이션 워크플로 3종 (conductor-verify·fix-skills·p2-consolidate) | 파일 복사 |
+| `dot-claude/commands/` | 슬래시 커맨드 4종 (analyze·journal·pdca·rules) | 파일 복사 |
+| `dot-claude/verification-templates/` | 검증 템플릿 5종 (README + bugfix·feature-impl·refactor·review-qa) | 파일 복사 |
 | `dot-claude/settings.reference.json` | settings 참조본 (env 플래그·enabledPlugins 맵) | **수동 병합** (머신 특화 경로 포함) |
 | `../plugins/jusan-harness/skills/` | 글로벌 스킬 50종 (4.6M) | 파일 복사 **또는** 플러그인 설치 |
 | `../plugins/jusan-harness/agents/` | 글로벌 서브에이전트 6종 | 파일 복사 **또는** 플러그인 설치 |
@@ -22,6 +27,8 @@
 > - **파일 복사**(기존 글로벌 스킬과 동일한 무네임스페이스 동작): `install.sh`/`install.ps1` 이 플러그인 폴더에서 복사
 >
 > ⚠️ **third-party 플러그인·MCP 서버 본체는 번들하지 않는다** — 설치 명령으로 재현(라이선스·용량·자동업데이트). 위 스크립트가 공식 마켓플레이스에서 받아 설치한다.
+>
+> ⚙️ `install.sh`/`install.ps1`은 `dot-claude/{adapters,scripts,workflows,commands,verification-templates}`도 함께 복사한다 — 훅(settings)이 `scripts/`를 참조하고 L0 어댑터 라우팅이 `adapters/` 프로파일을 필요로 하므로 **필수** 항목이다.
 
 ---
 

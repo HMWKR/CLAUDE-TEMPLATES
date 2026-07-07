@@ -102,6 +102,11 @@ place_claude_md
 put_tree "$DOT/rules" rules
 put_tree "$PLUG/agents" agents
 put_tree "$PLUG/skills" skills
+# 현행 하네스 정의(2026-07-07): L0 어댑터·훅 스크립트·오케스트레이션 워크플로·커맨드·검증템플릿.
+# 훅(settings)이 ~/.claude/scripts/* 를 참조하고 L0가 adapters/ 프로파일을 필요로 하므로 필수 복사.
+for _d in adapters scripts workflows commands verification-templates; do
+  [ -d "$DOT/$_d" ] && put_tree "$DOT/$_d" "$_d"
+done
 
 cp "$DOT/settings.reference.json" "$DEST/settings.reference.json"
 echo "✓ settings.reference.json 제공(수동 병합)"

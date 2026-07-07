@@ -93,6 +93,12 @@ Place-ClaudeMd
 Put-Tree (Join-Path $Dot 'rules') 'rules'
 Put-Tree (Join-Path $Plug 'agents') 'agents'
 Put-Tree (Join-Path $Plug 'skills') 'skills'
+# 현행 하네스 정의(2026-07-07): L0 어댑터·훅 스크립트·오케스트레이션 워크플로·커맨드·검증템플릿.
+# 훅(settings)이 ~/.claude/scripts/* 를 참조하고 L0가 adapters/ 프로파일을 필요로 하므로 필수 복사.
+foreach ($d in @('adapters','scripts','workflows','commands','verification-templates')) {
+  $srcDir = Join-Path $Dot $d
+  if (Test-Path $srcDir) { Put-Tree $srcDir $d }
+}
 
 Copy-Item (Join-Path $Dot 'settings.reference.json') (Join-Path $Dest 'settings.reference.json') -Force
 Write-Host "OK settings.reference.json 제공(수동 병합)" -ForegroundColor Green
