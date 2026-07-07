@@ -16,7 +16,7 @@ user_invocable: true
 
 ## ⚠️ Uncompromising Rigor §1-§4 정합
 
-- **§1**: GA4 대시보드 브라우저 작업 시 Chrome MCP 우선
+- **§1**: 브라우저 우선순위는 rules/uncompromising-rigor §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. 단 GA4 대시보드는 사용자의 Google 로그인 세션 재사용이 필요할 때만 Chrome MCP.
 - **§2**: PII 전송 합리화 ("그냥 이메일도 보내자") 절대 차단
 - **§3**: PII 위반은 자동 High (강등 불가 — 법적 리스크). 이벤트 누락은 Medium
 - **§4**: 매 라운드 5단계 (이전 funnel 재조회 → 새 drop-off → Adversarial → 자기 정당화 → 신규)

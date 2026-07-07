@@ -15,7 +15,7 @@ user_invocable: true
 
 ## ⚠️ Uncompromising Rigor §1-§4 정합
 
-- **§1 Chrome MCP 우선**: Lighthouse(자체 Chrome) / AccessLint(Chrome MCP) / Clarity 대시보드(Chrome MCP)
+- **§1 브라우저 우선순위**: rules/uncompromising-rigor §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. Lighthouse는 자체 Chrome 사용(별도 프로세스). Clarity 대시보드처럼 로그인 세션 재사용이 필요할 때만 Chrome MCP.
 - **§2 Self-Justification**: "이 정도면 충분" / "사용자가 신경 안 씀" / "실사용자 데이터 없어도 됨" 등 차단
 - **§3 All Findings Are Defects**: 5 도구 발견 모두 P0~P3 등재. 사용자 명시 강등만 P3
 - **§4 Per-Round Deep Analysis**: 매 라운드 5단계 (이전 발견 재조회 → 미세 재스캔 → Adversarial → 자기 정당화 → 신규)
@@ -187,7 +187,7 @@ Step 10 Output : 통합 백로그 + 실행 plan (아래 §5)
 
 ```bash
 # 5 도구 설치 확인
-- vercel-guidelines: ~/.claude/skills/web-design-guidelines/SKILL.md 존재
+- vercel-guidelines: web-design-guidelines 스킬(플러그인 형제)의 SKILL.md 존재
 - accesslint: claude plugin list | grep accesslint
 - lighthouse: lighthouse --version (13.3.0+)
 - lhci: lhci --version (0.15.1+)

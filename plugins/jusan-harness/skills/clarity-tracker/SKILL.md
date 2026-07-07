@@ -16,7 +16,7 @@ user_invocable: true
 
 ## ⚠️ Uncompromising Rigor §1-§4 정합
 
-- **§1**: 라이브 검증 시 Chrome MCP 우선 (Clarity 대시보드 브라우저 작업)
+- **§1**: 브라우저 우선순위는 rules/uncompromising-rigor §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. Clarity 대시보드처럼 Microsoft 로그인 세션 재사용이 필요할 때만 Chrome MCP.
 - **§2**: 마스킹 "이 정도면 충분" 차단 — 이메일/전화/카드/SSN/검색어/메모는 무조건 마스킹
 - **§3**: PII 마스킹 누락은 자동 High. Dead/Rage clicks 1건이라도 발견은 Medium 이상
 - **§4**: 매 라운드 5단계 분석 (이전 세션 재조회 → 새 friction 식별 → Adversarial walk → 자기 정당화 → 신규)

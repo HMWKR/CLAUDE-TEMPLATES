@@ -8,13 +8,10 @@ allowed-tools: ['*']
 
 이 스킬은 `~/.claude/rules/uncompromising-rigor.md` 의 4개 정책을 **무조건 준수**한다:
 
-1. **Browser Tool Priority** — `mcp__claude-in-chrome__*` 우선, `mcp__playwright__*` 는 fallback only
+1. **Browser Tool Priority** — 브라우저 우선순위는 `rules/uncompromising-rigor` §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. 로그인 세션 재사용이 필요할 때만 `mcp__claude-in-chrome__*`를 쓴다.
 2. **Self-Justification Red Flags** — "이 정도면 충분" / "사소함" / "사용자가 신경 안 씀" / "베타니까 OK" / "fetch 진행 중이라 정상" 등장 시 **즉시 자기 차단**
 3. **All Findings Are Defects** — 모든 발견은 결함. 사용자가 명시적으로 "강등"한 것만 Low
 4. **Per-Round Deep Analysis** — 매 라운드 5단계 심층 분석 강제 (이전 재조회 → 미세 재스캔 → Adversarial walk → 자기 정당화 자가 검증 → 신규+재현성)
-
-훅 강제: `detect-self-justification.sh` (5개 키워드 차단) + `check-chrome-mcp-priority.sh` (Playwright 우선 호출 가드).
-
 ---
 
 # Live-Verify Loop — 라이브 검증 무한 루프
@@ -672,7 +669,7 @@ SEO:          "meta tag PASS ≠ 검색 노출" + R76
 
 **Don't — 자기 정당화 키워드 5종 (R76 카테고리 C-C 명시 금지)**:
 
-스킬 본문 명시 위반(R76)의 대표 표면 형태. 매 라운드 출력 텍스트에 아래 키워드 등장 시 `detect-self-justification.sh` 훅이 stderr 경고 + 라운드 요약 자동 기록.
+스킬 본문 명시 위반(R76)의 대표 표면 형태. 매 라운드 출력 텍스트에 아래 키워드가 등장하면 즉시 자기 차단 + 라운드 요약에 기록한다.
 
 1. **"이미 비슷한 거 했으니 OK"** — 신규 변경에 대한 검증 의무는 자동 면제되지 않음
 2. **"유사 검증 완료"** — 동일 라우트라도 신규 마이그/hook은 재검증 의무
@@ -756,7 +753,7 @@ Mode B(자동 반복)에서 라운드 N+1을 **독립 서브에이전트(새 컨
 "Layer 1~4 PASS / 이슈 0건"을 **자기 선언만으로 종료 금지**. 종료는 아래 **둘 다** 충족 시에만:
 1. **결정론적 게이트**: 외부 검증 명령 **exit 0** (`enforce-layer-matrix.sh` + `tsc --noEmit` + 종결조건 검증). 에이전트 판단이 아닌 프로세스 exit code.
 2. **명시 종료 신호**: 라운드 요약에 `EXIT_SIGNAL: true` + Layer 1~4 PASS 증거 첨부.
-→ 하나라도 미충족 시 라운드 N+1. self-eval 단독 stop 시도 = R76 카테고리 C-C 자기위반(detect-self-justification 가드 연동).
+→ 하나라도 미충족 시 라운드 N+1. self-eval 단독 stop 시도 = R76 카테고리 C-C 자기위반.
 
 ### H-3. Sub-Agent Call Budget (자원 고갈 방어)
 > 근거: Microsoft Taxonomy — 'Resource exhaustion'(서브에이전트 무한 호출, 10만 리뷰어 콜). 기존 D-2는 라운드·토큰만 캡, 호출 수 미캡.

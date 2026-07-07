@@ -122,8 +122,8 @@ Plan Mode (0-6단계)          실행 Mode (7-8단계)
 
 ---
 
-> **_core 참조**: 전문가 역할은 `~/.claude/skills/_core/roles.md`,
-> 환각 방지 프로토콜은 `~/.claude/skills/_core/protocols.md` 참조.
+> **_core 참조**: 전문가 역할은 `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`,
+> 환각 방지 프로토콜은 `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` 참조.
 
 
 ## 8단계 분석 워크플로우 상세
@@ -212,7 +212,7 @@ Plan Mode (0-6단계)          실행 Mode (7-8단계)
 - 학습 사항 기록
 - 예방 조치 제안
 - 향후 개선 방향
-- **인사이트 체크포인트** (`_core/protocols.md` 참조): 이 분석에서 발견된 debugging/api-gotcha/architecture/pattern 인사이트가 있는지 점검 → 있으면 `/insight-check` 호출하여 기록 제안
+- **인사이트 체크포인트** (`${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` 참조): 이 분석에서 발견된 debugging/api-gotcha/architecture/pattern 인사이트가 있는지 점검 → 있으면 `/insight-check` 호출하여 기록 제안
 
 ## 메타인지 프롬프트 체계
 

@@ -140,5 +140,5 @@ model: opus
 ## 참조
 
 - 이전 평가: `~/.claude/projects/*/memory/MEMORY.md`의 하니스 점수 기록
-- 역할 정의: `~/.claude/skills/_core/roles.md`
-- 환각 방지: `~/.claude/skills/_core/protocols.md`
+- 역할 정의: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`
+- 환각 방지: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md`

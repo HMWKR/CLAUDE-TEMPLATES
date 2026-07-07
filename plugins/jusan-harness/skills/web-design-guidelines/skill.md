@@ -37,8 +37,8 @@ If no files specified, ask the user which files to review.
 
 ## 참조
 
-- 전문가 역할: `~/.claude/skills/_core/roles.md`
-- 문제 해결 프로토콜: `~/.claude/skills/_core/protocols.md`
+- 전문가 역할: `_core` 스킬(플러그인 형제)의 `roles.md`
+- 문제 해결 프로토콜: `_core` 스킬(플러그인 형제)의 `protocols.md`
 
 
 ## 검사 영역

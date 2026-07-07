@@ -12,14 +12,11 @@ description: |
 
 이 스킬은 `~/.claude/rules/uncompromising-rigor.md` 의 4개 정책을 **무조건 준수**한다:
 
-1. **Browser Tool Priority** — `mcp__claude-in-chrome__*` 우선, `mcp__playwright__*` 는 fallback only
+1. **Browser Tool Priority** — 브라우저 우선순위는 `rules/uncompromising-rigor` §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. 로그인 세션 재사용이 필요할 때만 `mcp__claude-in-chrome__*`를 쓴다.
 2. **Self-Justification Red Flags** — "이 정도면 충분" / "사소함" / "사용자가 신경 안 씀" / "베타니까 OK" / "fetch 진행 중이라 정상" 등장 시 **즉시 자기 차단**
 3. **All Findings Are Defects** — 모든 발견은 결함. 사용자가 명시적으로 "강등"한 것만 Low
 4. **Per-Round Deep Analysis** — 매 라운드 5단계 심층 분석 강제 (이전 재조회 → 미세 재스캔 → Adversarial walk → 자기 정당화 자가 검증 → 신규+재현성)
-
-훅 강제: `detect-self-justification.sh` (5개 키워드 차단) + `check-chrome-mcp-priority.sh` (Playwright 우선 호출 가드).
-
-> **이 스킬 이름은 "playwright-qa"이지만, Chrome MCP 가용 시 우선 사용 후 Playwright fallback. 이름은 legacy.**
+> 이 스킬 이름의 "playwright"는 legacy 명칭 — 브라우저 우선순위는 `rules/uncompromising-rigor` §1(2026-07-07 Playwright MCP 전역 우선)을 따른다.
 
 ---
 
@@ -476,7 +473,7 @@ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1?
 ## 16. 행동 채택 표준
 
 > 역할 채택 신호(Signal 1-3), 출력 형식([A][B][C]), 전환 프로토콜, 스킬 간 역할 참조 체계는
-> 공유 파일을 참조합니다: [~/.claude/skills/_core/qa/behavioral-signals.md](~/.claude/skills/_core/qa/behavioral-signals.md)
+> 공유 파일을 참조합니다: `${CLAUDE_PLUGIN_ROOT}/skills/_core/qa/behavioral-signals.md`
 >
 > 이 파일은 playwright-qa-expert, playwright-qa-agent-teams, playwright-uiux-audit 3개 스킬이
 > 공유하는 Single Source of Truth입니다.
@@ -493,8 +490,8 @@ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1?
 
 ---
 
-> **_core 참조**: 전문가 역할은 `~/.claude/skills/_core/roles.md`,
-> 환각 방지 프로토콜은 `~/.claude/skills/_core/protocols.md` 참조.
+> **_core 참조**: 전문가 역할은 `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`,
+> 환각 방지 프로토콜은 `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` 참조.
 
 ---
 
@@ -511,7 +508,7 @@ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1?
 | **3** | Task Router | TM 분배 — UI 시각 검수 / 인터랙션 / 접근성 / 성능 / 보안 (모드별 단축 가능) | `{ tm_assignments }` |
 | **4** | Context Builder | 페이지 구조 + DOM 트리 + 라우트 + 사용자 페르소나 + 검증 대상 매트릭스 | `audit-data/page-structure.md` |
 | **5** | Planner | 시나리오 작성 — 전수 클릭 (LLM 임의 판단 0건) + 8축 카오스 + 페르소나 walk | `scenarios.md` per TM |
-| **6** | Tool Executor | **Chrome MCP 우선** (Uncompromising Rigor §1) — `mcp__claude-in-chrome__*` 호출. Playwright 는 fallback only. | tool_logs/* |
+| **6** | Tool Executor | 브라우저 도구 (UR §1 우선순위, Playwright MCP 전역 우선) — 실제 브라우저 호출. | tool_logs/* |
 | **7** | Draft Generator | 결함 발견 → metadata.json 작성 (이슈 추적 시스템 §17) | `issues/{issue-id}/metadata.json` |
 | **8** | Critic / Verifier | 재현성 확인 — 같은 결함이 2회 이상 재현되는지 / 환경 의존성 분리 | `issues/{issue-id}/verification.md` |
 | **9** | Refiner | 우선순위 정렬 + 중복 통합 + Blockers/Warnings/Suggestions 분류 + 사용자 명시 강등만 Low | `_index.json` 갱신 |
@@ -524,9 +521,9 @@ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1?
 | 1 | URL/scope 명확 | 불명확 → 사장 질의 |
 | 2 | 테스트 유형 매칭 | 불명확 → Smoke 기본 |
 | 3 | TM 분배 (1-6명) | 7+ → 분할 |
-| 4 | page-structure 수집 OK | Chrome MCP 실패 시 Playwright fallback (단, §1 위반 로그) |
+| 4 | page-structure 수집 OK | 브라우저 도구 실패 시 §1 우선순위 따라 재시도/폴백 |
 | 5 | 시나리오 ≥ 매트릭스 100% 커버 | 미달 → 보강 |
-| 6 | **Chrome MCP 우선 시도** | 실패 시 Playwright + 사유 명시 |
+| 6 | **§1 우선순위 도구 시도** (Playwright MCP 우선) | 실패 시 대체 도구 + 사유 명시 |
 | 7 | 결함 metadata.json 생성 | 누락 → 재발견 |
 | 8 | 재현성 ≥ 2회 | 1회만 → 환경 의존성 분리 + flaky 표시 |
 | 9 | 등급 분류 일관 (Uncompromising Rigor §3) | 임의 강등 → 차단 |
@@ -534,7 +531,7 @@ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1?
 
 ### Uncompromising Rigor 4 정책 정합 (본 스킬 핵심)
 
-- **§1 Browser Priority**: Step 6 에서 Chrome MCP 우선 명시
+- **§1 Browser Priority**: Step 6 에서 §1 우선순위(Playwright MCP 전역 우선) 명시
 - **§2 Self-Justification Block**: Step 9 등급 분류 시 "이 정도면 충분" 차단
 - **§3 All Findings Are Defects**: Step 7-9 모든 발견 결함 처리
 - **§4 Per-Round Deep Analysis**: 매 라운드 5단계 (이전 재조회 / 미세 재스캔 / Adversarial / 자기 정당화 자가 검증 / 신규+재현성)

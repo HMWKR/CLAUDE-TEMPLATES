@@ -8,12 +8,10 @@ allowed-tools: ['*']
 
 이 스킬은 `~/.claude/rules/uncompromising-rigor.md` 의 4개 정책을 **무조건 준수**한다:
 
-1. **Browser Tool Priority** — `mcp__claude-in-chrome__*` 우선, `mcp__playwright__*` 는 fallback only
+1. **Browser Tool Priority** — 브라우저 우선순위는 rules/uncompromising-rigor §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. 본 스킬의 DOM 전수 walk는 Playwright MCP가 기본·필수(사용자 로그인 세션 재사용이 필요할 때만 Chrome MCP)
 2. **Self-Justification Red Flags** — "이 정도면 충분" / "사소함" / "사용자가 신경 안 씀" / "베타니까 OK" / "fetch 진행 중이라 정상" 등장 시 **즉시 자기 차단**
 3. **All Findings Are Defects** — 모든 발견은 결함. 사용자가 명시적으로 "강등"한 것만 Low
 4. **Per-Round Deep Analysis** — 매 라운드 5단계 심층 분석 강제 (이전 재조회 → 미세 재스캔 → Adversarial walk → 자기 정당화 자가 검증 → 신규+재현성)
-
-훅 강제: `detect-self-justification.sh` (5개 키워드 차단) + `check-chrome-mcp-priority.sh` (Playwright 우선 호출 가드).
 
 ---
 
@@ -465,7 +463,7 @@ Cantos MCP가 환경에 connected 시 자동 활성화. 미연결 시 silent ski
 
 | 파일 | 용도 |
 |---|---|
-| `~/.claude/skills/live-verify-loop/SKILL.md` | 자매 스킬, 메타 학습 lineage 참고 |
+| `${CLAUDE_PLUGIN_ROOT}/skills/live-verify-loop/SKILL.md` | 자매 스킬, 메타 학습 lineage 참고 |
 | `~/.claude/rules/agent-mapping.md` | 5단계 매핑 워크플로우 |
 | `~/.claude/CLAUDE.md` | Iron Law #1/#2 |
 | `~/.claude/scripts/check-mcp-environment.sh` | MCP 검증 헬퍼 (참고만, self-contained 원칙) |

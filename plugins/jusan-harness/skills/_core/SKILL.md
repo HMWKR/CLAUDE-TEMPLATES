@@ -32,8 +32,8 @@ description: "Shared SSoT (Single Source of Truth) resources referenced by multi
 
 ```markdown
 ## 참조
-- 전문가 역할: `~/.claude/skills/_core/roles.md`
-- 문제 해결 프로토콜: `~/.claude/skills/_core/protocols.md`
+- 전문가 역할: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`
+- 문제 해결 프로토콜: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md`
 ```
 
 실행 시 Claude가 해당 파일을 Read하여 컨텍스트에 로드한다.

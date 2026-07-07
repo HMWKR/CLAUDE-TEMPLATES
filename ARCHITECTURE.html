@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>하네스 아키텍처 & 파이프라인 — 한눈에</title>
+<style>
+  :root{
+    --bg:#eef1f4; --surface:#fff; --surface2:#f5f7f9; --ink:#161d27; --ink2:#4a5666; --faint:#7c8697;
+    --hair:#dde3e9; --accent:#0d6e77; --accent2:#0a565d; --accentbg:#e2f0f1;
+    --l0:#3b6ea5; --l1:#6b4ea5; --l2:#0d6e77; --l3:#8a6d00; --l4:#a5433b;
+    --ok:#2f7d46; --warn:#8a5a00; --crit:#b3261e;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#0d1218; --surface:#151c25; --surface2:#1b2530; --ink:#e7ebf1; --ink2:#9fabb9; --faint:#6c7887;
+    --hair:#26313f; --accent:#46c2cc; --accent2:#7ad6de; --accentbg:#123338;
+    --l0:#6c9ed6; --l1:#a992d8; --l2:#46c2cc; --l3:#d9b23f; --l4:#e08079;
+    --ok:#6bce8c; --warn:#e0b24d; --crit:#f2837b;
+  }}
+  :root[data-theme="light"]{--bg:#eef1f4;--surface:#fff;--surface2:#f5f7f9;--ink:#161d27;--ink2:#4a5666;--faint:#7c8697;--hair:#dde3e9;--accent:#0d6e77;--accent2:#0a565d;--accentbg:#e2f0f1;--l0:#3b6ea5;--l1:#6b4ea5;--l2:#0d6e77;--l3:#8a6d00;--l4:#a5433b;--ok:#2f7d46;--warn:#8a5a00;--crit:#b3261e;}
+  :root[data-theme="dark"]{--bg:#0d1218;--surface:#151c25;--surface2:#1b2530;--ink:#e7ebf1;--ink2:#9fabb9;--faint:#6c7887;--hair:#26313f;--accent:#46c2cc;--accent2:#7ad6de;--accentbg:#123338;--l0:#6c9ed6;--l1:#a992d8;--l2:#46c2cc;--l3:#d9b23f;--l4:#e08079;--ok:#6bce8c;--warn:#e0b24d;--crit:#f2837b;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+  code{font-family:var(--mono);font-size:.85em;background:var(--surface2);border:1px solid var(--hair);padding:.05em .35em;border-radius:5px}
+  h2{font-size:1.3rem;letter-spacing:-.01em;margin:0 0 2px}
+  .eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent2);font-weight:600}
+  header.mast{background:var(--surface);border-bottom:1px solid var(--hair);padding:40px 0 26px}
+  h1{font-size:clamp(1.7rem,4vw,2.3rem);margin:.4rem 0 .3rem;letter-spacing:-.02em;font-weight:750;text-wrap:balance}
+  .lede{color:var(--ink2);max-width:64ch;margin:.2rem 0 1rem}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:.72rem;color:var(--faint)}
+  .meta span{background:var(--surface2);border:1px solid var(--hair);padding:3px 9px;border-radius:999px}
+  section{padding:30px 0;border-top:1px solid var(--hair)}
+  .snum{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--accent2);text-transform:uppercase}
+  .sub{color:var(--ink2);font-size:.92rem;margin:.1rem 0 16px;max-width:70ch}
+
+  /* layer stack */
+  .stack{display:flex;flex-direction:column;gap:8px}
+  .layer{background:var(--surface);border:1px solid var(--hair);border-left:5px solid var(--lc);border-radius:10px;padding:13px 16px;display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:start}
+  @media(max-width:620px){.layer{grid-template-columns:1fr;gap:4px}}
+  .layer .lid{font-family:var(--mono);font-weight:700;color:var(--lc);font-size:.9rem}
+  .layer .lid small{display:block;color:var(--ink2);font-weight:400;font-size:.72rem;margin-top:2px;font-family:var(--sans)}
+  .layer .ldesc{font-size:.9rem}
+  .layer .ldesc b{font-weight:650}
+  .layer .comp{font-family:var(--mono);font-size:.74rem;color:var(--faint);margin-top:4px}
+
+  /* pipeline flow */
+  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px}
+  .step{flex:1 1 120px;min-width:120px;background:var(--surface);border:1px solid var(--hair);border-radius:9px;padding:10px 11px;position:relative}
+  .step .sh{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--accent2);margin-bottom:4px}
+  .step ul{margin:0;padding-left:14px;font-size:.78rem;color:var(--ink2)}
+  .step li{margin:1px 0}
+  .step.block{border-color:color-mix(in srgb,var(--crit) 45%,var(--hair))}
+  .step .gate{position:absolute;top:8px;right:9px;font-family:var(--mono);font-size:.6rem;color:var(--crit);font-weight:700}
+
+  /* conductor pipeline horizontal */
+  .cflow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .cnode{background:var(--surface);border:1px solid var(--hair);border-radius:8px;padding:8px 12px;font-size:.82rem;flex:1 1 auto;text-align:center;min-width:88px}
+  .cnode b{display:block;font-family:var(--mono);font-size:.68rem;color:var(--faint);font-weight:600}
+  .cnode.codex{border-color:color-mix(in srgb,var(--l1) 50%,var(--hair));background:color-mix(in srgb,var(--l1) 8%,var(--surface))}
+  .cnode.main{border-color:color-mix(in srgb,var(--accent) 50%,var(--hair));background:var(--accentbg)}
+  .arr{color:var(--faint);font-family:var(--mono);font-size:.9rem}
+
+  /* cards grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:14px 15px}
+  .card h3{margin:0 0 6px;font-size:.98rem;font-weight:680;display:flex;align-items:center;gap:7px}
+  .card p,.card li{font-size:.85rem;color:var(--ink2);margin:.2rem 0}
+  .card ul{margin:.3rem 0;padding-left:16px}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .chip{font-family:var(--mono);font-size:.66rem;font-weight:600;padding:1px 6px;border-radius:5px;border:1px solid var(--hair)}
+  .chip.ok{color:var(--ok)} .chip.warn{color:var(--warn)} .chip.new{color:var(--accent2);background:var(--accentbg)}
+
+  table{border-collapse:collapse;width:100%;font-size:.82rem;margin-top:8px}
+  .scroll{overflow-x:auto;border:1px solid var(--hair);border-radius:10px;background:var(--surface)}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--hair);vertical-align:top}
+  thead th{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;color:var(--faint);background:var(--surface2)}
+  tbody tr:last-child td{border-bottom:0}
+  .mono{font-family:var(--mono);font-size:.76rem}
+  footer{border-top:1px solid var(--hair);padding:22px 0 50px;color:var(--faint);font-size:.78rem}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:6px;font-size:.74rem;color:var(--ink2)}
+  .legend span{display:flex;align-items:center;gap:5px}
+</style>
+</head>
+<body>
+<header class="mast"><div class="wrap">
+  <div class="eyebrow">CLAUDE Harness · 2026-07-07</div>
+  <h1>하네스 아키텍처 & 파이프라인 — 한눈에</h1>
+  <p class="lede">모델이 스스로 못 하는 것을 <b>코드·토큰·말바꿈·검증분리</b>로 보상하는 <b>모델 교체 가능한 품질 보증 하네스</b>. 5계층 + 훅 파이프라인 + 지휘-검증 오케스트레이션.</p>
+  <div class="meta"><span>5 Layers (L0–L4)</span><span>Hook Pipeline 6 events</span><span>conductor-verify 정본</span><span>Playwright-first · codex 교차게이트</span></div>
+</div></header>
+
+<div class="wrap">
+
+<!-- 1. 5-layer -->
+<section>
+  <div class="snum">01 — Architecture</div>
+  <h2>5계층 (L0 → L4)</h2>
+  <p class="sub">각 계층은 모델의 약점을 다른 수단으로 보상한다. 아래로 갈수록 "누가 일하나"에서 "어떻게 통제하나"로.</p>
+  <div class="stack">
+    <div class="layer" style="--lc:var(--l0)"><div class="lid">L0 어댑터<small>모델 적응</small></div><div class="ldesc"><b>세션 모델 감지 → 처방 프로파일 주입.</b> transcript 파싱으로 모델 판별, 미검출=고처방 안전폴백.<div class="comp">adapters/{fable,opus,sonnet,_default}.md · adapter-inject.sh (UserPromptSubmit)</div></div></div>
+    <div class="layer" style="--lc:var(--l1)"><div class="lid">L1 증폭<small>인지 = 토큰</small></div><div class="ldesc"><b>판단 깊이를 표본 수 N으로 구매.</b> 판정단·렌즈분산·자기일관성·성찰·적대검증 + 이종(교차벤더) 판정단.<div class="comp">skills/amplify-presets (태스크별 N표 · 이종 판정단 · 손익 백오프)</div></div></div>
+    <div class="layer" style="--lc:var(--l2)"><div class="lid">L2 게이트<small>검증 주권</small></div><div class="ldesc"><b>증거 없는 완료 차단 + 검증 주권 분리.</b> DoD·채점은 실행 모델 밖. tamper 해시·카나리.<div class="comp">fablize gate_stop/gate_post_tool · verification-templates/ · verify-lock.py · emulation-guard(관찰)</div></div></div>
+    <div class="layer" style="--lc:var(--l3)"><div class="lid">L3 상태·기억<small>영속</small></div><div class="ldesc"><b>세션·압축 경계 넘어 상태 영속.</b> 파일=기억, PreCompact flush로 압축 후 연속성.<div class="comp">checkpoint.md · checkpoint-save.py · 파일 메모리 · tasks/&lt;task&gt;/{task,log,brief,result}.md</div></div></div>
+    <div class="layer" style="--lc:var(--l4)"><div class="lid">L4 오케스트레이터<small>제어=코드</small></div><div class="ldesc"><b>제어 흐름을 코드가 소유.</b> 성공측 종료(신규발견0×2·DoD·카나리) + 실패측 발산차단기(K회→에스컬레이션).<div class="comp">네이티브 Workflow/Agent teams · conductor-verify.js · goals.py(/goal)</div></div></div>
+  </div>
+  <p class="sub" style="margin-top:12px"><b>횡단 원칙 — 검증 주권 분리</b>: "무엇을 검증할지"의 저작·채점을 실행 모델 밖에 둔다. 안 그러면 "모델이 약할수록 더 빨리·더 확신 있게 잘못된 완료 선언"하는 목적 역전.</p>
+</section>
+
+<!-- 2. hook pipeline -->
+<section>
+  <div class="snum">02 — Pipeline</div>
+  <h2>훅 파이프라인 (프롬프트 1회)</h2>
+  <p class="sub">이중 소스: <b>settings.local.json(자작 훅)</b> + <b>fablize 플러그인 훅</b>(gate_prompt·gate_post_tool·gate_stop). Stop 차단권은 <b>gate_stop 1곳</b>으로 단일화.</p>
+  <div class="flow">
+    <div class="step"><div class="sh">SessionStart</div><ul><li>git·GC(일1회)</li><li>anti-loop</li><li>메모리 무결성(손상한글)</li></ul></div>
+    <div class="step"><div class="sh">UserPromptSubmit</div><ul><li>checkpoint 안내</li><li><b>L0 프로파일 주입</b></li><li>task mode 판정</li></ul></div>
+    <div class="step block"><div class="gate">BLOCK</div><div class="sh">PreToolUse</div><ul><li>손상한글 차단</li><li>위험명령 차단</li><li>루프 감지</li></ul></div>
+    <div class="step"><div class="sh">PostToolUse</div><ul><li>live-verify 안내</li><li>도구실패 추적</li><li>prettier</li></ul></div>
+    <div class="step block"><div class="gate">gate_stop</div><div class="sh">Stop</div><ul><li><b>증거없는 완료 차단</b></li><li>checkpoint 저장</li><li>인사이트 수집</li></ul></div>
+    <div class="step"><div class="sh">PreCompact</div><ul><li>상태 flush</li><li>checkpoint</li><li>연속성 보존</li></ul></div>
+  </div>
+</section>
+
+<!-- 3. conductor-verify -->
+<section>
+  <div class="snum">03 — Orchestration</div>
+  <h2>conductor-verify — 표준 지휘·검증·승인 파이프라인</h2>
+  <p class="sub">멀티에이전트 실작업의 정본. <b>"판단은 main, 검증증거는 밖"</b> — nested codex는 stall-prone이라 교차벤더 최종 게이트는 main이 직접.</p>
+  <div class="cflow">
+    <div class="cnode main"><b>main</b>계획</div><span class="arr">→</span>
+    <div class="cnode codex"><b>codex/이종</b>계획검수</div><span class="arr">→</span>
+    <div class="cnode"><b>teammates</b>병렬 실행</div><span class="arr">→</span>
+    <div class="cnode codex"><b>codex</b>1차검수</div><span class="arr">→</span>
+    <div class="cnode main"><b>main</b>종합</div><span class="arr">→</span>
+    <div class="cnode codex"><b>독립</b>최종검증</div><span class="arr">→</span>
+    <div class="cnode main"><b>main</b>승인</div>
+  </div>
+  <p class="sub" style="margin-top:10px">실패 경로: 동일 실패 K=3회 → 접근 변경 → 상위 모델 에스컬레이션(발산 차단기). 고위험은 관점분산 판정단 + 불확실성 보존.</p>
+</section>
+
+<!-- 4. governance -->
+<section>
+  <div class="snum">04 — Governance</div>
+  <h2>거버넌스 서열 & 운영 모드</h2>
+  <div class="grid">
+    <div class="card"><h3><span class="dot" style="background:var(--l2)"></span>CLAUDE.md</h3><p>글로벌 정본. <b>착수 계약</b>(의도점검·plan-first·투두추적·what→goal·정직보고) · 작업 방식 · <b>레이어 서열</b> · Operating mode(fablize).</p></div>
+    <div class="card"><h3><span class="dot" style="background:var(--l1)"></span>~/.claude/rules/</h3><p>자동 적용. always-on(karpathy·safety·anti-hallucination·uncompromising-rigor·live-verify·<b>agent-teams-boundaries</b>·<b>image-codex-routing</b>) + paths-scoped(ui-ux-craft·agent-mapping).</p></div>
+    <div class="card"><h3><span class="dot" style="background:var(--l4)"></span>Plugins</h3><p>fablize(게이트·goals.py) · jusan-harness(스킬·에이전트) · bkit · omc · superpowers.</p></div>
+    <div class="card"><h3><span class="dot" style="background:var(--l3)"></span>완료 권위</h3><p>단일화: <b>fablize gate_stop</b> + 네이티브 /goal. ralph·ultragoal은 명시호출 전용(택1).</p></div>
+  </div>
+</section>
+
+<!-- 5. cross-vendor / policies -->
+<section>
+  <div class="snum">05 — Model & Tool Policy</div>
+  <h2>모델·도구 라우팅</h2>
+  <div class="grid">
+    <div class="card"><h3>🔀 교차벤더 검증</h3><p>실행=Opus, 검증=<b>codex(비-Anthropic)</b> 교차게이트. 동종 다수결의 상관오류 방지, 검증 주권 분리 실현.</p></div>
+    <div class="card"><h3>🌐 브라우저</h3><p><b>Playwright MCP 전역 우선</b>(headless·격리·배치). Chrome MCP는 세션 재사용·명시 시만. <span class="chip new">2026-07-07 전환</span></p></div>
+    <div class="card"><h3>🎨 이미지</h3><p>로고·아이콘·SVG·이미지 생성/편집 → <b>codex MCP 위임</b>. UI/UX 레퍼런스 → web-crawling/(Playwright).</p></div>
+    <div class="card"><h3>🧠 모델</h3><p>haiku 금지·sonnet 이상. 서브에이전트 미지정(세션 상속) 또는 opus. Fable 종료(7/7) → Opus 4.8.</p></div>
+    <div class="card"><h3>🕸️ knot</h3><p>지식 그물(평문 마크다운 위키). 벤더 간 공유 기억. file=memory(기억)와 구분.</p></div>
+    <div class="card"><h3>🔧 Serena / codex MCP</h3><p>심볼 작업=Serena, 교차벤더 심판=codex(connected). 둘 다 실배선.</p></div>
+  </div>
+</section>
+
+<!-- 6. skills ecosystem -->
+<section>
+  <div class="snum">06 — Skills Ecosystem</div>
+  <h2>스킬 생태계 (65항목 분석 · 2026-07-07)</h2>
+  <p class="sub">8클러스터 병렬 분석 + codex 교차검수로 파이프라인 정합. Chrome잔재·죽은참조 전면 정합, agent-teams는 conductor 하위 정합(삭제 없이 고유가치 보존).</p>
+  <div class="scroll"><table>
+    <thead><tr><th>클러스터</th><th>대표 스킬</th><th>상태</th></tr></thead>
+    <tbody>
+      <tr><td>사고/분석</td><td class="mono">what · think-lite · first-principles · cynefin · ooda</td><td><span class="chip ok">정합</span> 라우팅 명확화</td></tr>
+      <tr><td>오케스트레이션</td><td class="mono">conductor-verify(정본) · agent-teams-*(4) · amplify-presets</td><td><span class="chip ok">conductor 정합</span></td></tr>
+      <tr><td>Playwright/QA</td><td class="mono">playwright-design-audit(superset) · live-verify-loop · webapp-testing</td><td><span class="chip ok">Playwright-first</span></td></tr>
+      <tr><td>UI/UX/웹</td><td class="mono">ui-ux-pro-max · web-design-guidelines · reference-match · accesslint</td><td><span class="chip ok">정합</span></td></tr>
+      <tr><td>보안/리뷰/인프라</td><td class="mono">security-audit · frontend/backend-review · project-ultra-audit</td><td><span class="chip ok">정합</span></td></tr>
+      <tr><td>도메인/프로젝트</td><td class="mono">aidlc-* · architect · domain-researcher · office-hours</td><td><span class="chip warn">외부의존 flag</span></td></tr>
+      <tr><td>산출물/문서</td><td class="mono">docx · pdf · xlsx · pitch-deck · knot-connect</td><td><span class="chip ok">경로 정합</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- 7. session additions -->
+<section>
+  <div class="snum">07 — Recent Additions</div>
+  <h2>이번 세션 추가·개선분</h2>
+  <div class="grid">
+    <div class="card"><h3><span class="chip new">NEW</span> conductor-verify.js</h3><p>재사용 지휘-검증 오케스트레이터(견고판). 실증: 전 단계 완주·codex 게이트 GO.</p></div>
+    <div class="card"><h3><span class="chip new">NEW</span> agent-teams-boundaries</h3><p>승인·쓰기 경계 · 파일=기억 정본 · 적극 활용 판정 · 표준 파이프라인.</p></div>
+    <div class="card"><h3><span class="chip new">NEW</span> plan-first + 투두 추적</h3><p>실행 전 계획 + TaskCreate 추적 + what→goal 자동 트리거(goals.py).</p></div>
+    <div class="card"><h3><span class="chip new">NEW</span> image-codex-routing</h3><p>이미지 자산 → codex, 크롤 가치 판정 → web-crawling/.</p></div>
+    <div class="card"><h3>위생 수정</h3><p>verify-lock 배선 · anti-loop cmd_stop · transcript tail 제한 · Playwright 전역우선.</p></div>
+    <div class="card"><h3>스킬 정합</h3><p>65항목 분석 → Chrome잔재·죽은참조 정리, agent-teams conductor 정합.</p></div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  CLAUDE Harness Architecture · 자동 생성 문서 · 근거: 하네스 실측 + 8클러스터 스킬 분석 + codex 교차검수<br>
+  <span class="mono">5계층(L0-L4) · 훅 파이프라인 6이벤트 · conductor-verify 정본 · Playwright-first · codex 교차벤더 게이트 · 검증 주권 분리</span>
+</div></footer>
+
+</div>
+<script>
+// 테마 토글 없음(뷰어 테마 상속). reduced-motion 존중은 애니메이션 미사용으로 자동 충족.
+</script>
+</body>
+</html>

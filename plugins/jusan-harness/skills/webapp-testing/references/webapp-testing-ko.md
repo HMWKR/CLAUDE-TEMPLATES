@@ -4,8 +4,8 @@
 
 ## 참조
 
-- 전문가 역할: `~/.claude/skills/_core/roles.md`
-- 문제 해결 프로토콜: `~/.claude/skills/_core/protocols.md`
+- 전문가 역할: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`
+- 문제 해결 프로토콜: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md`
 
 
 ## Playwright API 핵심 레퍼런스

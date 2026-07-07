@@ -11,6 +11,10 @@ description: |
 > **패턴**: Pipeline + Parallel
 > **목적**: 풀스택 기능의 설계→구현→테스트→리뷰 파이프라인 자동화
 
+## conductor-verify 정합
+
+이 스킬은 conductor-verify 파이프라인 하위의 `<agent-teams-feature-dev>` 전문 진입점이다. **완료권위·최종검증은 conductor-verify(계획→검수→실행→종합→독립검증→승인)·codex 교차벤더 게이트·verify-lock을 따른다** — 자체 스코어링/완료보고는 그 단계에 종속(경쟁 권위 아님). 이 스킬의 고유 기여(인터페이스-먼저 계약·FE/BE 병렬 구현 파이프라인)는 유지한다.
+
 ## 목차
 - [1. 실행 모드](#1-실행-모드)
 - [2. 핵심 원칙](#2-핵심-원칙)
@@ -234,6 +238,8 @@ Lead의 인터페이스 정의가 "컨트랙트":
 
 ## 9. Stage 4: 통합 & 검증 (Lead)
 
+> **완료권위 위임**: 이 Stage의 통합·검증 리포트는 내부 정합 확인·증거 수집용이며, **최종 완료 선언·검증 권위는 conductor-verify 승인 단계에 위임**한다(codex 교차벤더 게이트·verify-lock 포함). 아래 절차는 그 승인 단계에 올릴 증거를 준비하는 과정으로 읽는다.
+
 ### 9.1 통합 절차
 
 ```
@@ -294,8 +300,8 @@ Lead의 인터페이스 정의가 "컨트랙트":
 
 ## 10. 행동 채택 표준 (Behavioral Adoption Standards)
 
-> **전문가 역할 정의**: `~/.claude/skills/_core/roles.md` 참조
-> **Agent-Teams 패턴**: `~/.claude/skills/_core/team-patterns.md` 참조
+> **전문가 역할 정의**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md` (플러그인 동봉 _core) 참조
+> **Agent-Teams 패턴**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/team-patterns.md` (플러그인 동봉 _core) 참조
 
 ### 이 스킬 고유 역할 구성
 
@@ -331,7 +337,7 @@ agent-teams 불가 시:
 
 ## 12. 환각 방지 프로토콜
 
-> **공통 프로토콜**: `~/.claude/skills/_core/protocols.md` 참조
+> **공통 프로토콜**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` (플러그인 동봉 _core) 참조
 
 **이 스킬 고유 규칙**:
 - package.json에 없는 의존성 import 금지

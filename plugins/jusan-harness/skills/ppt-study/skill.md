@@ -121,7 +121,7 @@ print(f"추출 완료: {len(media_files)}개 이미지")
 
 **핵심 요소**:
 - reportlab 라이브러리 사용
-- 한글 폰트: Malgun Gothic (`C:\Windows\Fonts\malgun.ttf`)
+- 한글 폰트: 플랫폼별 시스템 한글 폰트를 자동 탐색 (macOS: `AppleGothic`/`Apple SD Gothic Neo`, Linux: `NanumGothic`, Windows: `Malgun Gothic`). 미발견 시 사용자에게 알림
 - 색상 체계: Navy(#1B2A4A) 기반 전문적 디자인
 - 구조: 표지 → 목차 → 섹션별 상세 → 핵심 요약
 
@@ -374,5 +374,5 @@ Notion 페이지 생성 시 다음 enhanced markdown 패턴을 활용한다:
 
 ## 참조
 
-- 전문가 역할: `~/.claude/skills/_core/roles.md`
-- 문제 해결 프로토콜: `~/.claude/skills/_core/protocols.md`
+- 전문가 역할: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`
+- 문제 해결 프로토콜: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md`

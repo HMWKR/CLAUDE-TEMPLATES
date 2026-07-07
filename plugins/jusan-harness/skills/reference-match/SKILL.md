@@ -12,7 +12,7 @@ description: 사용자가 레퍼런스(이미지·스크린샷·라이브 URL·F
 | 레퍼런스 종류 | 해부 방법 |
 |---|---|
 | 이미지·스크린샷 (파일) | Read 도구로 시각 분석 (색·레이아웃·타이포·간격 관찰) |
-| 라이브 URL | `mcp__claude-in-chrome__*`(우선) 또는 playwright **headed**로 캡처 + DOM/computed style 추출 |
+| 라이브 URL | `mcp__playwright__*`(headed)로 캡처 + DOM/computed style 추출. 로그인 세션 재사용이 필요할 때만 `mcp__claude-in-chrome__*`. (브라우저 우선순위: rules/uncompromising-rigor §1, 2026-07-07 Playwright MCP 전역 우선) |
 | Figma | `mcp__claude_ai_Figma__*` MCP로 토큰·프레임 추출 |
 | 여러 개 | 각각 해부 후 공통 패턴 + 우선순위 정리 |
 
@@ -85,4 +85,4 @@ description: 사용자가 레퍼런스(이미지·스크린샷·라이브 URL·F
 - 의도 확정 먼저 → **design-intent-lock** (brief가 "레퍼런스의 무엇을 차용/제외"를 규정)
 - 상시 디테일 강제 → `rules/ui-ux-craft.md`
 - 심층 라이브 검수 → playwright-design-audit (디자인 19-agent) / playwright-uiux-audit
-- 브라우저 우선순위: Chrome MCP → playwright headed (rules/uncompromising-rigor.md §1)
+- 브라우저 우선순위: rules/uncompromising-rigor §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. 로그인 세션 재사용이 필요할 때만 Chrome MCP.

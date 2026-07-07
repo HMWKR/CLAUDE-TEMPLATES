@@ -23,7 +23,7 @@ model: opus
 ### Phase 1: 자동화 검사
 
 ```bash
-bash ~/.claude/skills/infra-audit/scripts/infra-audit.sh
+bash ${CLAUDE_PLUGIN_ROOT}/skills/infra-audit/scripts/infra-audit.sh
 ```
 
 스크립트가 JSON 결과를 출력한다. `--quick` (핵심 3영역) 또는 `--focus=AREA` (단일 영역) 모드 지원.
@@ -64,7 +64,7 @@ bash ~/.claude/skills/infra-audit/scripts/infra-audit.sh
 | 7 | MCP | 3 | 5% |
 
 각 항목의 상세 기준과 하니스 축 태그:
-**`~/.claude/skills/infra-audit/references/checklist.md`** 참조.
+**`${CLAUDE_PLUGIN_ROOT}/skills/infra-audit/references/checklist.md`** 참조.
 
 ## 등급 체계
 
@@ -88,12 +88,12 @@ bash ~/.claude/skills/infra-audit/scripts/infra-audit.sh
 
 ## 출력 형식
 
-보고서 템플릿은 `~/.claude/skills/infra-audit/SKILL.md`의 "보고서 출력 형식" 섹션을 따른다.
+보고서 템플릿은 `${CLAUDE_PLUGIN_ROOT}/skills/infra-audit/SKILL.md`의 "보고서 출력 형식" 섹션을 따른다.
 요약 → 영역별 점수 → 하니스 5축 기여도 → 상세 결과 → 권장 조치 순서.
 
 ## 참조 리소스
 
-- **스킬**: `~/.claude/skills/infra-audit/SKILL.md` — 워크플로우, 점수 공식, 보고서 형식
-- **체크리스트**: `~/.claude/skills/infra-audit/references/checklist.md` — 42개 항목 상세
-- **자동화 스크립트**: `~/.claude/skills/infra-audit/scripts/infra-audit.sh` — Phase 1 실행
-- **프로토콜**: `~/.claude/skills/_core/protocols.md` — 환각 방지
+- **스킬**: `${CLAUDE_PLUGIN_ROOT}/skills/infra-audit/SKILL.md` — 워크플로우, 점수 공식, 보고서 형식
+- **체크리스트**: `${CLAUDE_PLUGIN_ROOT}/skills/infra-audit/references/checklist.md` — 42개 항목 상세
+- **자동화 스크립트**: `${CLAUDE_PLUGIN_ROOT}/skills/infra-audit/scripts/infra-audit.sh` — Phase 1 실행
+- **프로토콜**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md` — 환각 방지

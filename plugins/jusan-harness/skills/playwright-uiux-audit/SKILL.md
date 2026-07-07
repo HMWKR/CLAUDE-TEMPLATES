@@ -17,18 +17,21 @@ args:
     default: "basic"
 ---
 
+## ⚠️ 통합됨 → playwright-design-audit
+
+이 스킬은 playwright-design-audit(24카테고리 A–V, ~450항목 superset)으로 **통합**되었다. UI/UX 감사는 design-audit을 사용하라. 이 문서는 호환 진입점으로 유지되며, 실제 감사 로직·체크리스트는 design-audit이 정본이다.
+
+---
+
 ## ⚠️ Uncompromising Rigor (글로벌 룰 강제 적용)
 
 이 스킬은 `~/.claude/rules/uncompromising-rigor.md` 의 4개 정책을 **무조건 준수**한다:
 
-1. **Browser Tool Priority** — `mcp__claude-in-chrome__*` 우선, `mcp__playwright__*` 는 fallback only
+1. **Browser Tool Priority** — 브라우저 우선순위는 `rules/uncompromising-rigor` §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. 로그인 세션 재사용이 필요할 때만 `mcp__claude-in-chrome__*`를 쓴다.
 2. **Self-Justification Red Flags** — "이 정도면 충분" / "사소함" / "사용자가 신경 안 씀" / "베타니까 OK" / "fetch 진행 중이라 정상" 등장 시 **즉시 자기 차단**
 3. **All Findings Are Defects** — 모든 발견은 결함. 사용자가 명시적으로 "강등"한 것만 Low
 4. **Per-Round Deep Analysis** — 매 라운드 5단계 심층 분석 강제 (이전 재조회 → 미세 재스캔 → Adversarial walk → 자기 정당화 자가 검증 → 신규+재현성)
-
-훅 강제: `detect-self-justification.sh` (5개 키워드 차단) + `check-chrome-mcp-priority.sh` (Playwright 우선 호출 가드).
-
-> **이 스킬 이름은 "playwright-uiux-audit"이지만, Chrome MCP 가용 시 우선 사용 후 Playwright fallback. 이름은 legacy.**
+> 이 스킬 이름의 "playwright"는 legacy 명칭 — 브라우저 우선순위는 `rules/uncompromising-rigor` §1(2026-07-07 Playwright MCP 전역 우선)을 따른다.
 
 ---
 
@@ -40,6 +43,8 @@ args:
 ---
 
 ## 섹션 1: 실행 모드
+
+> → 상세·정본: playwright-design-audit 참조.
 
 ### 모드별 구성
 
@@ -89,6 +94,8 @@ args:
 ---
 
 ## 섹션 2: 핵심 원칙
+
+> → 상세·정본: playwright-design-audit 참조.
 
 ### 2.1 Anti-Hallucination Protocol (환각 방지)
 
@@ -156,6 +163,8 @@ args:
 ---
 
 ## 섹션 3: Three-Wave 하이브리드 아키텍처
+
+> → 상세·정본: playwright-design-audit 참조.
 
 ### 3.1 전체 흐름
 
@@ -257,6 +266,8 @@ IF agent-teams 미활성:
 
 ## 섹션 4: 데이터 디렉토리 구조
 
+> → 상세·정본: playwright-design-audit 참조.
+
 ### 4.1 디렉토리 레이아웃
 
 ```
@@ -335,6 +346,8 @@ mkdir -p uiux-data/snapshots uiux-data/screenshots uiux-data/tokens uiux-data/na
 
 ## 섹션 5: Stage 0 — 프로젝트 분석 (Progressive Disclosure)
 
+> → 상세·정본: playwright-design-audit 참조.
+
 > 프로젝트 분석 절차(4단계), 페르소나 템플릿(3명), 분석 결과 저장 형식은
 > [references/stage0-analysis.md](references/stage0-analysis.md) 참조.
 
@@ -342,6 +355,8 @@ mkdir -p uiux-data/snapshots uiux-data/screenshots uiux-data/tokens uiux-data/na
 ---
 
 ## 섹션 6: Stage 1 — 데이터 수집 (Progressive Disclosure)
+
+> → 상세·정본: playwright-design-audit 참조.
 
 > 27단계 수집 절차, 도구 실패 대응표, 16개 CSS Evaluate 스니펫 ID 매핑은
 > [references/stage1-data-collection.md](references/stage1-data-collection.md) 참조.
@@ -352,12 +367,20 @@ mkdir -p uiux-data/snapshots uiux-data/screenshots uiux-data/tokens uiux-data/na
 
 ## 섹션 7: TM Spawn 프롬프트 (Progressive Disclosure)
 
+> → 상세·정본: playwright-design-audit 참조.
+
 > 공통 4-Block 템플릿, Wave 교차 참조 블록, 리포트 출력 형식은
 > [references/tm-spawn-templates.md](references/tm-spawn-templates.md) 참조.
 > Wave별 TM Spawn 상세: spawn-wave1/2/3.md 참조.
 
----## 섹션 8: 360항목 체크리스트 (Progressive Disclosure)> 모드별 해당 Tier 체크리스트만 로드하여 컨텍스트 절약.| 모드 | 로드할 파일 | 항목 수 ||:----:|-----------|:------:|| basic | [references/checklist-tier1.md](references/checklist-tier1.md) | ~54 (T1) || --pro | 위 + [references/checklist-tier2.md](references/checklist-tier2.md) | ~216 (T1+T2) || --expert | 위 + [references/checklist-tier3.md](references/checklist-tier3.md) | 360 (전체) |### 검증 요약```Wave 1 (Foundation): A1(15) + A2(15) + B(25) + C1(15) + C2(15) + D(25) = 110항목Wave 2 (Interaction): E(20) + F(20) + G(20) + H(20) + I(15) + Q(10) + M(20) = 125항목Wave 3 (Expert):      J(20) + K(15) + L(15) + R(10) + N(15) + O(15) + P(15) + Edge(20) = 125항목총합: 360항목Tier 분포: T1 ~54항목 / T2 ~162항목 / T3 ~144항목```---
+---## 섹션 8: 360항목 체크리스트 (Progressive Disclosure)
+
+> → 상세·정본: playwright-design-audit 참조.
+
+> 모드별 해당 Tier 체크리스트만 로드하여 컨텍스트 절약.| 모드 | 로드할 파일 | 항목 수 ||:----:|-----------|:------:|| basic | [references/checklist-tier1.md](references/checklist-tier1.md) | ~54 (T1) || --pro | 위 + [references/checklist-tier2.md](references/checklist-tier2.md) | ~216 (T1+T2) || --expert | 위 + [references/checklist-tier3.md](references/checklist-tier3.md) | 360 (전체) |### 검증 요약```Wave 1 (Foundation): A1(15) + A2(15) + B(25) + C1(15) + C2(15) + D(25) = 110항목Wave 2 (Interaction): E(20) + F(20) + G(20) + H(20) + I(15) + Q(10) + M(20) = 125항목Wave 3 (Expert):      J(20) + K(15) + L(15) + R(10) + N(15) + O(15) + P(15) + Edge(20) = 125항목총합: 360항목Tier 분포: T1 ~54항목 / T2 ~162항목 / T3 ~144항목```---
 ## 9. Wave 실행 프로토콜 (Progressive Disclosure)
+
+> → 상세·정본: playwright-design-audit 참조.
 
 > Wave 실행 절차, 완료 게이트 체크리스트, 중복 제거 프로토콜, 모드별 실행 매트릭스는
 > [references/wave-execution.md](references/wave-execution.md) 참조.
@@ -367,6 +390,8 @@ mkdir -p uiux-data/snapshots uiux-data/screenshots uiux-data/tokens uiux-data/na
 
 ## 10-11. UX Score 산출 + 최종 리포트 (Progressive Disclosure)
 
+> → 상세·정본: playwright-design-audit 참조.
+
 > 15차원 가중치 체계, 점수 산출 공식, 등급 체계(S~F), 레이더 차트,
 > 심각도 분류, 최종 리포트 템플릿은 [references/score-and-report.md](references/score-and-report.md) 참조.
 
@@ -374,6 +399,8 @@ mkdir -p uiux-data/snapshots uiux-data/screenshots uiux-data/tokens uiux-data/na
 ---
 
 ## 12. 에러 핸들링 + 환각 방지 (Progressive Disclosure)
+
+> → 상세·정본: playwright-design-audit 참조.
 
 > 에러 핸들링 매트릭스, Fallback 전략, 6가지 검증 마커 규칙,
 > TM 리포트 필수 구조, Lead 최종 검증 체크리스트는
@@ -399,9 +426,9 @@ UX Score: 0-100 (15차원 가중)
 ---
 
 > **공유 참조**: 역할 채택 신호(Signal 1-3)와 출력 형식([A][B][C])은
-> `~/.claude/skills/_core/qa/behavioral-signals.md` 참조.
-> QA 전문가 역할 체계는 `~/.claude/skills/_core/qa/checklist-175.md`와
-> `~/.claude/skills/_core/roles.md`에서 정의된 역할을 기반으로 확장합니다.
+> `${CLAUDE_PLUGIN_ROOT}/skills/_core/qa/behavioral-signals.md` 참조.
+> QA 전문가 역할 체계는 `${CLAUDE_PLUGIN_ROOT}/skills/_core/qa/checklist-175.md`와
+> `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`에서 정의된 역할을 기반으로 확장합니다.
 
 ---
 
@@ -416,7 +443,7 @@ UX Score: 0-100 (15차원 가중)
 | 3 | Task Router | 18 specialists 분배 (모드에 따라 활성화 specialists 수 조정) |
 | 4 | **Context Builder (강함)** | DOM + 시각 캡처 + 사용자 페르소나 + 360 체크리스트 |
 | 5 | Planner | 각 specialist 별 체크리스트 분담 |
-| 6 | Tool Executor | `mcp__claude-in-chrome__*` 우선 (UR §1) / 18 specialists 병렬 분석 |
+| 6 | Tool Executor | 브라우저 도구 (UR §1 우선순위, Playwright MCP 전역 우선) / 18 specialists 병렬 분석 |
 | 7 | Draft Generator | 18개 영역별 보고서 |
 | 8 | **Critic / Verifier (강함)** | Lead가 18차원 점수 통합 + UX Score 0-100 산정 + 7등급 (S~F) |
 | 9 | Refiner | Blockers / Warnings / Suggestions + 사용자 명시 강등만 Low (UR §3) |

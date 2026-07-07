@@ -43,7 +43,7 @@ model: opus
 
 이 스킬은 `~/.claude/rules/uncompromising-rigor.md` 4개 정책을 **무조건 준수**:
 
-1. **Browser Tool Priority** — `mcp__claude-in-chrome__*` 우선 (라이브 렌더 검증 시)
+1. **Browser Tool Priority** — 브라우저 우선순위는 rules/uncompromising-rigor §1(2026-07-07 Playwright MCP 전역 우선)을 따른다(라이브 렌더 검증은 Playwright MCP 기본. 사용자 로그인 세션 재사용이 필요할 때만 Chrome MCP)
 2. **Self-Justification Red Flags** — "이 정도면 충분" / "사용자가 신경 안 씀" 등장 시 즉시 자기 차단
 3. **All Findings Are Defects** — 설명 누락 / 비유 부족 / 시각 자료 빈약은 결함
 4. **Per-Round Deep Analysis** — 매 HTML 생성 라운드 5단계 심층 분석 (이전 한계 재조회 → 본 라운드 강화 → 시각 검증 → 자기 정당화 자가 검증 → 신규 디테일 등재)
@@ -140,13 +140,13 @@ Q2. 오픈 전 필수? → [Yes/No]
 [Stage 7 HTML 통합 + CSS 디자인 + 인터랙티브 요소]
         ↓
 [Stage 8-pre ★자동 디렉토리 증분★]
-        bash ~/.claude/skills/owner-friendly-explainer/scripts/setup-output-dir.sh <원본_파일>
+        bash ${CLAUDE_PLUGIN_ROOT}/skills/owner-friendly-explainer/scripts/setup-output-dir.sh <원본_파일>
         → stdout = 다음 N차 HTML 절대 경로 (스킬이 그대로 사용)
         → 자동으로 `<원본_dir>/설명/N차/` 신설 (1차 → 2차 → 3차 ... 증분)
         ↓
 [Stage 8 HTML Write — Stage 8-pre 가 반환한 경로에 저장]
         ↓
-[Stage 9 라이브 렌더 검증 (Chrome MCP) + 출력 품질 자체 점검]
+[Stage 9 라이브 렌더 검증 (브라우저 — 우선순위 rules/uncompromising-rigor §1, Playwright MCP 전역 우선) + 출력 품질 자체 점검]
 ```
 
 ### ★ Stage 8-pre 자동 디렉토리 정책 (사장 명시 2026-05-24)
@@ -261,15 +261,7 @@ owner-friendly-explainer 스킬 호출
 [ ] 9. 위험 시나리오 박스 (강화 신규)
 [ ] 10. 인터랙티브 요소 (toggle/collapse) (강화 신규)
 [ ] 11. 진행률 바 / 통계 (강화 신규)
-[ ] 12. 모바일 반응형 + 라이브 렌더 검증 (Chrome MCP)
+[ ] 12. 모바일 반응형 + 라이브 렌더 검증 (브라우저 — 우선순위 rules/uncompromising-rigor §1, Playwright MCP 전역 우선)
 ```
 
 12개 모두 통과 후만 사장님께 보고.
-
----
-
-## Notion 자동 동기화 (글로벌 룰 정합)
-
-`~/.claude/rules/skill-notion-sync.md` 정합:
-- 본 스킬은 카테고리 **"4. QA/테스트 + 코드품질 + 문서 + 배포 + 인프라"** 의 "문서" 영역에 등재
-- 신규 등록 시 Notion 카탈로그 자동 갱신 의무

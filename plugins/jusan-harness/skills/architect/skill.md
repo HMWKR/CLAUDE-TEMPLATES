@@ -31,9 +31,9 @@ user_invocable: true
 
 ## Shared References
 
-- 역할 정의: `~/.claude/skills/_core/roles.md`
-- 프로토콜: `~/.claude/skills/_core/protocols.md`
-- 팀 패턴: `~/.claude/skills/_core/team-patterns.md`
+- 역할 정의: `${CLAUDE_PLUGIN_ROOT}/../_core/roles.md` (플러그인의 형제 `_core/` 스킬)
+- 프로토콜: `${CLAUDE_PLUGIN_ROOT}/../_core/protocols.md`
+- 팀 패턴: `${CLAUDE_PLUGIN_ROOT}/../_core/team-patterns.md`
 
 ---
 

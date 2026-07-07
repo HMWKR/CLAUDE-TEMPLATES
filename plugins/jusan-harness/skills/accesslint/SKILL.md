@@ -2,7 +2,7 @@
 name: accesslint
 description: |
   AccessLint Claude plugin (accesslint@accesslint v0.5.0) wrapper. WCAG 2.2 A/AA 접근성 라이브 audit + 코드베이스 audit + diff/fix 3-모드 워크플로우.
-  외부 plugin 호출 + Uncompromising Rigor §1 (Chrome MCP 우선) + §3 (All findings defects) 정합 wrapper.
+  외부 plugin 호출 + Uncompromising Rigor §1 (브라우저 우선순위) + §3 (All findings defects) 정합 wrapper.
   Use when "accesslint", "접근성 검수", "WCAG 검수", "a11y audit", "/accesslint", "screen reader 검수".
   NOT for: 정적 코드 접근성만 (use frontend-review Tier 3), CE 4대 실패 모드 (use ce-reviewer).
 user_invocable: true
@@ -16,7 +16,7 @@ user_invocable: true
 
 ## ⚠️ Uncompromising Rigor §1-§4 정합
 
-- **§1 Chrome MCP 우선**: audit_live URL 호출 시 `mcp__claude-in-chrome__*` 우선 (AccessLint가 Chrome debug session 재사용)
+- **§1 브라우저 우선순위**: rules/uncompromising-rigor §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. audit_live는 자체 디버그 Chrome을 자동 기동한다. 로그인 세션 재사용이 필요할 때만 `mcp__claude-in-chrome__*`.
 - **§2 Self-Justification**: "이 정도면 충분" / "WCAG AA 까지는 안 봐도 됨" 등 차단
 - **§3 All Findings Are Defects**: WCAG 위반은 자동 High (사용자 명시 강등 불가능)
 - **§4 Per-Round Deep**: 매 라운드 5단계 분석
@@ -72,7 +72,7 @@ Scope:
 Return report only. Group by severity. Include exact selector/component.
 ```
 
-**Chrome MCP 우선** (§1): AccessLint가 자동으로 `mcp__claude-in-chrome__*` 세션 재사용. 로그인 페이지는 `chrome-devtools-mcp` 폴백.
+**브라우저 우선순위** (§1): rules/uncompromising-rigor §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. audit_live는 자체 디버그 Chrome을 자동 기동한다. 로그인 세션 재사용이 필요한 페이지에서만 `mcp__claude-in-chrome__*`(폴백 `chrome-devtools-mcp`).
 
 ### 4.2 모드 B: 코드베이스 audit
 ```
@@ -140,17 +140,12 @@ Rules:
 | `--fix-p0-p1` | P0/P1 자동 수정 |
 | `--diff` | 이전 audit과 비교 |
 
-## 7. Chrome MCP 통합 (Uncompromising Rigor §1 정합)
+## 7. 브라우저 호출 (Uncompromising Rigor §1 정합)
 
-AccessLint 는 다음 우선순위로 브라우저 호출:
+브라우저 우선순위는 rules/uncompromising-rigor §1(2026-07-07 Playwright MCP 전역 우선)을 따른다.
 
-```
-1순위: mcp__claude-in-chrome__*  (기본 진입로)
-2순위: chrome-devtools-mcp        (로그인 세션 재사용)
-3순위: AccessLint 자체 Chrome 최소화 모드
-```
-
-`mcp__playwright__*` 는 fallback only — 자동으로 우선되지 않음.
+- 기본: `audit_live`가 자체 디버그 Chrome을 자동 기동(별도 설정 불필요).
+- 로그인 세션 재사용이 필요할 때만: `mcp__claude-in-chrome__*` (폴백 `chrome-devtools-mcp`).
 
 ## 8. 라우팅 다른 스킬
 

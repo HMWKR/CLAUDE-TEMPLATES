@@ -31,7 +31,7 @@
 | **Continuous QA** | `continuous-qa-loop` | 자동 추천 X. "continuous QA", "반복 QA", "QA 루프" 등 명시 시만 |
 | **Ultradetail walks** | `ultradetail-walk`, `ultradetail-loop`, `ultra-walk-deep`, `walk-all-deep` | 자동 추천 X. "ultradetail", "전수 검수", "walk" 등 명시 시만. 비용 경고 동반 |
 | **Full project bootstrap** | `project-bootstrapper`, `project-kickstart`, `pipeline-orchestrator` | 자동 추천 X. "/kickstart", "/bootstrap", "/파이프라인" 등 명시 시만. baseline 덮어쓰기 위험 경고 동반 |
-| **Thinking chains** | `think-deep`, `think-full`, `think-teams` | 자동 추천 X. "/think-deep" 등 명시 시만. `cynefin` / `what` / `first-principles` 와 중복 가능성 안내 |
+| **Thinking chains** | `think-lite`, `think-full`, `first-principles` | 자동 추천 X. "/think-lite" 등 명시 시만. `cynefin` / `what` / `first-principles` 와 중복 가능성 안내 |
 | **External record writers** | Cantos MCP (`mcp__cantos__create_adr` / `mcp__cantos__create_ddr` 등), `journal` 커맨드 | 자동 호출 X. 사용자가 ADR/DDR/journal 명시 요청 시만 |
 
 ---

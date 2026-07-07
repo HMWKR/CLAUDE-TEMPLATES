@@ -6,7 +6,7 @@ description: |
   각 Stage 사이 Handoff Object로 누적 전달. 어떤 문제든 6단계 전체를 돌림.
   Use when "/think-full", "전체 사고 체인", "최대 깊이로 분석", "완벽하게 생각해줘",
   "대형 프로젝트 설계", "전략적으로 접근", or for major architecture/strategy decisions.
-  NOT for: everyday tasks (use /think-lite), standard design (use /think-deep).
+  NOT for: everyday tasks and standard design (use /think-lite).
   think- 패밀리 중 최대 깊이. 토큰 50K+.
 user_invocable: true
 version: 1.0.0
@@ -16,7 +16,7 @@ version: 1.0.0
 
 > **핵심**: "중요한 결정에는 빠짐없는 사고가 필요하다."
 > 6개 사고 스킬을 **항상 전부** 순서대로 실행. 단순한 문제에도 다각도 검토.
-> think- 패밀리의 **최대 깊이**. 일상은 `/think-lite`, 균형은 `/think-deep`.
+> think- 패밀리의 **최대 깊이**. 일상·균형은 `/think-lite`(적응형).
 
 **Iron Law**: 각 Stage 사이 Handoff + 브리지 확인. 사용자 Yes 없이 넘어가지 않는다.
 
@@ -44,7 +44,7 @@ version: 1.0.0
 
 ### 비트리거
 - 일상 작업 (→ `/think-lite`)
-- 중간 깊이 (→ `/think-deep`)
+- 중간 깊이 (→ `/think-lite`)
 - 개별 스킬 직접 호출
 
 ---
@@ -233,7 +233,7 @@ Stage 1          Stage 2          Stage 3          Stage 4          Stage 5     
 
 ## Confirmation Loop
 
-> **프로토콜 참조**: `_core/confirmation-loop.md`
+> **프로토콜 참조**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/confirmation-loop.md`
 
 ### 각 Stage 훅 오버라이드
 
@@ -256,7 +256,7 @@ Stage 1          Stage 2          Stage 3          Stage 4          Stage 5     
 | 토큰 부족 예상 | CE Phase 0에서 경고 + High-Signal 제안 우선 |
 | Stage 3에서 전제 전부 유효 | "전제가 건전합니다" 1줄 + 빠르게 Stage 4로 |
 | OODA 연속 3회 방향전환 | "근본적 재설계 필요 — Stage 1부터?" 제안 |
-| "너무 오래 걸린다" | Fast Mode 전환 제안 또는 `/think-deep`으로 다운그레이드 |
+| "너무 오래 걸린다" | Fast Mode 전환 제안 또는 `/think-lite`로 다운그레이드 |
 
 ## Red Flags
 
@@ -271,13 +271,13 @@ Stage 1          Stage 2          Stage 3          Stage 4          Stage 5     
 
 ## 인사이트 체크포인트
 
-Stage 6 (OODA) 완료 또는 "완료" 선택 시 `_core/protocols.md`의 인사이트 체크포인트를 실행:
+Stage 6 (OODA) 완료 또는 "완료" 선택 시 `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md`의 인사이트 체크포인트를 실행:
 - 6단계 사고 체인에서 발견된 인사이트가 있는가?
 - 해당 시 `/insight-check` 호출하여 기록 제안
 
 ## 참조
 
 - 개별 스킬: cynefin, what, first-principles, ce-advisor, deep-analysis-mode, ooda
-- 인사이트 감시: `~/.claude/skills/insight-sentinel/skill.md`
-- Confirmation Loop: `~/.claude/skills/_core/confirmation-loop.md`
-- think- 패밀리: think-lite (적응형), think-deep (3단계)
+- 인사이트 감시: insight-sentinel 스킬 (`/insight-check`)
+- Confirmation Loop: `${CLAUDE_PLUGIN_ROOT}/skills/_core/confirmation-loop.md`
+- think- 패밀리: think-lite (적응형)

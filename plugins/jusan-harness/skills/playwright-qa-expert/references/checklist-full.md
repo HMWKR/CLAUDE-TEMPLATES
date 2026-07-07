@@ -1,4 +1,4 @@
-> **SSOT 참조**: 이 파일의 원본은 `~/.claude/skills/_core/qa/checklist-175.md`입니다.
+> **SSOT 참조**: 이 파일의 원본은 `${CLAUDE_PLUGIN_ROOT}/skills/_core/qa/checklist-175.md`입니다.
 > 체크리스트 수정 시 원본(_core/qa/)을 수정하고 이 파일에 반영하세요.
 
 ## 8. Ultra-Detail UI/UX 체크리스트 (175개 항목)

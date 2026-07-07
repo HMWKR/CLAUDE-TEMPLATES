@@ -13,14 +13,11 @@ description: |
 
 이 스킬은 `~/.claude/rules/uncompromising-rigor.md` 의 4개 정책을 **무조건 준수**한다:
 
-1. **Browser Tool Priority** — `mcp__claude-in-chrome__*` 우선, `mcp__playwright__*` 는 fallback only
+1. **Browser Tool Priority** — 브라우저 우선순위는 `rules/uncompromising-rigor` §1(2026-07-07 Playwright MCP 전역 우선)을 따른다. 로그인 세션 재사용이 필요할 때만 `mcp__claude-in-chrome__*`를 쓴다.
 2. **Self-Justification Red Flags** — "이 정도면 충분" / "사소함" / "사용자가 신경 안 씀" / "베타니까 OK" / "fetch 진행 중이라 정상" 등장 시 **즉시 자기 차단**
 3. **All Findings Are Defects** — 모든 발견은 결함. 사용자가 명시적으로 "강등"한 것만 Low
 4. **Per-Round Deep Analysis** — 매 라운드 5단계 심층 분석 강제 (이전 재조회 → 미세 재스캔 → Adversarial walk → 자기 정당화 자가 검증 → 신규+재현성)
-
-훅 강제: `detect-self-justification.sh` (5개 키워드 차단) + `check-chrome-mcp-priority.sh` (Playwright 우선 호출 가드).
-
-> **이 스킬 이름은 "playwright-qa"이지만, Chrome MCP 가용 시 우선 사용 후 Playwright fallback. 이름은 legacy.**
+> 이 스킬 이름의 "playwright"는 legacy 명칭 — 브라우저 우선순위는 `rules/uncompromising-rigor` §1(2026-07-07 Playwright MCP 전역 우선)을 따른다.
 
 ---
 
@@ -930,7 +927,7 @@ Critical 이슈 교차 검증 절차:
 ## 15. 체크리스트 소스 참조
 
 > 175개 체크리스트의 상세 내용은 공유 디렉토리의 원본을 참조합니다.
-> **원본 위치**: `~/.claude/skills/_core/qa/checklist-175.md`
+> **원본 위치**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/qa/checklist-175.md`
 >
 > **Lead 지시**: 각 TM Spawn 시, 해당 TM의 담당 카테고리 항목을
 > checklist-175.md에서 Read하여 Spawn 프롬프트의 Block 3에 삽입하세요.
@@ -962,7 +959,7 @@ Lead가 Stage 1 데이터 수집 시 해당 스니펫을 Read하여 사용합니
 ## 17. 행동 채택 표준
 
 > 역할 채택 신호(Signal 1-3), 출력 형식([A][B][C]), 역할 전환/참조 체계는
-> 공유 파일을 참조합니다: [~/.claude/skills/_core/qa/behavioral-signals.md](~/.claude/skills/_core/qa/behavioral-signals.md)
+> 공유 파일을 참조합니다: `${CLAUDE_PLUGIN_ROOT}/skills/_core/qa/behavioral-signals.md`
 >
 > **Agent-Teams 특이사항**:
 > - 각 TM은 고정 역할 유지 (전환 프로토콜은 단일 에이전트 전용)
@@ -982,7 +979,7 @@ Lead가 Stage 1 데이터 수집 시 해당 스니펫을 Read하여 사용합니
 | 3 | **Task Router (강함)** | Lead가 Playwright 데이터 수집 후 4-8 TM 분배 (도메인별) |
 | 4 | Context Builder | Lead의 audit-data/ — DOM 트리 + 네트워크 + 콘솔 + 스크린샷 |
 | 5 | Planner | 각 TM별 검사 체크리스트 (tier에 따라 35/120/175 항목) |
-| 6 | **Tool Executor (강함)** | Lead: `mcp__claude-in-chrome__*` 우선 (Uncompromising Rigor §1) / TM: 분석 |
+| 6 | **Tool Executor (강함)** | Lead: 브라우저 도구 (UR §1 우선순위, Playwright MCP 전역 우선) / TM: 분석 |
 | 7 | Draft Generator | 각 TM 보고서 (병렬 작성) |
 | 8 | Critic / Verifier | Lead 통합 + 재현성 확인 (Uncompromising Rigor §4) |
 | 9 | Refiner | 우선순위 정렬 (Uncompromising Rigor §3 — 사용자 명시 강등만 Low) |

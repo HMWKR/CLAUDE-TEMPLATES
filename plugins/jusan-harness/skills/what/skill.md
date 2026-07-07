@@ -180,7 +180,7 @@ version: 1.0.0
 
 ## Confirmation Loop
 
-> **프로토콜 참조**: `_core/confirmation-loop.md`
+> **프로토콜 참조**: `${CLAUDE_PLUGIN_ROOT}/skills/_core/confirmation-loop.md`
 
 **이 스킬의 훅 오버라이드:**
 
@@ -219,7 +219,7 @@ version: 1.0.0
 
 ## "다시 제시" Keyword Handler
 
-> `_core/confirmation-loop.md`의 "다시 제시" 핸들러를 따르며,
+> `${CLAUDE_PLUGIN_ROOT}/skills/_core/confirmation-loop.md`의 "다시 제시" 핸들러를 따르며,
 > 선택 후 결과는 Progressive Table 형식으로 재제시한다.
 
 ---

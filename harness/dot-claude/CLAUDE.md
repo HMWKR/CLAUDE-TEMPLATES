@@ -1,7 +1,7 @@
 # Claude 글로벌 지침
 
 > 원칙: 최소 고신호 컨텍스트 + 적정 고도. 상세 규칙은 `~/.claude/rules/`가 자동 적용된다.
-> 2026-06-11 전면 재구축. 근거·처분표: `claude-templates/.thoughts/2026-06-11-ultimate-harness-gate1.md` / 백업: `~/.claude/backups/pre-ultimate-2026-06-11/`
+> 2026-06-11 전면 재구축. (구 근거·처분표 문서와 백업 디렉토리는 2026-07-03 감사에서 유실 확인 — dangling 참조 정리. 현행 근거: `~/.thoughts/`의 하네스 감사·청사진 문서)
 
 ## 언어
 
@@ -22,6 +22,9 @@
 > 셋 다 아니면(단순·명확·가역, karpathy가 면제하는 단순 질문·설명·문서 포함) 의도 점검·빈칸 처리·4구분 보고를 생략하고 바로 실행한다(단 아래 "임의 결정 금지"는 항상 적용). 애매하면 발동 쪽을 택한다.
 
 - 의도 점검: 작업 착수 시 1회, 이해한 의도와 명시 안 된 빈칸을 간결히 점검한다(빈칸 없으면 발화 생략). 후속 턴은 새 빈칸이 생긴 때만 재점검한다.
+- 계획 우선(plan-first): 발동 작업(다단계·비가역·모호)은 **실행 전 계획을 먼저 수립**한다 — 분해 + DoD·검증계획을 conductor-verify 파이프라인 구조(계획→계획검수→실행→1차검수→종합→최종검증→승인)로 잡고 lifecycle 전체(실행 전·중·후)를 관장한다. 비가역·산출물 핵심형태 결정이면 계획을 제시·승인 후 실행(EnterPlanMode 활용), 가역·명확이면 계획을 1~2줄 명시 후 진행. karpathy §4(목표→검증) 정합. 사소·단일스텝·단순질문은 면제. (파이프라인 정본: rules/agent-teams-boundaries.md, 실행 템플릿: `~/.claude/workflows/conductor-verify.js`)
+- 투두 추적: 발동 작업은 계획을 **투두리스트(TaskCreate)로 구체화**하고, 각 항목을 착수 시 `in_progress`·완료 즉시 `completed`로 **즉시 갱신**(TaskUpdate)한다 — 다음 턴 미루기 금지, loop-prevention 체크마크 프로토콜 정합. 파이프라인 단계(계획→…→승인)와 투두를 정렬해 진행 상태를 항상 가시화한다. 사소·단일스텝·단순질문은 면제.
+- what→goal 자동 트리거: `/what`·`/what-ce`로 4프레임(Why·What·How·So What)이 확정되고 **실행이 다단계**면, 확정된 What을 `--brief`·So What/목표를 `--goal`로 하여 `goals.py create`를 **자동 실행**해 goal을 트리거한다(단일스텝·순수 분석은 제외). 네이티브 `/goal`(세션 Stop 훅)은 모델이 직접 설정 불가 → 그 강한 차단이 필요하면 실행 준비된 `/goal <조건>` 문구를 함께 제시한다. (셋 중 실사용은 택1: goals.py 자동 = 기본, /goal = 강차단 필요 시, ultragoal = 다목표.)
 - 빈칸 처리: 빈칸이 비가역 동작·산출물의 핵심 형태에 영향을 주면 멈춰 묻는다. 그 외 비핵심·저위험 빈칸은 발동됐어도 질문하지 말고 가정 1줄 명시 후 진행한다 — 사소한 작업에 하드 질문 마찰을 만들지 않되, 추측으로 말없이 메우지 않는다(세부 rules/anti-hallucination.md, 코드는 rules/karpathy-code-guidelines.md §1).
 - 임의 결정 금지(발동·스킵 무관 항상 적용): 시키지 않은 기능 추가, 요청 범위 임의 생략·확대, 미검증 완료 처리를 하지 않는다 — 필요하면 먼저 제시하고 확인받는다. (검수 시 발견 등급 강등은 사용자 명시 선언만 인정: rules/uncompromising-rigor.md §2.)
 - 정직 보고: 발동 작업은 마무리에 한 일 / 안 한 일·남은 빈칸 / 가정·추측 / 미검증을 구분해 보고하고(해당 없는 칸은 생략), 단순·가역 작업은 결과를 한 줄로 보고한다. 사실 진술의 확신도는 [검증됨]·[추정]·[미확인]로 표기한다.
@@ -31,8 +34,10 @@
 - 고수준 지시가 단계별 지시보다 효과적이다.
 - 다중 소스 파일 탐색은 Explore/codebase-explorer 서브에이전트에 위임하고 요약만 회수한다.
 - 도메인에 맞는 에이전트 정의(`~/.claude/agents/` 또는 프로젝트 `.claude/agents/`)가 있으면 읽고 그 페르소나로 작업한다. 강제 게이트는 없다 — 품질을 위한 선택이다.
-- 브라우저 자동화는 `mcp__claude-in-chrome__*` 우선. Playwright는 Chrome MCP 실패·미지원 기능·사용자 지시·멀티탭 필요 시에만 (세부: rules/uncompromising-rigor.md).
+- 브라우저 자동화는 **`mcp__playwright__*`(Playwright MCP) 우선**(headless·격리·배치·자동화). Chrome MCP(`mcp__claude-in-chrome__*`)는 사용자의 실제 로그인 세션 재사용·사용자 명시·Chrome 전용 기능 시에만 (세부: rules/uncompromising-rigor.md).
 - 코드 심볼 단위 작업(정의·참조 추적·리네임·심볼 교체)은 Serena MCP(`mcp__serena__*`)를 우선 사용한다. 코딩 작업 시작 시 `initial_instructions`를 먼저 호출한다.
+- 이미지 자산(로고·아이콘·SVG·다이어그램 등 코드/벡터형 이미지의 생성·편집)이 필요하면 **codex MCP(`mcp__codex__codex`)로 위임**한다 — 교차벤더 활용, 산출물은 오케스트레이터가 회수해 반영. 래스터/사진형은 codex 도구로 가능하면 codex, 불가하면 대안(Figma MCP 등)을 제시한다. (세부: rules/image-codex-routing.md)
+- 크롤 가치 판정(능동): 작업이 외부 라이브 자료(경쟁사·레퍼런스·현행 사실·실제 예시)로 산출 품질이 **유의하게** 높아지는 유형이면 요청 없어도 크롤 가치를 판정해 **알아서 수행**한다 — 소스 3~5개를 1줄 제시 후 **Playwright MCP로 크롤 → `web-crawling/<site>/`**(공개 페이지·robots·저작권 존중), 파이프라인의 Execute 입력으로 사용. 단 라이브러리/API 문서는 context7 MCP가 우선(크롤 불필요), 사소·내부완결·부가가치 낮은 작업은 스킵. (세부: rules/ui-ux-craft.md 크롤 절)
 
 ## 검증 원칙
 
@@ -59,7 +64,8 @@
 
 `~/.config/knot/vault`(또는 `$KNOT_VAULT`)가 가리키는 vault가 있으면 개인 지식 그물이 활성이다. 규약 정본은 `$KNOT_VAULT/schema.md` — 직접 쓰지 말고 ingest/query/lint 절차를 따른다(Obsidian은 vault 하나를 열어 전 프로젝트를 본다).
 
-- 실프로젝트에서 작업을 시작했는데 그 프로젝트가 vault에 미등록(`$KNOT_VAULT/wiki/projects/<프로젝트>/` 부재)이면 **"이 프로젝트를 knot(Obsidian)에 연결할까요?"를 1회 제안**한다(강요·반복 금지). 승인 시 `knot-connect` 스킬로 진행.
+- 실프로젝트에서 작업을 시작했는데 그 프로젝트가 vault에 미등록(이 vault는 **flat wiki/** — 프로젝트는 폴더가 아니라 `wiki/<슬러그>.md` **entity 페이지**로 등록됨. `wiki/projects/` 하위폴더 아님, 스키마 정본 확인)이면 **"이 프로젝트를 knot에 연결할까요?"를 1회 제안**한다(강요·반복 금지). 승인 시 `knot-connect` 스킬로 진행.
+- **연결 판단(모든 프로젝트를 연결하지 않는다 — knot은 능력이 아니라 교차벤더·세션 간 공유 기억 레이어)**: ① 교차벤더(codex 등)·멀티세션으로 오래 갈 프로젝트만 대상. ② 서로 도메인/방법론을 공유하면 기존 vault에 entity로(개념 노드 재사용 = 이득). ③ 크고 자기완결적이라 공유 vault를 오염시키면 **별도 `KNOT_VAULT`**로 분리. ④ solo·단발·학습·과제·덤프·빈 스캐폴드는 **연결 안 함**.
 - 작업 중 **지속가치 있는 결정·아키텍처·교훈·도메인 지식**이 확정되면 knot 저장/ingest를 제안한다. 단발 작업·임시 상태·이미 코드/git에 있는 것은 제외.
 
 <!-- FABLIZE:BEGIN — run Opus like Fable (always-on router). Verified procedures only. Install/update: fablize setup.sh -->
@@ -68,14 +74,20 @@
 Apply what the task signals; with no signal, baseline only. Read each pack only when needed. Routing: smallest matching discipline only, overlap only when genuinely multi-category, mimic observable behavior only.
 
 - **[always]** Lead with the outcome · stay within the requested scope (no incidental refactors) · ground completion claims in this session's tool results · confirm before destructive or hard-to-reverse actions.
-- **[2+ sequential stories]** Run `python3 C:/Users/jusan/.claude/plugins/cache/fablize/fablize/2.1.0/scripts/goals.py`: create → next → checkpoint (with evidence) → final verification gate (no completion without `--verify-cmd` and `--verify-evidence`). Run from the repo root; state in `./.fablize/` (resume with `status`). Skip for single-step tasks.
-- **[debugging / test failure / unknown cause / review]** Follow `C:/Users/jusan/.claude/plugins/cache/fablize/fablize/2.1.0/packs/investigation-protocol.txt`: reproduce first → 3+ competing hypotheses → evidence per hypothesis → full causal chain → verify before/after → report rejected hypotheses.
-- **[render/executable artifact: HTML, SVG, game, UI, chart]** Follow `C:/Users/jusan/.claude/plugins/cache/fablize/fablize/2.1.0/packs/verification-grounding-pack.txt` grounding loop: run it in the real renderer → observe the output → fix what you see → re-run. A static check is not observation.
+- **[2+ sequential stories]** Run `python3 ~/.claude/plugins/cache/fablize/fablize/2.1.0/scripts/goals.py`: create → next → checkpoint (with evidence) → final verification gate (no completion without `--verify-cmd` and `--verify-evidence`). Run from the repo root; state in `./.fablize/` (resume with `status`). Skip for single-step tasks.
+- **[debugging / test failure / unknown cause / review]** Follow `~/.claude/plugins/cache/fablize/fablize/2.1.0/packs/investigation-protocol.txt`: reproduce first → 3+ competing hypotheses → evidence per hypothesis → full causal chain → verify before/after → report rejected hypotheses.
+- **[render/executable artifact: HTML, SVG, game, UI, chart]** Follow `~/.claude/plugins/cache/fablize/fablize/2.1.0/packs/verification-grounding-pack.txt` grounding loop: run it in the real renderer → observe the output → fix what you see → re-run. A static check is not observation.
 - **[hard or ambiguous task]** Adaptive thinking scales with difficulty automatically. To go higher, recommend `/effort xhigh` to the user. Depth (capability) cannot be raised: if stuck 2+ times or out-of-spec discovery is needed, report the limit honestly and escalate.
 <!-- FABLIZE:END -->
 
 ## bkit 하이브리드 (fablize 주도)
 
 - fablize/CE가 단일 거버넌스. bkit(PDCA/Sprint)는 종속 기능 레이어 — 완료선언·검증 게이트는 fablize verification gate 경유로만, bkit 판정과 충돌 시 fablize 우선.
-- bkit는 **능동 풀 ON**(자동 개입·제안 주입·암시 트리거 상시) 유지 — 완료선언·검증 권위만 fablize(위 줄, 충돌 시 fablize 우선). bkit Memory Enforcer(CLAUDE.md `Do NOT/NEVER/MUST NOT` 하드 강제)는 유지.
-- 기능 중복 1차 선택 = 기존(code-review/security-reviewer/agent-teams/agentmemory·knot), bkit = 보강.
+- bkit는 **능동 풀 ON**(자동 개입·제안 주입·암시 트리거 상시) 유지 — 완료선언·검증 권위만 fablize(위 줄, 충돌 시 fablize 우선). bkit Memory Enforcer(CLAUDE.md `Do NOT/NEVER/MUST NOT` 하드 강제)는 유지. 단 **오탐 제안은 무시**한다(결과 데이터의 JSON 키를 신기능으로 오인한 /pdca-plan 제안, 호출한 적 없는 커맨드 감지 등) — 흐름을 끊지 않고 응답에서 언급도 생략.
+- 기능 중복 1차 선택 = 기존(code-review/security-reviewer/agent-teams/knot), bkit = 보강.
+
+## 레이어 서열 — Fable 정합 (2026-07-02, 하네스-Fable 정합 감사 결과)
+
+- **멀티에이전트 정본 = 네이티브 Workflow/Agent 도구.** "울트라워크" 요청은 Fable Workflow 실행(적대 검증·판정단 패턴 포함)으로 해석한다. **팀 편성 요청도 동일** — 네이티브 Agent 팀(teammates)이 1차, omc /team·jusan agent-teams-* 는 명시 호출 시에만. omc(ultrawork/team/ralph/autopilot 등)는 사용자가 명시 호출한 때만 사용. 서브에이전트 모델은 스킬·에이전트 정의의 하드코딩(haiku 등)을 무시하고 **미지정(세션 모델 상속) 또는 fable**로 오버라이드한다(haiku 금지·소넷 이상 선호와 정합). **2026-07-07부터 Fable 사용 불가(사용자 고지 07-03)** — 그날부터 fable 오버라이드는 **opus**로 대체하고 세션 모델도 Opus 4.8로 전환한다(절차: `~/.thoughts/2026-07-07-opus-transition-checklist.md`).
+- **강제 게이트 종속**: superpowers·jusan의 무조건 게이트(brainstorming HARD-GATE, 1%-rule 스킬 강제, Iron Law, STEP별 confirmation loop)는 위 착수 계약의 발동 판정에 종속된다 — 단순·명확·가역 작업과 전자율 모드(autopilot/백그라운드/사용자 AFK)에서는 면제. AskUserQuestion은 산출물의 핵심 형태를 바꾸는 진짜 사용자 결정에만 쓰고, 무응답(AFK/타임아웃) 시 가정을 1줄 명시하고 진행한다.
+- **Stop 차단 권위 = fablize gate_stop 1곳.** 네이티브 /goal과 omc ralph 지속 루프는 동시 사용하지 않는다(택1). bkit unified-stop은 관찰 전용.

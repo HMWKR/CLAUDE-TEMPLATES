@@ -150,9 +150,9 @@ model: opus
 
 ## 참조
 
-- 역할 정의: `~/.claude/skills/_core/roles.md`
-- 환각 방지: `~/.claude/skills/_core/protocols.md`
+- 역할 정의: `${CLAUDE_PLUGIN_ROOT}/skills/_core/roles.md`
+- 환각 방지: `${CLAUDE_PLUGIN_ROOT}/skills/_core/protocols.md`
 - 안전 규칙: `~/.claude/rules/safety.md`
-- 전체 보안 감사 스킬: `~/.claude/skills/security-audit/SKILL.md` (Agent-Teams 모드, 본 에이전트는 PR 단위 단독)
-- 인프라 정합성 감사: `~/.claude/agents/infra-auditor.md` (분담 경계)
-- CE 품질: `~/.claude/agents/ce-reviewer.md` (분담 경계)
+- 전체 보안 감사 스킬: `${CLAUDE_PLUGIN_ROOT}/skills/security-audit/SKILL.md` (Agent-Teams 모드, 본 에이전트는 PR 단위 단독)
+- 인프라 정합성 감사: `${CLAUDE_PLUGIN_ROOT}/agents/infra-auditor.md` (분담 경계)
+- CE 품질: `${CLAUDE_PLUGIN_ROOT}/agents/ce-reviewer.md` (분담 경계)
