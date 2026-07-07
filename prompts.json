@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-07-07T01:45:14.077Z",
+  "extractedAt": "2026-07-07T02:04:25.734Z",
   "stats": {
-    "total": 40,
-    "fromCommitsV4": 19,
+    "total": 41,
+    "fromCommitsV4": 20,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "fa9543f8071e5c8ad6b6fbdf21e0f28d3f68f551",
+      "date": "2026-07-07T11:04:06+09:00",
+      "type": "feat",
+      "scope": "harness",
+      "subject": "설치 전 심층분석→모드 추천 + 개선/완전치환/업그레이드 3케이스 (Mac+Win)",
+      "what": "- install.sh/install.ps1: 설치 시작 전 기존 하네스 심층분석(CLAUDE.md·rules·skills·agents·settings) → 모드 추천",
+      "why": "사용자 지시: 설치 전 기존 하네스 분석 후 우리가 모드 추천. codex 검수 반영(우리↔우리 재설치는 merge 대신 업그레이드).",
+      "impact": "Mac/Win 공통. install.sh 실행 검증(3케이스), install.ps1 정적 검증(pwsh 부재)."
+    },
     {
       "source": "commit-v4",
       "hash": "e4e787c165f65bf15b7cca9b6a8aeeb9c0115887",
