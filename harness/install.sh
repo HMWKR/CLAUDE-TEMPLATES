@@ -48,16 +48,40 @@ elif [ "$SCOPE" = "global" ]; then
   DEST="${CLAUDE_HOME:-$HOME/.claude}"; CLAUDE_MD_DEST="$DEST/CLAUDE.md"; PLUGIN_SCOPE="user"
 else echo "✗ 잘못된 scope: $SCOPE"; exit 1; fi
 
-# ── 모드 ────────────────────────────────────────────────────────
+# ── 심층 분석 + 모드 추천 (설치 시작 전) ──────────────────────────
 HAS_EXISTING=0; { [ -f "$CLAUDE_MD_DEST" ] || [ -d "$DEST/rules" ] || [ -d "$DEST/skills" ]; } && HAS_EXISTING=1
+RECO="replace"
+analyze_existing() {   # 대상 머신의 기존 하네스를 스캔하고 모드를 추천한다
+  echo ""; echo "===== 기존 하네스 심층 분석 ($DEST) ====="
+  local nrules=0 nskills=0 nagents=0 cl="없음" st="없음"
+  [ -f "$CLAUDE_MD_DEST" ] && cl="있음($(wc -l < "$CLAUDE_MD_DEST" | tr -d ' ')줄)"
+  [ -d "$DEST/rules" ]  && nrules=$(find "$DEST/rules" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
+  [ -d "$DEST/skills" ] && nskills=$(find "$DEST/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
+  [ -d "$DEST/agents" ] && nagents=$(find "$DEST/agents" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
+  [ -f "$DEST/settings.json" ] && st="있음"
+  echo "  CLAUDE.md: $cl · rules: $nrules · skills: $nskills · agents: $nagents · settings.json: $st"
+  if [ "$HAS_EXISTING" = "0" ]; then
+    RECO="replace"
+    echo "  → 추천: [완전 치환] — 기존 하네스 없음/최소 → 깨끗한 신규 설치."
+  elif [ -f "$DEST/.harness-source" ]; then
+    RECO="replace"
+    echo "  → 추천: [완전 치환=업그레이드] — 내 깃허브 하네스 이전 설치 감지($(head -1 "$DEST/.harness-source" 2>/dev/null)) → 최신본으로 클린 업그레이드(기존 백업). merge 시 우리↔우리 충돌만 양산."
+  else
+    RECO="merge"
+    echo "  → 추천: [개선(merge)] — 외부/커스텀 하네스 감지(우리 설치 마커 없음) → 보존하며 우리 것 덧씌움, 충돌은 Claude Code에서 'harness-merge-advisor'로 심층 분석 권장."
+    echo "    (기존을 전부 밀고 내 깃허브 하네스로 완전 교체하려면 [완전 치환] — 기존은 타임스탬프 백업됨)"
+  fi
+}
 if [ -z "$MODE" ]; then
-  if [ "$HAS_EXISTING" = "0" ]; then MODE="replace"   # 기존 하네스 없으면 교체=깨끗한 신규설치
-  elif [ -t 0 ]; then
-    echo ""; echo "기존 하네스가 감지되었습니다 ($DEST). 설치 모드:"
-    echo "  1) merge   — 기존 위에 덧씌움(비충돌만 추가, 충돌은 보존+리포트→advisor 분석 권장)"
-    echo "  2) replace — 기존을 백업 후 우리 하네스로 교체"
-    read -rp "선택 [1/2] (기본 1=merge): " _m; case "$_m" in 2) MODE=replace ;; *) MODE=merge ;; esac
-  else MODE=merge; fi   # 비대화형 + 기존 존재 → 안전하게 merge(비파괴)
+  analyze_existing
+  if [ ! -t 0 ]; then MODE="$RECO"   # 비대화형: 추천 채택(없음→replace, 있음→merge=비파괴)
+  else
+    echo ""; echo "설치 모드 [추천: $RECO]:"
+    echo "  1) 개선(merge)     — 기존 하네스 유지, 우리 것 덧씌움(충돌 보존→advisor)"
+    echo "  2) 완전치환(replace) — 기존 하네스 백업 후 내 깃허브 하네스로 전면 교체"
+    read -rp "선택 [1/2] (엔터=추천 $RECO): " _m
+    case "$_m" in 1) MODE=merge ;; 2) MODE=replace ;; *) MODE="$RECO" ;; esac
+  fi
 fi
 case "$MODE" in merge|replace) ;; *) echo "✗ 잘못된 mode: $MODE"; exit 1 ;; esac
 
@@ -110,6 +134,8 @@ done
 
 cp "$DOT/settings.reference.json" "$DEST/settings.reference.json"
 echo "✓ settings.reference.json 제공(수동 병합)"
+# 재설치/업그레이드 감지용 source marker — 다음 실행의 심층분석이 "우리 이전 설치"를 인식해 클린 업그레이드(replace)를 추천
+printf 'source=HMWKR/CLAUDE-TEMPLATES\ninstalled=%s\nmode=%s\nscope=%s\n' "$TS" "$MODE" "$SCOPE" > "$DEST/.harness-source"
 [ "$SCOPE" = "project" ] && echo "  ℹ 프로젝트 범위: rules/는 자동주입 안 됨(보존). CLAUDE.md·skills·agents는 프로젝트 로드."
 
 echo ""
