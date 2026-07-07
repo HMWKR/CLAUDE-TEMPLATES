@@ -38,19 +38,52 @@ if ($Scope -eq 'project') {
   $ClaudeMdDest = Join-Path $Dest 'CLAUDE.md'; $PluginScope = 'user'
 }
 
-# 모드
+# ── 심층 분석 + 모드 추천 (설치 시작 전) ──────────────────────────
 $HasExisting = (Test-Path $ClaudeMdDest) -or (Test-Path (Join-Path $Dest 'rules')) -or (Test-Path (Join-Path $Dest 'skills'))
-if (-not $Mode) {
-  if (-not $HasExisting) { $Mode = 'replace' }
-  else {
-    try {
-      Write-Host "`n기존 하네스 감지됨 ($Dest). 설치 모드:"
-      Write-Host "  1) merge   — 기존 위에 덧씌움(비충돌만 추가, 충돌 보존+리포트->advisor 권장)"
-      Write-Host "  2) replace — 기존 백업 후 우리 하네스로 교체"
-      $m = Read-Host "선택 [1/2] (기본 1=merge)"; $Mode = if ($m -eq '2') { 'replace' } else { 'merge' }
-    } catch { $Mode = 'merge' }
+$script:Reco = 'replace'
+function Analyze-Existing {   # 대상 머신의 기존 하네스를 스캔하고 모드를 추천한다
+  Write-Host ""
+  Write-Host "===== 기존 하네스 심층 분석 ($Dest) =====" -ForegroundColor Cyan
+  $cl = '없음'; $st = '없음'; $nrules = 0; $nskills = 0; $nagents = 0
+  if (Test-Path $ClaudeMdDest) {
+    $nlines = (Get-Content $ClaudeMdDest | Measure-Object -Line).Lines
+    if (-not $nlines) { $nlines = 0 }
+    $cl = "있음(${nlines}줄)"
+  }
+  $rulesDir = Join-Path $Dest 'rules'
+  if (Test-Path $rulesDir) { $nrules = (Get-ChildItem $rulesDir -Filter '*.md' -File -ErrorAction SilentlyContinue | Measure-Object).Count }
+  $skillsDir = Join-Path $Dest 'skills'
+  if (Test-Path $skillsDir) { $nskills = (Get-ChildItem $skillsDir -Directory -ErrorAction SilentlyContinue | Measure-Object).Count }
+  $agentsDir = Join-Path $Dest 'agents'
+  if (Test-Path $agentsDir) { $nagents = (Get-ChildItem $agentsDir -Filter '*.md' -File -ErrorAction SilentlyContinue | Measure-Object).Count }
+  if (Test-Path (Join-Path $Dest 'settings.json')) { $st = '있음' }
+  Write-Host "  CLAUDE.md: $cl · rules: $nrules · skills: $nskills · agents: $nagents · settings.json: $st"
+  if (-not $HasExisting) {
+    $script:Reco = 'replace'
+    Write-Host "  -> 추천: [완전 치환] — 기존 하네스 없음/최소 -> 깨끗한 신규 설치." -ForegroundColor Cyan
+  } elseif (Test-Path (Join-Path $Dest '.harness-source')) {
+    $script:Reco = 'replace'
+    Write-Host "  -> 추천: [완전 치환=업그레이드] — 내 깃허브 하네스 이전 설치 감지 -> 최신본으로 클린 업그레이드(기존 백업). merge 시 우리<->우리 충돌만 양산." -ForegroundColor Cyan
+  } else {
+    $script:Reco = 'merge'
+    Write-Host "  -> 추천: [개선(merge)] — 외부/커스텀 하네스 감지(우리 설치 마커 없음) -> 보존하며 우리 것 덧씌움, 충돌은 Claude Code에서 'harness-merge-advisor'로 심층 분석 권장." -ForegroundColor Cyan
+    Write-Host "    (기존을 전부 밀고 내 깃허브 하네스로 완전 교체하려면 [완전 치환] — 기존은 타임스탬프 백업됨)" -ForegroundColor Cyan
   }
 }
+if (-not $Mode) {
+  Analyze-Existing
+  if (-not [Environment]::UserInteractive) { $Mode = $script:Reco }   # 비대화형: 추천 채택(없음->replace, 있음->merge=비파괴)
+  else {
+    try {
+      Write-Host ""; Write-Host "설치 모드 [추천: $($script:Reco)]:"
+      Write-Host "  1) 개선(merge)     — 기존 하네스 유지, 우리 것 덧씌움(충돌 보존->advisor)"
+      Write-Host "  2) 완전치환(replace) — 기존 하네스 백업 후 내 깃허브 하네스로 전면 교체"
+      $m = Read-Host "선택 [1/2] (엔터=추천 $($script:Reco))"
+      $Mode = switch ($m) { '1' { 'merge' } '2' { 'replace' } default { $script:Reco } }
+    } catch { $Mode = $script:Reco }
+  }
+}
+if ($Mode -ne 'merge' -and $Mode -ne 'replace') { Write-Host "X 잘못된 mode: $Mode" -ForegroundColor Red; exit 1 }
 
 $Ts = Get-Date -Format 'yyyyMMdd-HHmmss'
 $Backup = Join-Path $Dest "_harness-backup-$Ts"
@@ -102,6 +135,8 @@ foreach ($d in @('adapters','scripts','workflows','commands','verification-templ
 
 Copy-Item (Join-Path $Dot 'settings.reference.json') (Join-Path $Dest 'settings.reference.json') -Force
 Write-Host "OK settings.reference.json 제공(수동 병합)" -ForegroundColor Green
+# 재설치/업그레이드 감지용 source marker — 다음 실행 심층분석이 "우리 이전 설치"를 인식해 클린 업그레이드(replace) 추천
+Set-Content -Path (Join-Path $Dest '.harness-source') -Value "source=HMWKR/CLAUDE-TEMPLATES`ninstalled=$Ts`nmode=$Mode`nscope=$Scope"
 if ($Scope -eq 'project') { Write-Host "  i 프로젝트 범위: rules/는 자동주입 안 됨(보존). CLAUDE.md/skills/agents는 프로젝트 로드." -ForegroundColor Cyan }
 
 Write-Host "`n===== 요약: 추가 $($script:Added) · 동일 $($script:Ident) · 충돌 $($script:Conflicts) =====" -ForegroundColor Cyan
