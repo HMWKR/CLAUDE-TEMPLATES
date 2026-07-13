@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-07-13T05:55:03.269Z",
+  "extractedAt": "2026-07-13T06:06:33.909Z",
   "stats": {
-    "total": 42,
-    "fromCommitsV4": 21,
+    "total": 43,
+    "fromCommitsV4": 22,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "dff9fe37fa6ced984bfee5b9b3e86c1059dd220d",
+      "date": "2026-07-13T15:06:26+09:00",
+      "type": "docs",
+      "scope": "readme",
+      "subject": "30초 요약에서 외부 산출물 예시 링크 제거",
+      "what": "- adventureworks-sales-service 예시 링크 1줄 삭제",
+      "why": "- 포트폴리오 구성 변경(해당 프로젝트 제외 결정)에 따라 공개 동선 정리",
+      "impact": "- README 요약 섹션 1줄 삭제 외 무변경"
+    },
     {
       "source": "commit-v4",
       "hash": "e5a59a0f14fd8c23529251c0c92bb606e0f6785c",
