@@ -5,15 +5,26 @@
     "owner": "HMWKR",
     "url": "https://github.com/HMWKR/CLAUDE-TEMPLATES"
   },
-  "extractedAt": "2026-07-07T02:04:25.734Z",
+  "extractedAt": "2026-07-13T05:55:03.269Z",
   "stats": {
-    "total": 41,
-    "fromCommitsV4": 20,
+    "total": 42,
+    "fromCommitsV4": 21,
     "fromCommitsLegacy": 13,
     "fromJournals": 6,
     "fromThinking": 2
   },
   "prompts": [
+    {
+      "source": "commit-v4",
+      "hash": "e5a59a0f14fd8c23529251c0c92bb606e0f6785c",
+      "date": "2026-07-13T14:54:51+09:00",
+      "type": "docs",
+      "scope": "readme",
+      "subject": "채용 리뷰어용 30초 요약 섹션 추가",
+      "what": "- README 최상단에 '처음 오신 분께 - 이 레포가 보여주는 것 (30초 요약)' 섹션 신설",
+      "why": "- public 전환에 따라 외부 리뷰어(채용 담당자)가 30초 안에 레포의 증명 가치를 파악할 진입로 필요",
+      "impact": "- README 최상단 1개 섹션 추가만 - 기존 본문·설치 절차 무변경"
+    },
     {
       "source": "commit-v4",
       "hash": "fa9543f8071e5c8ad6b6fbdf21e0f28d3f68f551",
